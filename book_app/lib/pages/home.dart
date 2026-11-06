@@ -9,6 +9,7 @@ import '../services/book_service.dart';
 import '../services/gamification_service.dart';
 import '../services/profile_service.dart';
 import '../services/reading_goal_service.dart';
+import '../services/reading_pace.dart';
 import '../theme/app_theme.dart';
 import 'routes.dart';
 
@@ -366,6 +367,10 @@ class _HomePageState extends State<HomePage> {
   String? _errorMessage;
   int _yearlyGoal = ReadingGoalService.defaultGoal;
 
+  /// Kahraman kitap için "bu gidişle ... bitiyor" satırı; tempo bilinmiyorsa
+  /// null kalır ve satır hiç görünmez.
+  String? _heroPaceNote;
+
   int get _yearlyFinished => ReadingGoalService.finishedInYear(_books);
 
   @override
@@ -394,6 +399,7 @@ class _HomePageState extends State<HomePage> {
         _gamification = gamification;
         _yearlyGoal = yearlyGoal;
       });
+      await _refreshHeroPace();
     } on ApiException catch (e) {
       if (!mounted) return;
       setState(() => _errorMessage = e.message);
@@ -408,6 +414,35 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+
+  /// Kahraman kitabın günlük kayıtlarından bitirme tahminini çıkarır.
+  ///
+  /// Kitap listesi ana ekranda zaten var; tek ek sorgu o kitabın günlüğü.
+  /// Tahmin burada temkinli tabanla (takvim günü) hesaplanıyor: ana ekranda
+  /// iddialı bir tarih vermek, tutmadığında güveni zedeliyor.
+  Future<void> _refreshHeroPace() async {
+    final book = _heroBook;
+    if (book == null || book.isFinished) {
+      if (mounted) setState(() => _heroPaceNote = null);
+      return;
+    }
+    try {
+      final logs = await _bookService.fetchLogs(book.id);
+      final estimate = estimateFinish(
+        book: book,
+        pace: computeReadingPace(logs),
+      );
+      if (!mounted) return;
+      final date = estimate?.date;
+      setState(() {
+        _heroPaceNote = date == null
+            ? null
+            : 'Bu gidişle ${formatFinishDate(date)} bitiyor';
+      });
+    } catch (_) {
+      if (mounted) setState(() => _heroPaceNote = null);
+    }
+  }
 
   void _goTab(HeaderTab tab) {
     final dest = (tab == HeaderTab.home) ? AppRoutes.home : AppRoutes.books;
@@ -614,6 +649,7 @@ class _HomePageState extends State<HomePage> {
                         : profileService.displayName,
                     summary: _gamification,
                     heroBook: _heroBook,
+                    heroPaceNote: _heroPaceNote,
                     onOpenHero: _heroBook == null
                         ? null
                         : () => _openDiary(_heroBook!.id),
@@ -1121,12 +1157,14 @@ class _WelcomePanel extends StatelessWidget {
     this.displayName,
     this.summary,
     this.heroBook,
+    this.heroPaceNote,
     this.onOpenHero,
   });
 
   final String? displayName;
   final GamificationSummary? summary;
   final Book? heroBook;
+  final String? heroPaceNote;
   final VoidCallback? onOpenHero;
 
   @override
@@ -1244,7 +1282,11 @@ class _WelcomePanel extends StatelessWidget {
           ),
           if (heroBook case final book?) ...[
             const SizedBox(height: 18),
-            _HeroBookCard(book: book, onOpen: onOpenHero),
+            _HeroBookCard(
+              book: book,
+              paceNote: heroPaceNote,
+              onOpen: onOpenHero,
+            ),
           ],
               ],
             ),
@@ -1291,8 +1333,9 @@ class _WelcomePanel extends StatelessWidget {
 
 /// Hero içinde kompakt "kaldığın yerden / son eklenen kitap" kartı.
 class _HeroBookCard extends StatelessWidget {
-  const _HeroBookCard({required this.book, this.onOpen});
+  const _HeroBookCard({required this.book, this.paceNote, this.onOpen});
   final Book book;
+  final String? paceNote;
   final VoidCallback? onOpen;
 
   double get _progress => book.totalPages == 0
@@ -1382,6 +1425,31 @@ class _HeroBookCard extends StatelessWidget {
                         ),
                       ],
                     ),
+                    if (paceNote case final note?) ...[
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.event_available_rounded,
+                            size: 12,
+                            color: Colors.white.withValues(alpha: .7),
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              note,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: .78),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 10.5,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),

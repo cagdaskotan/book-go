@@ -29,9 +29,17 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // TODO: Yayın için kendi imza yapılandırmanı ekle.
+            // Şimdilik hata ayıklama anahtarıyla imzalanıyor ki
+            // `flutter run --release` çalışsın.
             signingConfig = signingConfigs.getByName("debug")
+
+            // R8 kuralları: kullanılmayan ML Kit dil paketleri olmadan
+            // release derlemesi tamamlanmıyor (bkz. proguard-rules.pro).
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }

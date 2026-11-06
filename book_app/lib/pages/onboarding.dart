@@ -324,69 +324,88 @@ class _StepFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(Gap.xl, Gap.lg, Gap.xl, Gap.xl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Center(child: Mascot(mood: mood, size: 128)),
-          Gap.vLg,
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -.5,
-              color: cs.onSurface,
+    // Ekranı doldur ama içerik taşarsa kaydırılabilir kal. Daha önce her şey
+    // üste yapışıyor, altta ekranın üçte biri kadar boşluk kalıyordu; düğme
+    // de parmağın doğal olarak durduğu yerden uzaktaydı.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const padding = EdgeInsets.fromLTRB(Gap.xl, Gap.lg, Gap.xl, Gap.xl);
+        return SingleChildScrollView(
+          padding: padding,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight - padding.vertical,
             ),
-          ),
-          Gap.vSm,
-          Text(
-            subtitle,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14.5,
-              height: 1.45,
-              fontWeight: FontWeight.w600,
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-          Gap.vXl,
-          body,
-          Gap.vXl,
-          Row(
-            children: [
-              if (onBack != null) ...[
-                OutlinedButton(
-                  onPressed: busy ? null : onBack,
-                  child: const Icon(Icons.arrow_back_rounded, size: 20),
-                ),
-                const SizedBox(width: Gap.sm),
-              ],
-              Expanded(
-                child: FilledButton(
-                  onPressed: onPrimary,
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: Gap.lg),
-                    backgroundColor: AppTheme.brandPrimary,
+            child: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(child: Mascot(mood: mood, size: 128)),
+                  Gap.vLg,
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -.5,
+                      color: cs.onSurface,
+                    ),
                   ),
-                  child: busy
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
+                  Gap.vSm,
+                  Text(
+                    subtitle,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14.5,
+                      height: 1.45,
+                      fontWeight: FontWeight.w600,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                  Gap.vXl,
+                  body,
+                  // Kalan boşluğu yut: düğmeler ekranın altına otursun.
+                  const Spacer(),
+                  Gap.vXl,
+                  Row(
+                    children: [
+                      if (onBack != null) ...[
+                        OutlinedButton(
+                          onPressed: busy ? null : onBack,
+                          child: const Icon(Icons.arrow_back_rounded, size: 20),
+                        ),
+                        const SizedBox(width: Gap.sm),
+                      ],
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: onPrimary,
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: Gap.lg,
+                            ),
+                            backgroundColor: AppTheme.brandPrimary,
                           ),
-                        )
-                      : Text(primaryLabel),
-                ),
+                          child: busy
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(primaryLabel),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

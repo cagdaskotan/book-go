@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../models/book.dart';
 import '../models/gamification_summary.dart';
 import '../widgets/book_cover.dart';
 import '../widgets/mascot.dart';
+import 'year_wrapped_share_page.dart';
 
 /// Yıl sonu "Okuma Karnem" — Spotify Wrapped tarzı, kaydırmalı özet.
 class YearWrappedPage extends StatefulWidget {
@@ -59,19 +59,25 @@ class _YearWrappedPageState extends State<YearWrappedPage> {
     }
   }
 
+  /// Karneyi paylaşım önizlemesine götürür.
+  ///
+  /// Önce düz metin paylaşılıyordu; kimse metin paylaşmıyor. Artık hikâye
+  /// boyutunda bir kare üretiliyor — sunucusuz bir uygulamanın tek organik
+  /// dağıtım kolu bu.
   Future<void> _share() async {
     final s = _stats;
-    final lines = <String>[
-      '📚 ${s.year} Okuma Karnem',
-      '✅ ${s.booksFinished} kitap bitirdim',
-      '📖 ${_fmt(s.pagesRead)} sayfa okudum',
-      if (s.topGenre != null) '🏷️ En sevdiğim tür: ${s.topGenre}',
-      if (s.topAuthor != null) '✍️ En çok okuduğum yazar: ${s.topAuthor}',
-      if (s.longestStreak > 0) '🔥 En uzun serim: ${s.longestStreak} gün',
-    ];
-    try {
-      await Share.share(lines.join('\n'), subject: '${s.year} Okuma Karnem');
-    } catch (_) {}
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => YearWrappedSharePage(
+          year: s.year,
+          booksFinished: s.booksFinished,
+          pagesRead: s.pagesRead,
+          topGenre: s.topGenre,
+          topAuthor: s.topAuthor,
+          longestStreak: s.longestStreak,
+        ),
+      ),
+    );
   }
 
   late final List<Widget> _cards = _buildCards();

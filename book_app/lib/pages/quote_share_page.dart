@@ -1,11 +1,7 @@
-import 'dart:io';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
+import '../services/share_image.dart';
 import '../widgets/quote_share_card.dart';
 
 /// Bir alıntıyı zarif bir görsele dönüştürüp paylaşma önizlemesi.
@@ -38,26 +34,17 @@ class _QuoteSharePageState extends State<QuoteSharePage> {
     if (_busy) return;
     setState(() => _busy = true);
     try {
-      // Kapak görselinin yüklendiğinden emin olmak için bir kare bekle.
-      await Future<void>.delayed(const Duration(milliseconds: 120));
-      final boundary =
-          _cardKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-      if (boundary == null) throw Exception('no boundary');
-      final image = await boundary.toImage(pixelRatio: 3.0);
-      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (bytes == null) throw Exception('no bytes');
-      final dir = await getTemporaryDirectory();
-      final file = File(
-        '${dir.path}/quote_${DateTime.now().millisecondsSinceEpoch}.png',
-      );
-      await file.writeAsBytes(bytes.buffer.asUint8List());
       final caption = StringBuffer()
         ..writeln('“${widget.text.trim()}”')
         ..write('— ${widget.bookTitle}');
       if ((widget.author ?? '').trim().isNotEmpty) {
         caption.write(', ${widget.author!.trim()}');
       }
-      await Share.shareXFiles([XFile(file.path)], text: caption.toString());
+      await shareWidgetAsImage(
+        boundaryKey: _cardKey,
+        fileName: 'alinti',
+        text: caption.toString(),
+      );
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

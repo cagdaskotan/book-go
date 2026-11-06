@@ -43,3 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android modülünün derleme çıktıları
+/android/build/
+/android/.gradle/
+/android/app/build/

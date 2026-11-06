@@ -2,31 +2,57 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'app_scale.dart';
+
 /// Uygulama teması (light + dark) ve basit bir tema kontrolcüsü.
 /// Light: mevcut yeşil kimlik.
 /// Dark: koyu gri + mor (indigo/violet) paleti.
 class AppTheme {
   AppTheme._();
 
-  // Mevcut kimlik renkleri (başka dosyalarda kullanılan sabitler)
-  static const Color primaryGreen = Color(0xFF6750E8);
-  static const Color secondaryGreen = Color(0xFF8B5CF6);
-  static const Color darkGreen = Color(0xFF352A78);
-  static const Color accentOrange = Color(0xFFE9785D);
-  static const Color background = Color(0xFFF7F6FC);
+  // ---------------------- MARKA RENKLERİ ----------------------
+  // Adlar rolü anlatır, tonu değil: ton değişirse ad hâlâ doğru kalır.
+  // (Eski adlar "green" diyordu ama renkler mordu — kodu okuyan yanılıyordu.)
 
-  // Dark mod için brand tonları
-  static const Color brandIndigo = Color(0xFF7567F8);
-  static const Color brandViolet = Color(0xFFA06AF5);
+  /// Ana marka rengi; birincil eylemler, seçili durumlar, ilerleme.
+  static const Color brandPrimary = Color(0xFF6750E8);
+
+  /// İkincil marka rengi; gradyanların ikinci durağı, vurgular.
+  static const Color brandSecondary = Color(0xFF8B5CF6);
+
+  /// Dikkat çekme rengi; marka moruyla çarpışmayan sıcak ton.
+  static const Color brandAccent = Color(0xFFE9785D);
+
+  /// Açık temada başlık ve etiket metni (saf siyah yerine koyu mor-mürekkep).
+  static const Color inkStrong = Color(0xFF352A78);
+
+  /// Açık temanın zemini.
+  static const Color canvas = Color(0xFFF7F6FC);
+
+  // Koyu temada marka renkleri koyu zeminde okunacak şekilde açılır.
+  static const Color brandPrimaryDark = Color(0xFF7567F8);
+  static const Color brandSecondaryDark = Color(0xFFA06AF5);
+
+  // ---------------------- ANLAM RENKLERİ ----------------------
+  // Markadan ayrı: "iyi gidiyor", "dikkat", "hata" demek için.
+
+  /// Hedef tutuldu, seri sürüyor, kitap bitti.
+  static const Color success = Color(0xFF1FA980);
+
+  /// Seri bozulmak üzere, eksik bilgi.
+  static const Color warning = Color(0xFFE9A23B);
+
+  /// Silme, geri alınamaz işlem, hata.
+  static const Color danger = Color(0xFFD64550);
 
   // ---------------------- LIGHT THEME ----------------------
   static ThemeData light() {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: primaryGreen,
+      seedColor: brandPrimary,
       brightness: Brightness.light,
-      primary: primaryGreen,
-      secondary: accentOrange,
-      surface: background,
+      primary: brandPrimary,
+      secondary: brandAccent,
+      surface: canvas,
     );
 
     final textTheme = GoogleFonts.manropeTextTheme();
@@ -35,17 +61,17 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: colorScheme,
       textTheme: textTheme,
-      scaffoldBackgroundColor: background,
+      scaffoldBackgroundColor: canvas,
       snackBarTheme: _snackBarTheme(textTheme),
 
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
-        foregroundColor: darkGreen,
+        foregroundColor: inkStrong,
         elevation: 0,
         centerTitle: false,
         titleTextStyle: textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
-          color: darkGreen,
+          color: inkStrong,
         ),
       ),
 
@@ -55,7 +81,7 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: Radii.brLg,
           side: BorderSide(color: colorScheme.outlineVariant),
         ),
         margin: EdgeInsets.zero,
@@ -66,7 +92,7 @@ class AppTheme {
         backgroundColor: colorScheme.surface,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: Radii.brXl,
           side: BorderSide(color: colorScheme.outline),
         ),
       ),
@@ -75,7 +101,7 @@ class AppTheme {
         backgroundColor: colorScheme.surface,
         surfaceTintColor: Colors.transparent,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+          borderRadius: Radii.sheet,
         ),
         showDragHandle: false,
         dragHandleColor: colorScheme.onSurface.withValues(alpha: .35),
@@ -85,14 +111,14 @@ class AppTheme {
         color: colorScheme.surface,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: Radii.brMd,
           side: BorderSide(color: colorScheme.outlineVariant),
         ),
       ),
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryGreen,
+          backgroundColor: brandPrimary,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           shape: RoundedRectangleBorder(
@@ -111,7 +137,7 @@ class AppTheme {
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: Radii.brMd,
           ),
         ),
       ),
@@ -122,7 +148,7 @@ class AppTheme {
           side: BorderSide(color: colorScheme.outline),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: Radii.brMd,
           ),
         ),
       ),
@@ -132,7 +158,7 @@ class AppTheme {
           foregroundColor: colorScheme.primary,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: Radii.brSm,
           ),
         ),
       ),
@@ -145,20 +171,20 @@ class AppTheme {
           horizontal: 20,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: Radii.brInput,
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: background),
+          borderRadius: Radii.brInput,
+          borderSide: const BorderSide(color: canvas),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: primaryGreen, width: 2),
+          borderRadius: Radii.brInput,
+          borderSide: const BorderSide(color: brandPrimary, width: 2),
         ),
-        labelStyle: textTheme.labelLarge?.copyWith(color: darkGreen),
+        labelStyle: textTheme.labelLarge?.copyWith(color: inkStrong),
         hintStyle: textTheme.bodyMedium?.copyWith(
-          color: darkGreen.withValues(alpha: 0.6),
+          color: inkStrong.withValues(alpha: 0.6),
         ),
       ),
 
@@ -209,11 +235,11 @@ class AppTheme {
 
     final cs = const ColorScheme(
       brightness: Brightness.dark,
-      primary: brandIndigo,
+      primary: brandPrimaryDark,
       onPrimary: Colors.white,
       primaryContainer: Color(0xFF302B66),
       onPrimaryContainer: Color(0xFFD9D6FF),
-      secondary: brandViolet,
+      secondary: brandSecondaryDark,
       onSecondary: Colors.white,
       secondaryContainer: Color(0xFF3A2C5C),
       onSecondaryContainer: Color(0xFFEADBFF),
@@ -239,7 +265,7 @@ class AppTheme {
       inverseSurface: Color(0xFFF8FAFC),
       onInverseSurface: Color(0xFF0F172A),
       inversePrimary: Color(0xFFADB3FF),
-      surfaceTint: brandIndigo,
+      surfaceTint: brandPrimaryDark,
     );
 
     final textTheme = GoogleFonts.manropeTextTheme(
@@ -270,7 +296,7 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: Radii.brLg,
           side: BorderSide(color: cs.outlineVariant),
         ),
         margin: EdgeInsets.zero,
@@ -281,7 +307,7 @@ class AppTheme {
         backgroundColor: cs.surface,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: Radii.brXl,
           side: BorderSide(color: cs.outline),
         ),
       ),
@@ -290,7 +316,7 @@ class AppTheme {
         backgroundColor: cs.surface,
         surfaceTintColor: Colors.transparent,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+          borderRadius: Radii.sheet,
         ),
         showDragHandle: false,
         dragHandleColor: cs.onSurface.withValues(alpha: .35),
@@ -300,7 +326,7 @@ class AppTheme {
         color: cs.surfaceContainerHigh,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: Radii.brMd,
           side: BorderSide(color: cs.outlineVariant),
         ),
       ),
@@ -311,7 +337,7 @@ class AppTheme {
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: Radii.brMd,
           ),
         ),
       ),
@@ -322,7 +348,7 @@ class AppTheme {
           side: BorderSide(color: cs.outline),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: Radii.brMd,
           ),
         ),
       ),
@@ -332,7 +358,7 @@ class AppTheme {
           foregroundColor: cs.primary,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: Radii.brSm,
           ),
         ),
       ),
@@ -345,15 +371,15 @@ class AppTheme {
           horizontal: 20,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: Radii.brInput,
           borderSide: BorderSide(color: cs.outlineVariant),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: Radii.brInput,
           borderSide: BorderSide(color: cs.outlineVariant),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: Radii.brInput,
           borderSide: BorderSide(color: cs.primary, width: 2),
         ),
         labelStyle: textTheme.labelLarge?.copyWith(
@@ -402,7 +428,7 @@ class AppTheme {
       elevation: 12,
       insetPadding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: Radii.brXl,
         side: BorderSide(color: Colors.white.withValues(alpha: .08)),
       ),
       contentTextStyle: textTheme.bodyMedium?.copyWith(

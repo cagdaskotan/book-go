@@ -57,7 +57,7 @@ class BookCard extends StatelessWidget {
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w900,
                         letterSpacing: -0.1,
-                        color: AppTheme.darkGreen,
+                        color: AppTheme.inkStrong,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -66,7 +66,7 @@ class BookCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppTheme.darkGreen.withValues(alpha: 0.65),
+                        color: AppTheme.inkStrong.withValues(alpha: 0.65),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -99,9 +99,9 @@ class BookCard extends StatelessWidget {
             child: LinearProgressIndicator(
               minHeight: 10,
               value: _progress,
-              backgroundColor: AppTheme.secondaryGreen.withValues(alpha: 0.25),
+              backgroundColor: AppTheme.brandSecondary.withValues(alpha: 0.25),
               valueColor: const AlwaysStoppedAnimation<Color>(
-                AppTheme.primaryGreen,
+                AppTheme.brandPrimary,
               ),
             ),
           ),
@@ -111,8 +111,8 @@ class BookCard extends StatelessWidget {
               Icon(
                 book.isFinished ? Icons.flag : Icons.hourglass_bottom,
                 color: book.isFinished
-                    ? AppTheme.primaryGreen
-                    : AppTheme.accentOrange,
+                    ? AppTheme.brandPrimary
+                    : AppTheme.brandAccent,
                 size: 18,
               ),
               const SizedBox(width: 6),
@@ -120,14 +120,14 @@ class BookCard extends StatelessWidget {
                 book.isFinished ? 'Tamamlandi' : 'Devam ediyor',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: AppTheme.darkGreen,
+                  color: AppTheme.inkStrong,
                 ),
               ),
               const Spacer(),
               Text(
                 '${book.currentPage}/${book.totalPages} sayfa',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.darkGreen.withValues(alpha: 0.75),
+                  color: AppTheme.inkStrong.withValues(alpha: 0.75),
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -180,12 +180,12 @@ class _BookCover extends StatelessWidget {
         width: 64,
         height: 92,
         decoration: BoxDecoration(
-          color: AppTheme.secondaryGreen.withValues(alpha: 0.25),
+          color: AppTheme.brandSecondary.withValues(alpha: 0.25),
           borderRadius: BorderRadius.circular(16),
         ),
         child: const Icon(
           Icons.menu_book_rounded,
-          color: AppTheme.darkGreen,
+          color: AppTheme.inkStrong,
           size: 30,
         ),
       );
@@ -203,12 +203,12 @@ class _BookCover extends StatelessWidget {
             width: 64,
             height: 92,
             decoration: BoxDecoration(
-              color: AppTheme.secondaryGreen.withValues(alpha: 0.18),
+              color: AppTheme.brandSecondary.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(
               Icons.broken_image_outlined,
-              color: AppTheme.darkGreen,
+              color: AppTheme.inkStrong,
             ),
           );
         },
@@ -253,7 +253,7 @@ class _FavoriteButton extends StatelessWidget {
                   : Icon(
                       isFavorite ? Icons.favorite : Icons.favorite_border,
                       key: ValueKey<bool>(isFavorite),
-                      color: isFavorite ? Colors.redAccent : AppTheme.darkGreen,
+                      color: isFavorite ? Colors.redAccent : AppTheme.inkStrong,
                     ),
             ),
           ),
@@ -288,7 +288,7 @@ class _Tag extends StatelessWidget {
             text,
             style: theme.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w700,
-              color: AppTheme.darkGreen,
+              color: AppTheme.inkStrong,
             ),
           ),
         ],
@@ -309,19 +309,19 @@ class _InfoPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: AppTheme.secondaryGreen.withValues(alpha: 0.2),
+        color: AppTheme.brandSecondary.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: AppTheme.darkGreen),
+          Icon(icon, size: 16, color: AppTheme.inkStrong),
           const SizedBox(width: 6),
           Text(
             label,
             style: theme.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w700,
-              color: AppTheme.darkGreen,
+              color: AppTheme.inkStrong,
             ),
           ),
         ],

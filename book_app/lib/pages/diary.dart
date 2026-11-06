@@ -3157,10 +3157,10 @@ class _GradientProgressBar extends StatelessWidget {
 
     final defaultGradient = isDark
         ? const LinearGradient(
-            colors: [AppTheme.brandIndigo, AppTheme.brandViolet],
+            colors: [AppTheme.brandPrimaryDark, AppTheme.brandSecondaryDark],
           )
         : const LinearGradient(
-            colors: [AppTheme.primaryGreen, AppTheme.secondaryGreen],
+            colors: [AppTheme.brandPrimary, AppTheme.brandSecondary],
           );
 
     final track =

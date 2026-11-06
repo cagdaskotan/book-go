@@ -34,7 +34,7 @@ class SummaryCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.darkGreen.withValues(alpha: 0.12),
+            color: AppTheme.inkStrong.withValues(alpha: 0.12),
             blurRadius: 24,
             offset: const Offset(0, 14),
           ),
@@ -47,7 +47,7 @@ class SummaryCard extends StatelessWidget {
             'Bugun neler okuyacaksin?',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w900,
-              color: AppTheme.darkGreen,
+              color: AppTheme.inkStrong,
             ),
           ),
           const SizedBox(height: 16),
@@ -56,9 +56,9 @@ class SummaryCard extends StatelessWidget {
             child: LinearProgressIndicator(
               minHeight: 12,
               value: _progress,
-              backgroundColor: AppTheme.secondaryGreen.withValues(alpha: 0.3),
+              backgroundColor: AppTheme.brandSecondary.withValues(alpha: 0.3),
               valueColor: const AlwaysStoppedAnimation<Color>(
-                AppTheme.primaryGreen,
+                AppTheme.brandPrimary,
               ),
             ),
           ),
@@ -69,7 +69,7 @@ class SummaryCard extends StatelessWidget {
                 '${(_progress * 100).round()}% tamamlandi',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: AppTheme.darkGreen,
+                  color: AppTheme.inkStrong,
                 ),
               ),
               const Spacer(),
@@ -85,13 +85,13 @@ class SummaryCard extends StatelessWidget {
                 icon: Icons.hourglass_bottom,
                 label: 'Devam eden',
                 value: inProgressBooks,
-                color: AppTheme.accentOrange,
+                color: AppTheme.brandAccent,
               ),
               _StatChip(
                 icon: Icons.check_circle,
                 label: 'Tamamlanan',
                 value: completedBooks,
-                color: AppTheme.primaryGreen,
+                color: AppTheme.brandPrimary,
               ),
               _StatChip(
                 icon: Icons.favorite,
@@ -138,7 +138,7 @@ class _StatChip extends StatelessWidget {
             '$value $label',
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w800,
-              color: AppTheme.darkGreen,
+              color: AppTheme.inkStrong,
             ),
           ),
         ],
@@ -159,19 +159,19 @@ class _Badge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: AppTheme.primaryGreen.withValues(alpha: 0.2),
+        color: AppTheme.brandPrimary.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: AppTheme.darkGreen),
+          Icon(icon, size: 16, color: AppTheme.inkStrong),
           const SizedBox(width: 6),
           Text(
             label,
             style: theme.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w700,
-              color: AppTheme.darkGreen,
+              color: AppTheme.inkStrong,
             ),
           ),
         ],

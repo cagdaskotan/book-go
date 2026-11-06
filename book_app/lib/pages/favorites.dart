@@ -298,11 +298,11 @@ BoxDecoration _heroDecoration(BuildContext context) {
       begin: const Alignment(0, -1.2),
       end: const Alignment(0, 1),
       colors: isDark
-          ? const [Color(0xFF0B1020), Color(0xFF1F1B4B), AppTheme.brandViolet]
+          ? const [Color(0xFF0B1020), Color(0xFF1F1B4B), AppTheme.brandSecondaryDark]
           : const [
               Color(0xFF0E402B),
-              AppTheme.primaryGreen,
-              AppTheme.secondaryGreen,
+              AppTheme.brandPrimary,
+              AppTheme.brandSecondary,
             ],
       stops: const [0.0, 0.55, 1.0],
     ),
@@ -494,10 +494,10 @@ class _GradientProgressBar extends StatelessWidget {
 
     final defaultGradient = isDark
         ? const LinearGradient(
-            colors: [AppTheme.brandIndigo, AppTheme.brandViolet],
+            colors: [AppTheme.brandPrimaryDark, AppTheme.brandSecondaryDark],
           )
         : const LinearGradient(
-            colors: [AppTheme.primaryGreen, AppTheme.secondaryGreen],
+            colors: [AppTheme.brandPrimary, AppTheme.brandSecondary],
           );
 
     final track =

@@ -702,25 +702,42 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.all(22),
                         child: Column(
                           children: [
-                            Icon(
-                              Icons.lightbulb_rounded,
-                              color: cs.secondary,
-                              size: 48,
+                            const Mascot(
+                              mood: MascotMood.encourage,
+                              size: 96,
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 12),
                             Text(
-                              'Henüz bir kitabınız yok',
+                              'Rafın boş duruyor',
                               style: TextStyle(
                                 fontWeight: FontWeight.w900,
+                                fontSize: 17,
                                 color: cs.onSurface,
                               ),
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              'Ortadaki + düğmesine dokunup barkodla veya elle ilk kitabını ekle.',
+                              'Barkodu okut, künye kendiliğinden dolsun. '
+                              'İlk kitabını koyduğunda okuma serin başlar.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: cs.onSurface.withValues(alpha: .7),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton.icon(
+                                onPressed: _openAdd,
+                                icon: const Icon(
+                                  Icons.qr_code_scanner_rounded,
+                                ),
+                                label: const Text('İlk kitabını ekle'),
+                                style: FilledButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                ),
                               ),
                             ),
                           ],

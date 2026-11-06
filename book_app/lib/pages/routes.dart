@@ -10,9 +10,11 @@ import 'collections.dart';
 import 'recommendations_page.dart';
 import 'plus_screen.dart';
 import 'journal_gallery.dart';
+import 'onboarding.dart';
 
 class AppRoutes {
   AppRoutes._();
+  static const String onboarding = '/onboarding';
   static const String home = '/home';
   static const String books = '/books'; // ⬅️ yeni
   static const String diary = '/diary';
@@ -40,6 +42,8 @@ int? _extractBookId(Object? a) {
 class AppRouter {
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case AppRoutes.onboarding:
+        return MaterialPageRoute(builder: (_) => const OnboardingPage());
       case AppRoutes.home:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case AppRoutes.books: // ⬅️ yeni

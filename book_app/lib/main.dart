@@ -6,7 +6,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'data/app_database.dart';
 import 'data/settings_store.dart';
 import 'pages/home.dart';
+import 'pages/onboarding.dart';
 import 'pages/routes.dart'; // AppRoutes + AppRouter
+import 'services/first_run.dart';
 import 'services/notification_service.dart';
 import 'services/plus_manager.dart';
 import 'services/profile_service.dart';
@@ -24,11 +26,16 @@ Future<void> main() async {
   await plusManager.load();
   await NotificationService.instance.initialize();
 
-  runApp(const BookApp());
+  final onboarded = await FirstRun.isDone();
+
+  runApp(BookApp(showOnboarding: !onboarded));
 }
 
 class BookApp extends StatefulWidget {
-  const BookApp({super.key});
+  const BookApp({super.key, this.showOnboarding = false});
+
+  /// İlk açılışta karşılama akışı gösterilir.
+  final bool showOnboarding;
 
   @override
   State<BookApp> createState() => _BookAppState();
@@ -65,9 +72,14 @@ class _BookAppState extends State<BookApp> {
       darkTheme: AppTheme.dark(),
       themeMode: themeController.mode, // toggle ile değişir
 
-      // Giriş ekranı yok: uygulama doğrudan kitaplığa açılır.
-      initialRoute: AppRoutes.home,
-      routes: {AppRoutes.home: (_) => const HomePage()},
+      // Giriş ekranı yok: ilk açılışta karşılama, sonrasında doğrudan kitaplık.
+      initialRoute: widget.showOnboarding
+          ? AppRoutes.onboarding
+          : AppRoutes.home,
+      routes: {
+        AppRoutes.home: (_) => const HomePage(),
+        AppRoutes.onboarding: (_) => const OnboardingPage(),
+      },
 
       // /diary ve parametreli sayfalar için:
       onGenerateRoute: AppRouter.onGenerateRoute,

@@ -23,6 +23,7 @@ function app(){
     loading: false,
     books: [],
     user: null,
+    sort: 'created_desc',
 
     // Ekle modal state
     add: { open: false },
@@ -32,7 +33,8 @@ function app(){
       title:'', author:'', total_pages:0,
       cover_url:'', category:'',
       started_at:'', is_finished:false, finished_at:'',
-      current_page:0, notes:'', favorite:false, tags:''
+      current_page:0, notes:'', favorite:false, tags:'',
+      rating: null
     },
 
     // Edit modal state
@@ -43,12 +45,15 @@ function app(){
         title:'', author:'', total_pages:0,
         cover_url:'', category:'',
         started_at:'', is_finished:false, finished_at:'',
-        current_page:0, notes:'', favorite:false, tags:''
+        current_page:0, notes:'', favorite:false, tags:'',
+        rating: null
       }
     },
 
     async init(){
       document.documentElement.classList.toggle('dark', this.isDark);
+      this.$watch('form.is_finished', (val) => { if(!val) this.form.rating = null; });
+      this.$watch('edit.model.is_finished', (val) => { if(!val) this.edit.model.rating = null; });
       try{
         await this.fetchMe();
         await this.fetchBooks();
@@ -77,15 +82,77 @@ function app(){
       finally{ this.loading = false; }
     },
 
+    sortedBooks(){
+      if(!Array.isArray(this.books)) return [];
+      const [fieldRaw, dirRaw] = (this.sort || 'created_desc').split('_');
+      const field = fieldRaw || 'created';
+      const dir = dirRaw === 'asc' ? 'asc' : 'desc';
+      const missingValue = dir === 'asc' ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
+      const valueFor = (book) => {
+        switch(field){
+          case 'started': {
+            const ts = Date.parse(book.started_at || '');
+            return Number.isNaN(ts) ? null : ts;
+          }
+          case 'rating':
+            return typeof book.rating === 'number' ? book.rating : null;
+          case 'created':
+          default: {
+            const ts = Date.parse(book.created_at || '');
+            return Number.isNaN(ts) ? null : ts;
+          }
+        }
+      };
+      const factor = dir === 'asc' ? 1 : -1;
+      const tie = (a, b) => (a.title || '').localeCompare(b.title || '', 'tr', { sensitivity: 'base' });
+      return [...this.books].sort((a, b) => {
+        let va = valueFor(a);
+        let vb = valueFor(b);
+        if(va === null || Number.isNaN(va)) va = missingValue;
+        if(vb === null || Number.isNaN(vb)) vb = missingValue;
+        if(va === vb) return tie(a, b);
+        return va > vb ? factor : -factor;
+      });
+    },
+
+    favoriteBooks(){
+      return this.sortedBooks().filter(b => !!b.favorite);
+    },
+
+    // Progress yüzde hesaplama: bitmişse her zaman %100
+    progressPct(b){
+      if (b.is_finished) return 100;
+      const tp = Number(b.total_pages||0), cp = Number(b.current_page||0);
+      if (tp <= 0) return 0;
+      return Math.min(100, Math.round((cp/tp)*100));
+    },
+
+    formatDate(val){
+      if(!val) return '';
+      const raw = String(val).split('T')[0];
+      const parts = raw.split('-');
+      if(parts.length === 3){
+        return `${parts[2]}.${parts[1]}.${parts[0]}`;
+      }
+      return raw;
+    },
+
     progressText(b){
       const tp = Number(b.total_pages||0), cp = Number(b.current_page||0);
-      const pct = tp>0 ? Math.round((cp/tp)*100) : 0;
-      const label = b.is_finished ? 'Bitti' : `${cp}/${tp} (${pct}%)`;
-      const dates = [
-        b.started_at ? `Başlangıç: ${b.started_at}` : null,
-        b.finished_at ? `Bitiş: ${b.finished_at}` : null
-      ].filter(Boolean).join(' • ');
-      return dates ? `${label} • ${dates}` : label;
+      const pct = this.progressPct(b);
+
+      const start = this.formatDate(b.started_at);
+      const finish = this.formatDate(b.finished_at);
+
+      if (b.is_finished) {
+        if (start && finish) return `${start} → ${finish}`;
+        if (start) return start;
+        if (finish) return finish;
+        return 'Bitti';
+      }
+
+      const label = tp > 0 ? `${cp}/${tp} (${pct}%)` : '0/0 (0%)';
+      return start ? `${label} → ${start}` : label;
     },
 
     // --- ADD MODAL ---
@@ -98,6 +165,7 @@ function app(){
       if(!title) return this.toast('Başlık gerekli','error');
       if(total_pages <= 0) return this.toast('Toplam sayfa 1+ olmalı','error');
 
+      const ratingNum = Number(this.form.rating);
       const payload = {
         title,
         author: this.form.author?.trim() || null,
@@ -110,7 +178,17 @@ function app(){
         current_page: Number(this.form.current_page||0),
         notes: this.form.notes?.trim() || null,
         favorite: !!this.form.favorite,
-        tags: this.form.tags?.trim() || null
+        tags: this.form.tags?.trim() || null,
+        rating: this.form.is_finished && !Number.isNaN(ratingNum)
+                ? Math.max(0, Math.min(100, ratingNum))
+                : null
+      };
+      this.form = {
+        title:'', author:'', total_pages:0,
+        cover_url:'', category:'',
+        started_at:'', is_finished:false, finished_at:'',
+        current_page:0, notes:'', favorite:false, tags:'',
+        rating:null
       };
 
       try{
@@ -128,7 +206,8 @@ function app(){
           title:'', author:'', total_pages:0,
           cover_url:'', category:'',
           started_at:'', is_finished:false, finished_at:'',
-          current_page:0, notes:'', favorite:false, tags:''
+          current_page:0, notes:'', favorite:false, tags:'',
+          rating:null
         };
         this.closeAdd();
         await this.fetchBooks();
@@ -136,17 +215,37 @@ function app(){
       }catch(e){ this.toast(e.message,'error'); }
     },
 
-    // Favori toggle
+    // Favori toggle + mini animasyon + toast
     async toggleFavorite(b){
+      if (b._favBusy) return;       // çift tık koruması
+      b._favBusy = true;
+
+      const prev = !!b.favorite;
+
+      // optimistik değişim + kısa animasyon
+      b.favorite = !prev;
+      b._favAnim = true;
+      setTimeout(()=> { b._favAnim = false; }, 300);
+
       try{
         const r = await api(`/api/books/${b.id}`, {
           method:'PUT',
           headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ favorite: !b.favorite })
+          body: JSON.stringify({ favorite: b.favorite })
         });
         if(!r.ok) throw new Error('Favori güncellenemedi');
-        b.favorite = !b.favorite; // optimistic
-      }catch(e){ this.toast(e.message,'error'); }
+
+        const msg = b.favorite ? 'Favoriye eklendi' : 'Favoriden çıkarıldı';
+        this.toast(msg);
+
+      }catch(e){
+        // hata: geri al + hata tostu
+        b.favorite = prev;
+        this.toast(e.message || 'Hata oluştu','error');
+
+      }finally{
+        b._favBusy = false;
+      }
     },
 
     // --- EDIT MODAL ---
@@ -165,7 +264,8 @@ function app(){
         current_page: Number(b.current_page||0),
         notes: b.notes || '',
         favorite: !!b.favorite,
-        tags: b.tags || ''
+        tags: b.tags || '',
+        rating: (typeof b.rating === 'number' ? b.rating : null)
       };
     },
     closeEdit(){
@@ -178,6 +278,7 @@ function app(){
       if(Number(m.total_pages||0) <= 0){ this.toast('Toplam sayfa 1+ olmalı','error'); return; }
       if(Number(m.current_page||0) > Number(m.total_pages||0)){ this.toast('Şu anki sayfa toplamdan büyük olamaz','error'); return; }
 
+      const rNum = Number(m.rating);
       const payload = {
         title: m.title.trim(),
         author: m.author?.trim() || null,
@@ -190,7 +291,10 @@ function app(){
         current_page: Number(m.current_page||0),
         notes: m.notes?.trim() || null,
         favorite: !!m.favorite,
-        tags: m.tags?.trim() || null
+        tags: m.tags?.trim() || null,
+        rating: m.is_finished && !Number.isNaN(rNum)
+        ? Math.max(0, Math.min(100, rNum))
+        : null
       };
 
       try{

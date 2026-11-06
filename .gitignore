@@ -1,0 +1,10 @@
+# Go derleme çıktıları
+/build/
+*.exe
+
+# Geçici ekran görüntüleri / notlar
+build_screen.png
+
+# Araçların ürettiği yedek dosyaları
+kutuphanem-yedek-*.json
+kutuphanem-yedek-*.zip

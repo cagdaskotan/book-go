@@ -1,0 +1,16 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Android API bağlantısı",
+      "type": "process",
+      "command": "C:\\Users\\cagda\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe",
+      "args": [
+        "reverse",
+        "tcp:8080",
+        "tcp:8080"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

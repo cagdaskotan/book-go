@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"book/internal/auth"
 	"book/internal/mw"
@@ -107,9 +108,7 @@ func AuthMe(db *sql.DB) http.Handler {
 			http.Error(w, "unauthorized", http.StatusUnauthorized)
 			return
 		}
-		var u User
-		err := db.QueryRow(`SELECT id,email,display_name,created_at FROM users WHERE id=?`, uid).
-			Scan(&u.ID, &u.Email, &u.DisplayName, &u.CreatedAt)
+		u, err := fetchUserByID(db, uid)
 		if err == sql.ErrNoRows {
 			http.Error(w, "not found", http.StatusNotFound)
 			return
@@ -122,9 +121,131 @@ func AuthMe(db *sql.DB) http.Handler {
 	})
 }
 
+func AuthUpdateProfile(db *sql.DB) http.Handler {
+	type req struct {
+		DisplayName *string `json:"display_name"`
+	}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		uid, ok := mw.GetUserID(r)
+		if !ok {
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+			return
+		}
+		var in req
+		if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
+			http.Error(w, "bad json", http.StatusBadRequest)
+			return
+		}
+
+		var name interface{}
+		if in.DisplayName != nil {
+			trimmed := strings.TrimSpace(*in.DisplayName)
+			if trimmed != "" {
+				if utf8.RuneCountInString(trimmed) > 120 {
+					http.Error(w, "display_name too long", http.StatusBadRequest)
+					return
+				}
+				name = trimmed
+			}
+		}
+
+		res, err := db.Exec(`UPDATE users SET display_name=? WHERE id=?`, name, uid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if rows, _ := res.RowsAffected(); rows == 0 {
+			http.Error(w, "not found", http.StatusNotFound)
+			return
+		}
+
+		u, err := fetchUserByID(db, uid)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				http.Error(w, "not found", http.StatusNotFound)
+				return
+			}
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		writeJSON(w, http.StatusOK, u)
+	})
+}
+
+func AuthChangePassword(db *sql.DB) http.Handler {
+	type req struct {
+		Current string `json:"current_password"`
+		New     string `json:"new_password"`
+	}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		uid, ok := mw.GetUserID(r)
+		if !ok {
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		var in req
+		if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
+			http.Error(w, "bad json", http.StatusBadRequest)
+			return
+		}
+		if in.Current == "" || in.New == "" {
+			http.Error(w, "current and new password required", http.StatusBadRequest)
+			return
+		}
+		if len(in.New) < 6 {
+			http.Error(w, "new password must be at least 6 characters", http.StatusBadRequest)
+			return
+		}
+
+		var hash sql.NullString
+		if err := db.QueryRow(`SELECT password_hash FROM users WHERE id=?`, uid).Scan(&hash); err != nil {
+			if err == sql.ErrNoRows {
+				http.Error(w, "not found", http.StatusNotFound)
+				return
+			}
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if !auth.CheckPassword(hash.String, in.Current) {
+			http.Error(w, "current password incorrect", http.StatusBadRequest)
+			return
+		}
+		if in.Current == in.New {
+			http.Error(w, "new password must be different", http.StatusBadRequest)
+			return
+		}
+
+		newHash, err := auth.HashPassword(in.New)
+		if err != nil {
+			http.Error(w, "password hash error", http.StatusInternalServerError)
+			return
+		}
+
+		_, err = db.Exec(`UPDATE users SET password_hash=? WHERE id=?`, newHash, uid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+}
+
 func nullableStr(s string) *string {
 	if strings.TrimSpace(s) == "" {
 		return nil
 	}
 	return &s
+}
+
+func fetchUserByID(db *sql.DB, id uint) (*User, error) {
+	var u User
+	err := db.QueryRow(`SELECT id,email,display_name,created_at FROM users WHERE id=?`, id).
+		Scan(&u.ID, &u.Email, &u.DisplayName, &u.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return &u, nil
 }

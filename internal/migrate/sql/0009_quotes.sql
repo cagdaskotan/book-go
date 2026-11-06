@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS quotes (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  book_id INT UNSIGNED NOT NULL,
+  page INT UNSIGNED NULL,
+  text TEXT NOT NULL,
+  favorite TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_quotes_user
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_quotes_book
+    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE,
+  INDEX idx_quotes_user (user_id),
+  INDEX idx_quotes_book (book_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

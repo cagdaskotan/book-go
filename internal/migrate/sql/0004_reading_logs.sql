@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS reading_logs (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  book_id INT UNSIGNED NOT NULL,
+  log_date DATE NOT NULL,
+  pages_read INT UNSIGNED NOT NULL,
+  note TEXT NULL,
+  finished TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_logs_book FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE,
+  INDEX idx_logs_book_date (book_id, log_date),
+  INDEX idx_logs_user_date (user_id, log_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

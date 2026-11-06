@@ -55,11 +55,34 @@ func main() {
 		return mw.Chain(h, mw.WithAuth(cfg.JWTSecret), mw.RequestLogger())
 	}
 	mux.Handle("GET /api/auth/me", withAuthLog(handlers.AuthMe(sqlDB)))
+	mux.Handle("PUT /api/auth/me", withAuthLog(handlers.AuthUpdateProfile(sqlDB)))
+	mux.Handle("POST /api/auth/change-password", withAuthLog(handlers.AuthChangePassword(sqlDB)))
+	mux.Handle("GET /api/books/", withAuthLog(handlers.BookGet(sqlDB))) // /api/books/{id}
 
 	mux.Handle("GET /api/books", withAuthLog(handlers.BooksList(sqlDB)))
 	mux.Handle("POST /api/books", withAuthLog(handlers.BookCreate(sqlDB)))
-	mux.Handle("PUT /api/books/", withAuthLog(handlers.BookUpdate(sqlDB))) // <-- EKLENDİ ( /api/books/{id} )
+	mux.Handle("PUT /api/books/", withAuthLog(handlers.BookUpdate(sqlDB))) // <-- ( /api/books/{id} )
 	mux.Handle("DELETE /api/books/", withAuthLog(handlers.BookDelete(sqlDB)))
+	// LOGS (hepsi korumalı)
+	mux.Handle("GET /api/logs", withAuthLog(handlers.LogsList(sqlDB))) // ?book_id=&from=&to=
+	mux.Handle("POST /api/logs", withAuthLog(handlers.LogCreate(sqlDB)))
+	mux.Handle("PUT /api/logs/", withAuthLog(handlers.LogUpdate(sqlDB)))    // /api/logs/{id}
+	mux.Handle("DELETE /api/logs/", withAuthLog(handlers.LogDelete(sqlDB))) // /api/logs/{id}
+	mux.Handle("GET /api/gamification", withAuthLog(handlers.GamificationGet(sqlDB)))
+	mux.Handle("PUT /api/gamification", withAuthLog(handlers.GamificationUpdate(sqlDB)))
+	mux.Handle("GET /api/catalog/isbn/", withAuthLog(handlers.CatalogISBN()))
+	mux.Handle("GET /api/catalog/search", withAuthLog(handlers.CatalogSearch()))
+	mux.Handle("GET /api/stats/daily", withAuthLog(handlers.StatsDaily(sqlDB)))
+	mux.Handle("GET /api/recommendations", withAuthLog(handlers.Recommendations(sqlDB)))
+	mux.Handle("GET /api/quotes", withAuthLog(handlers.QuotesList(sqlDB)))
+	mux.Handle("POST /api/quotes", withAuthLog(handlers.QuoteCreate(sqlDB)))
+	mux.Handle("DELETE /api/quotes/", withAuthLog(handlers.QuoteDelete(sqlDB)))
+	mux.Handle("GET /api/collections", withAuthLog(handlers.CollectionsList(sqlDB)))
+	mux.Handle("POST /api/collections", withAuthLog(handlers.CollectionCreate(sqlDB)))
+	mux.Handle("POST /api/collections/", withAuthLog(handlers.CollectionAction(sqlDB)))
+	mux.Handle("PUT /api/collections/", withAuthLog(handlers.CollectionAction(sqlDB)))
+	mux.Handle("PATCH /api/collections/", withAuthLog(handlers.CollectionAction(sqlDB)))
+	mux.Handle("DELETE /api/collections/", withAuthLog(handlers.CollectionAction(sqlDB)))
 
 	// ---- Statik
 	staticDir := findStatic()

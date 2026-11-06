@@ -50,16 +50,21 @@ class SettingsStore {
 
   /// Sunucu dönemindeki SharedPreferences değerlerini bir kez veritabanına
   /// taşır; mevcut telefonlarda hedefler sıfırlanmasın.
+  ///
+  /// "Aktarıldı" işareti bilinçli olarak SharedPreferences'ta tutulur: bu bir
+  /// cihaz durumu, kullanıcı verisi değil. Veritabanında olsaydı yedek geri
+  /// yüklendiğinde silinir, sonraki açılışta eski tercih geri yüklenen hedefin
+  /// üstüne yazılırdı.
   static Future<void> migrateLegacyPrefs() async {
     const marker = 'legacy_prefs_imported';
-    if (await getString(marker) != null) return;
     try {
       final prefs = await SharedPreferences.getInstance();
+      if (prefs.getBool(marker) ?? false) return;
       final yearly = prefs.getInt('yearly_book_goal');
       if (yearly != null) await setInt(yearlyBookGoal, yearly);
+      await prefs.setBool(marker, true);
     } catch (_) {
-      // okunamazsa varsayılanlarla devam
+      // okunamazsa varsayılanlarla devam; sonraki açılışta tekrar denenir
     }
-    await setString(marker, '1');
   }
 }

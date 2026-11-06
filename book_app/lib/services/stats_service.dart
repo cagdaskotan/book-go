@@ -24,16 +24,4 @@ class StatsService {
     }
     return activity;
   }
-
-  /// Verilen yıl için toplam okuma süresi (dakika) — yıl karnesi kullanır.
-  Future<int> fetchYearlyMinutes({int? year}) async {
-    final db = await AppDatabase.instance.db;
-    final y = year ?? DateTime.now().year;
-    final rows = await db.rawQuery(
-      'SELECT COALESCE(SUM(duration_minutes), 0) AS total '
-      'FROM reading_logs WHERE log_date >= ? AND log_date <= ?',
-      ['$y-01-01', '$y-12-31'],
-    );
-    return (rows.first['total'] as num?)?.toInt() ?? 0;
-  }
 }

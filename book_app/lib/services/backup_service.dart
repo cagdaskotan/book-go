@@ -35,10 +35,7 @@ class BackupService {
   static const String _journalPrefix = 'journal/';
 
   /// Türetilmiş veriler yedeğe girmez — yeniden üretilebilirler.
-  static const Set<String> _skippedSettings = {
-    'recommendations_cache',
-    'legacy_prefs_imported',
-  };
+  static const Set<String> _skippedSettings = {'recommendations_cache'};
 
   // ---------------------------------------------------------------------------
   // DIŞA AKTARMA

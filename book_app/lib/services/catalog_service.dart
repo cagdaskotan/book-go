@@ -121,9 +121,13 @@ class CatalogService {
     final title = _text(info['title']);
     if (title == null) return null;
 
-    final authors = _namesOf(info['authors']);
+    final authors = _namesOf(info['authors'])
+        .map(_latinize)
+        .whereType<String>()
+        .toList();
     final coverMap = info['cover'];
-    final cover = (coverMap is Map ? _text(coverMap['large']) : null) ??
+    final cover =
+        (coverMap is Map ? _text(coverMap['large']) : null) ??
         'https://covers.openlibrary.org/b/isbn/$isbn-L.jpg';
 
     return CatalogBook(
@@ -131,9 +135,7 @@ class CatalogService {
       title: title,
       totalPages: _int(info['number_of_pages']),
       source: 'open_library',
-      author: authors.isEmpty
-          ? null
-          : _latinize(authors.map(_latinize).whereType<String>().join(', ')),
+      author: authors.isEmpty ? null : authors.join(', '),
       coverUrl: cover,
       category: _namesOf(info['subjects']).firstOrNull,
       publisher: _namesOf(info['publishers']).firstOrNull,

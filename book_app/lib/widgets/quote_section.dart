@@ -9,6 +9,7 @@ import '../pages/quote_share_page.dart';
 import '../services/api_exception.dart';
 import '../services/quote_service.dart';
 import 'app_toast.dart';
+import 'mascot.dart';
 
 /// Alıntı kartlarının dönüşümlü vurgu renkleri.
 const List<Color> _quoteAccents = [
@@ -349,11 +350,7 @@ class _EmptyQuotes extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.auto_stories_rounded,
-            size: 38,
-            color: cs.primary.withValues(alpha: .7),
-          ),
+          const Mascot(mood: MascotMood.reading, size: 68),
           const SizedBox(height: 8),
           Text(
             'Henüz alıntı yok',

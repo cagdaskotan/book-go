@@ -5,6 +5,7 @@ import '../models/journal.dart';
 import '../services/journal_store.dart';
 import '../services/ocr_service.dart';
 import 'journal_editor.dart' show BookPageReader, kHighlightColors;
+import '../widgets/mascot.dart';
 
 /// Anı-defteri galerisi. [bookId] verilirse o kitabın sayfaları + ekleme;
 /// null ise tüm sayfalar (gezinme).
@@ -447,11 +448,7 @@ class _EmptyJournal extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.auto_stories_rounded,
-              size: 56,
-              color: cs.primary.withValues(alpha: .7),
-            ),
+            const Mascot(mood: MascotMood.reading, size: 104),
             const SizedBox(height: 14),
             Text(
               'Defterin henüz boş',

@@ -10,6 +10,7 @@ import 'routes.dart';
 
 // Header/Nav bileşenleri
 import '../widgets/appbar.dart';
+import '../widgets/empty_state.dart';
 import '../widgets/app_progress_bar.dart';
 import '../widgets/book_add_launcher.dart';
 import '../widgets/book_cover.dart';
@@ -203,30 +204,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
                   sliver: SliverToBoxAdapter(
-                    child: _SurfaceCard(
-                      padding: const EdgeInsets.all(26),
-                      child: Column(
-                        children: [
-                          const Icon(
-                            Icons.favorite_border,
-                            color: Colors.pinkAccent,
-                            size: 48,
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            'Henüz favori eklenmemiş',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              color: cs.onSurface,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Kitapları kalp ikonuyla favorilere ekleyebilirsiniz.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: cs.onSurfaceVariant),
-                          ),
-                        ],
+                    child: const _SurfaceCard(
+                      padding: EdgeInsets.zero,
+                      child: EmptyState(
+                        title: 'Favori rafın hazır bekliyor',
+                        message:
+                            'Bir kitabı kalp ikonuyla işaretle; dönüp dönüp '
+                            'baktığın kitaplar burada toplanır.',
                       ),
                     ),
                   ),

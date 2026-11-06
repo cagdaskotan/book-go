@@ -8,6 +8,8 @@ import '../utils/web_search.dart';
 import '../widgets/add_book_modal.dart';
 import '../widgets/book_cover.dart';
 import 'plus_screen.dart';
+import '../widgets/empty_state.dart';
+import '../widgets/mascot.dart';
 
 class RecommendationsPage extends StatefulWidget {
   const RecommendationsPage({super.key});
@@ -115,31 +117,13 @@ class _RecommendationsPageState extends State<RecommendationsPage> {
     if (_recs.isEmpty) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.auto_awesome_rounded,
-                size: 48,
-                color: cs.primary.withValues(alpha: .7),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                'Henüz öneri yok',
-                style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 17,
-                  color: cs.onSurface,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Birkaç kitabını bitir ve puanla; zevkine göre öneriler burada belirsin.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: cs.onSurfaceVariant, height: 1.4),
-              ),
-            ],
+          padding: EdgeInsets.zero,
+          child: const EmptyState(
+            title: 'Zevkini henüz tanımıyorum',
+            message:
+                'Birkaç kitap bitir ve puanla; sevdiğin yazar ve türlerden '
+                'öneriler burada belirir.',
+            mood: MascotMood.reading,
           ),
         ),
       );

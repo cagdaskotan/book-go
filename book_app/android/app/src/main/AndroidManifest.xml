@@ -5,7 +5,6 @@
     <application
         android:label="Mobil Kütüphanem"
         android:name="${applicationName}"
-        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round">
         <activity

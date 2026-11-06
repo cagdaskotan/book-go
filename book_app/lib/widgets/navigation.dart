@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'ad_banner.dart';
 import 'appbar.dart';
 
 /// Süzülen nav bar'ın kapladığı alan + cihazın alt güvenli boşluğu.
@@ -29,17 +28,7 @@ class MainNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Reklam banner'ı (yüklenmezse/Plus üyeyse yer kaplamaz).
-        const Padding(
-          padding: EdgeInsets.only(bottom: 4),
-          child: AdBannerSlot(),
-        ),
-        _buildBar(context, cs),
-      ],
-    );
+    return _buildBar(context, cs);
   }
 
   Widget _buildBar(BuildContext context, ColorScheme cs) {

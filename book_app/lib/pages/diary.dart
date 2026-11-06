@@ -10,6 +10,7 @@ import '../services/book_service.dart';
 import '../services/gamification_service.dart';
 import '../models/gamification_summary.dart';
 import '../services/reading_goal_service.dart';
+import '../services/reading_pace.dart';
 import '../theme/app_theme.dart';
 import 'reading_session.dart';
 import 'book_finish_celebration.dart';
@@ -1311,20 +1312,23 @@ class _DiaryPageState extends State<DiaryPage> {
   /// Devam eden kitap için okuma temposu + tahmini bitiş kartı.
   /// Yeterli veri yoksa null döner.
   Widget? _buildPaceCard(Book b, ColorScheme cs) {
-    if (b.isFinished) return null;
-    final uniqueDays = _logs.map((e) => e.logDate).toSet().length;
-    final remaining = (_totalPages - _pagesRead);
-    if (uniqueDays == 0 || _pagesRead <= 0 || remaining <= 0) return null;
+    // Hesabın tamamı [reading_pace] modülünde: testli, başka ekranlarda da
+    // kullanılabilir. Burada yalnızca gösterim var.
+    final pace = computeReadingPace(_logs);
+    final estimate = estimateFinish(
+      book: b,
+      pace: pace,
+      basis: PaceBasis.activeDays,
+    );
+    if (estimate == null || !estimate.hasDate) return null;
 
-    final avgPerDay = _pagesRead / uniqueDays;
-    if (avgPerDay <= 0) return null;
-    final daysLeft = (remaining / avgPerDay).ceil();
-    final finishDate = DateTime.now().add(Duration(days: daysLeft));
-
-    final totalMinutes = _logs.fold<int>(0, (a, l) => a + l.durationMinutes);
-    final pagesPerHour = totalMinutes > 0
-        ? (_pagesRead / (totalMinutes / 60)).round()
-        : null;
+    final finishDate = estimate.date!;
+    final daysLeft = estimate.daysLeft!;
+    final remaining = estimate.remainingPages;
+    final avgPerDay = pace.pagesPerActiveDay ?? 0;
+    final pagesPerHour = pace.pagesPerMinute == null
+        ? null
+        : (pace.pagesPerMinute! * 60).round();
 
     String two(int v) => v.toString().padLeft(2, '0');
     final dateStr =
@@ -1427,6 +1431,11 @@ class _DiaryPageState extends State<DiaryPage> {
                 _paceChip(
                   Icons.speed_rounded,
                   '≈ $pagesPerHour sayfa/saat',
+                ),
+              if (estimate.minutesLeft case final minutes?)
+                _paceChip(
+                  Icons.timer_outlined,
+                  '≈ ${formatMinutes(minutes)} okuma kaldı',
                 ),
             ],
           ),

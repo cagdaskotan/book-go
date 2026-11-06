@@ -7,8 +7,6 @@ import 'data/app_database.dart';
 import 'data/settings_store.dart';
 import 'pages/home.dart';
 import 'pages/routes.dart'; // AppRoutes + AppRouter
-import 'services/ad_route_observer.dart';
-import 'services/ad_service.dart';
 import 'services/notification_service.dart';
 import 'services/plus_manager.dart';
 import 'services/profile_service.dart';
@@ -25,8 +23,6 @@ Future<void> main() async {
   await themeController.load();
   await plusManager.load();
   await NotificationService.instance.initialize();
-  // Reklam SDK'sı — arka planda başlar, ilk kareyi bloklamaz.
-  unawaited(AdService.instance.initialize());
 
   runApp(const BookApp());
 }
@@ -68,8 +64,6 @@ class _BookAppState extends State<BookApp> {
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: themeController.mode, // toggle ile değişir
-
-      navigatorObservers: [AdRouteObserver()],
 
       // Giriş ekranı yok: uygulama doğrudan kitaplığa açılır.
       initialRoute: AppRoutes.home,

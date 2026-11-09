@@ -374,6 +374,7 @@ class BackupService {
       if (row['id'] != null) 'id': _int(row['id']),
       'title': row['title']?.toString() ?? 'İsimsiz kitap',
       'author': _str(row['author']),
+      'isbn': _str(row['isbn']),
       'total_pages': totalPages,
       'cover_url': _str(row['cover_url']),
       'category': _str(row['category']),

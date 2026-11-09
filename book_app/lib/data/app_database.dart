@@ -15,7 +15,7 @@ class AppDatabase {
 
   /// Şema sürümü. Yeni sütun/tablo eklerken artır ve [_migrate] içine
   /// karşılık gelen adımı yaz — kullanıcının verisi asla silinmez.
-  static const int schemaVersion = 1;
+  static const int schemaVersion = 2;
 
   Database? _db;
 
@@ -49,7 +49,13 @@ class AppDatabase {
   }
 
   static Future<void> _migrate(Database d, int from, int to) async {
-    // Sürüm 1 ilk yayın; ileride: if (from < 2) await d.execute('ALTER TABLE ...');
+    // 2: Okutulan barkodu saklamaya başladık. Künye bulunamasa bile ISBN
+    // elimizde kalsın — kullanıcı tekrar yazmasın, ileride yeniden
+    // sorgulayabilelim, aynı kitap iki kez eklenmesin.
+    if (from < 2) {
+      await d.execute('ALTER TABLE books ADD COLUMN isbn TEXT');
+      await d.execute('CREATE INDEX idx_books_isbn ON books(isbn)');
+    }
   }
 
   /// Kullanıcı verisi tutan tablolar — yedekleme ve geri yükleme bu listeyi
@@ -77,6 +83,7 @@ class AppDatabase {
       id             INTEGER PRIMARY KEY AUTOINCREMENT,
       title          TEXT    NOT NULL,
       author         TEXT,
+      isbn           TEXT,
       total_pages    INTEGER NOT NULL DEFAULT 0,
       cover_url      TEXT,
       category       TEXT,
@@ -95,6 +102,7 @@ class AppDatabase {
     'CREATE INDEX idx_books_status ON books(reading_status)',
     'CREATE INDEX idx_books_favorite ON books(favorite)',
     'CREATE INDEX idx_books_title ON books(title)',
+    'CREATE INDEX idx_books_isbn ON books(isbn)',
     '''
     CREATE TABLE reading_logs (
       id               INTEGER PRIMARY KEY AUTOINCREMENT,

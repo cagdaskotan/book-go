@@ -8,6 +8,7 @@ class Book {
     required this.favorite,
     required this.createdAt,
     this.author,
+    this.isbn,
     this.coverUrl,
     this.category,
     this.startedAt, // "YYYY-MM-DD"
@@ -26,6 +27,11 @@ class Book {
   final bool favorite;
   final DateTime createdAt;
   final String? author;
+
+  /// Okutulan barkod. Künye bulunamasa bile saklanır: kullanıcı tekrar
+  /// yazmasın, ileride yeniden sorgulanabilsin, mükerrer eklenmesin.
+  final String? isbn;
+
   final String? coverUrl;
   final String? category;
   final String? startedAt; // date-only string
@@ -79,6 +85,7 @@ class Book {
       favorite: b(json['favorite']),
       createdAt: dt(json['created_at'] as String?),
       author: json['author'] as String?,
+      isbn: json['isbn'] as String?,
       coverUrl: json['cover_url'] as String?,
       category: json['category'] as String?,
       startedAt: dateOnly(json['started_at']),
@@ -99,6 +106,7 @@ class Book {
     bool? favorite,
     DateTime? createdAt,
     Object? author = _sentinel,
+    Object? isbn = _sentinel,
     Object? coverUrl = _sentinel,
     Object? category = _sentinel,
     Object? startedAt = _sentinel,
@@ -117,6 +125,7 @@ class Book {
       favorite: favorite ?? this.favorite,
       createdAt: createdAt ?? this.createdAt,
       author: identical(author, _sentinel) ? this.author : author as String?,
+      isbn: identical(isbn, _sentinel) ? this.isbn : isbn as String?,
       coverUrl: identical(coverUrl, _sentinel)
           ? this.coverUrl
           : coverUrl as String?,

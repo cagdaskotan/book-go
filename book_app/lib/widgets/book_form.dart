@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'book_cover.dart';
 
 /// Kitap ekleme/düzenleme sayfalarının paylaştığı tasarım yapı taşları.
 /// Tek bir görsel dil: başlık, bölüm kartı, kapak önizleme, tarih alanı, footer.
@@ -202,26 +202,11 @@ class BookCoverPreview extends StatelessWidget {
               width: 62,
               height: 88,
               color: Colors.white.withValues(alpha: .12),
-              child: hasUrl
-                  ? CachedNetworkImage(
-                      imageUrl: url.trim(),
-                      fit: BoxFit.cover,
-                      errorWidget: (_, __, ___) => const Icon(
-                        Icons.broken_image_outlined,
-                        color: Colors.white54,
-                      ),
-                      placeholder: (_, __) => const Center(
-                        child: SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ),
-                    )
-                  : const Icon(Icons.menu_book_rounded, color: Colors.white70),
+              child: CachedCover(
+                url: url,
+                iconColor: Colors.white70,
+                iconSize: 24,
+              ),
             ),
           ),
           const SizedBox(width: 14),

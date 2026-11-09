@@ -43,10 +43,37 @@ class BookService {
     return bookFromRow(rows.first);
   }
 
+  /// Barkodu karşılaştırılabilir hale getirir: tire ve boşluk kaldırılır,
+  /// harfler büyütülür (ISBN-10'un sonundaki X için). Hem yazarken hem
+  /// ararken aynı biçimi kullanmak şart — yoksa elle tireli girilen bir
+  /// barkod, okutulanla eşleşmez.
+  static String? normalizeIsbn(String? raw) {
+    final clean = raw?.replaceAll(RegExp(r'[\s-]'), '').trim().toUpperCase();
+    return (clean == null || clean.isEmpty) ? null : clean;
+  }
+
+  /// Bu barkod kitaplıkta zaten var mı?
+  ///
+  /// Aynı kitabı ikinci kez okutmak sık yapılan bir şey — raf kalabalıklaşır,
+  /// istatistik bozulur. Eklemeden önce kullanıcıyı uyarabilmek için.
+  Future<Book?> findByIsbn(String isbn) async {
+    final clean = normalizeIsbn(isbn);
+    if (clean == null) return null;
+    final db = await _db;
+    final rows = await db.query(
+      'books',
+      where: 'isbn = ?',
+      whereArgs: [clean],
+      limit: 1,
+    );
+    return rows.isEmpty ? null : bookFromRow(rows.first);
+  }
+
   Future<int> createBook({
     required String title,
     required int totalPages,
     String? author,
+    String? isbn,
     String? coverUrl,
     String? category,
     String? startedAt,
@@ -99,6 +126,7 @@ class BookService {
     return db.insert('books', {
       'title': cleanTitle,
       'author': _orNull(author),
+      'isbn': normalizeIsbn(isbn),
       'total_pages': totalPages,
       'cover_url': _orNull(coverUrl),
       'category': _orNull(category),
@@ -123,6 +151,7 @@ class BookService {
     int id, {
     String? title,
     String? author,
+    String? isbn,
     int? totalPages,
     String? coverUrl,
     String? category,
@@ -209,6 +238,7 @@ class BookService {
       {
         'title': newTitle,
         'author': author != null ? _orNull(author) : cur['author'],
+        'isbn': isbn != null ? normalizeIsbn(isbn) : cur['isbn'],
         'total_pages': newTotal,
         'cover_url': coverUrl != null ? _orNull(coverUrl) : cur['cover_url'],
         'category': category != null ? _orNull(category) : cur['category'],
@@ -523,6 +553,7 @@ Book bookFromRow(Map<String, Object?> row) => Book(
       DateTime.tryParse(row['created_at'] as String? ?? '') ??
       DateTime.fromMillisecondsSinceEpoch(0),
   author: row['author'] as String?,
+  isbn: row['isbn'] as String?,
   coverUrl: row['cover_url'] as String?,
   category: row['category'] as String?,
   startedAt: row['started_at'] as String?,

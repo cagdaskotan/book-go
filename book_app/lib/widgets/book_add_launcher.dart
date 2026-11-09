@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../models/catalog_book.dart';
 import '../pages/barcode_scanner.dart';
+import '../pages/routes.dart';
 import '../services/api_exception.dart';
+import '../services/book_service.dart';
 import '../services/catalog_service.dart';
 import 'add_book_modal.dart';
 import 'app_toast.dart';
@@ -28,6 +30,27 @@ Future<int?> showBookAddLauncher(BuildContext context) async {
   ).push<String>(MaterialPageRoute(builder: (_) => const BarcodeScannerPage()));
   if (isbn == null || !context.mounted) return null;
 
+  // Aynı kitabı ikinci kez okutmak sık oluyor; raf kalabalıklaşmasın.
+  final existing = await BookService().findByIsbn(isbn);
+  if (existing != null) {
+    if (!context.mounted) return null;
+    AppToast.info(
+      context,
+      '"${existing.title}" zaten kitaplığında.',
+      title: 'Bu kitap var',
+      action: SnackBarAction(
+        label: 'Aç',
+        onPressed: () => Navigator.pushNamed(
+          context,
+          AppRoutes.diary,
+          arguments: existing.id,
+        ),
+      ),
+    );
+    return null;
+  }
+  if (!context.mounted) return null;
+
   CatalogBook? found;
   showDialog<void>(
     context: context,
@@ -36,23 +59,15 @@ Future<int?> showBookAddLauncher(BuildContext context) async {
   );
   try {
     found = await CatalogService().lookupISBN(isbn);
-  } on ApiException catch (e) {
-    if (!context.mounted) return null;
-    Navigator.pop(context);
-    AppToast.error(
-      context,
-      e.message,
-      title: 'Kitap bulunamadı',
-      action: SnackBarAction(
-        label: 'Elle ekle',
-        onPressed: () => showAddBookModal(context),
-      ),
-    );
-    return null;
+  } on ApiException {
+    // Künye bulunamadı — ama barkod elimizde. Kullanıcıyı boş bir forma
+    // göndermek yerine ISBN'i taşıyıp devam ettiriyoruz; Türkçe baskıların
+    // çoğu bu servislerde olmadığı için burası istisna değil, sık yol.
+    found = null;
   }
   if (!context.mounted) return null;
   Navigator.pop(context);
-  return showAddBookModal(context, initial: found);
+  return showAddBookModal(context, initial: found, isbn: isbn);
 }
 
 enum _AddAction { scan, search, manual }

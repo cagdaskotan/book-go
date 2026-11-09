@@ -1,10 +1,18 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-/// Önbellekli kitap kapağı görseli. Disk + bellek önbelleği kullanır;
-/// böylece kapaklar her açılışta yeniden indirilmez (veri/performans kazancı).
+import '../services/cover_photo_service.dart';
+
+/// Kitap kapağı görseli.
 ///
-/// Boş URL → kitap ikonu; yükleme → soluk arka plan; hata → kitap ikonu.
+/// İki kaynağı birden kaldırır: internetten gelen kapaklar önbelleğe alınır
+/// (her açılışta yeniden inmez), kullanıcının kendi çektiği kapaklar ise
+/// cihazdan okunur. Türkçe baskıların çoğunda çevrimiçi kapak bulunmadığı
+/// için ikincisi istisna değil, sık kullanılan yol.
+///
+/// Boş değer → kitap ikonu; yükleme → soluk gösterge; hata → kitap ikonu.
 class CachedCover extends StatelessWidget {
   const CachedCover({
     super.key,
@@ -31,6 +39,15 @@ class CachedCover extends StatelessWidget {
       ),
     );
     if (u.isEmpty) return icon;
+
+    // Kullanıcının kendi çektiği kapak: diskten oku.
+    if (CoverPhotoService.isLocalPath(u)) {
+      return Image.file(
+        File(u),
+        fit: fit,
+        errorBuilder: (_, __, ___) => icon,
+      );
+    }
 
     return CachedNetworkImage(
       imageUrl: u,

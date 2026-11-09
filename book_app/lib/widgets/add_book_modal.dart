@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../models/catalog_book.dart';
 import '../services/api_exception.dart';
 import '../services/book_service.dart';
+import '../services/cover_photo_service.dart';
 import 'app_toast.dart';
 import 'book_form.dart';
 
@@ -26,19 +27,32 @@ const _bookCategories = [
   'Diğer',
 ];
 
-Future<int?> showAddBookModal(BuildContext context, {CatalogBook? initial}) {
+Future<int?> showAddBookModal(
+  BuildContext context, {
+  CatalogBook? initial,
+  String? isbn,
+}) {
   return showModalBottomSheet<int>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => _AddBookSheet(initial: initial, toastContext: context),
+    builder: (_) => _AddBookSheet(
+      initial: initial,
+      isbn: isbn,
+      toastContext: context,
+    ),
   );
 }
 
 class _AddBookSheet extends StatefulWidget {
-  const _AddBookSheet({this.initial, required this.toastContext});
+  const _AddBookSheet({this.initial, this.isbn, required this.toastContext});
   final CatalogBook? initial;
+
+  /// Okutulan barkod. Künye bulunamasa da elimizde kalır; kaydedilir ve
+  /// kullanıcıya "barkodu aldık" diye gösterilir.
+  final String? isbn;
+
   final BuildContext toastContext;
 
   @override
@@ -106,6 +120,28 @@ class _AddBookSheetState extends State<_AddBookSheet> {
     super.dispose();
   }
 
+  /// Kapak alanındaki değer kullanıcının çektiği bir fotoğraf mı?
+  bool get _coverIsPhoto => CoverPhotoService.isLocalPath(_cover.text);
+
+  Future<void> _captureCover() => _setCoverFrom(CoverPhotoService.capture);
+
+  Future<void> _pickCover() =>
+      _setCoverFrom(CoverPhotoService.pickFromGallery);
+
+  Future<void> _setCoverFrom(Future<String?> Function() source) async {
+    try {
+      final path = await source();
+      if (path == null || !mounted) return;
+      _cover.text = path;
+    } catch (_) {
+      if (!mounted) return;
+      setState(
+        () => _error =
+            'Kapak alınamadı. Kamera/galeri izni verilmemiş olabilir.',
+      );
+    }
+  }
+
   String _today() {
     final d = DateTime.now();
     String two(int v) => v.toString().padLeft(2, '0');
@@ -163,6 +199,14 @@ class _AddBookSheetState extends State<_AddBookSheet> {
                     children: [
                       if (_error != null) ...[
                         BookFormError(message: _error!),
+                        const SizedBox(height: 14),
+                      ],
+
+                      // Barkod okundu ama künye bulunamadıysa: kullanıcı
+                      // boşuna uğraştığını sanmasın, barkodun saklandığını
+                      // ve kapağı kendi çekebileceğini söyleyelim.
+                      if (widget.initial == null && widget.isbn != null) ...[
+                        _ScannedHint(isbn: widget.isbn!),
                         const SizedBox(height: 14),
                       ],
 
@@ -347,10 +391,47 @@ class _AddBookSheetState extends State<_AddBookSheet> {
                           TextFormField(
                             controller: _cover,
                             textInputAction: TextInputAction.next,
-                            decoration: const InputDecoration(
-                              labelText: 'Kapak görseli (URL)',
-                              prefixIcon: Icon(Icons.image_outlined),
+                            decoration: InputDecoration(
+                              labelText: _coverIsPhoto
+                                  ? 'Kapak (çektiğin fotoğraf)'
+                                  : 'Kapak görseli (URL)',
+                              prefixIcon: const Icon(Icons.image_outlined),
+                              suffixIcon: _cover.text.trim().isEmpty
+                                  ? null
+                                  : IconButton(
+                                      tooltip: 'Kapağı kaldır',
+                                      icon: const Icon(Icons.close_rounded),
+                                      onPressed: () => _cover.clear(),
+                                    ),
                             ),
+                          ),
+                          const SizedBox(height: 8),
+                          // Türkçe baskıların çoğunda çevrimiçi kapak yok;
+                          // kapaksız kitap rafın görünüşünü bozuyor.
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: _busy ? null : _captureCover,
+                                  icon: const Icon(
+                                    Icons.photo_camera_outlined,
+                                    size: 18,
+                                  ),
+                                  label: const Text('Kapağı çek'),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: _busy ? null : _pickCover,
+                                  icon: const Icon(
+                                    Icons.photo_library_outlined,
+                                    size: 18,
+                                  ),
+                                  label: const Text('Galeriden'),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 12),
                           TextFormField(
@@ -432,6 +513,7 @@ class _AddBookSheetState extends State<_AddBookSheet> {
         title: _title.text.trim(),
         totalPages: total,
         author: _nullIfEmpty(_author.text),
+        isbn: widget.isbn ?? widget.initial?.isbn,
         category: _nullIfEmpty(_category.text),
         coverUrl: _nullIfEmpty(_cover.text),
         tags: _nullIfEmpty(_tags.text),
@@ -464,4 +546,72 @@ class _AddBookSheetState extends State<_AddBookSheet> {
 
   String? _nullIfEmpty(String value) =>
       value.trim().isEmpty ? null : value.trim();
+}
+
+/// Barkod okundu ama çevrimiçi künye bulunamadı: kullanıcıyı bilgilendirir.
+///
+/// Türkçe baskıların çoğu Google Books ve Open Library'de yok. Bu durumda
+/// kullanıcıya "bulunamadı" deyip boş bir form açmak, onu kaybetmenin en
+/// hızlı yolu. Bunun yerine barkodu sakladığımızı ve kapağı kendisinin
+/// çekebileceğini söylüyoruz.
+class _ScannedHint extends StatelessWidget {
+  const _ScannedHint({required this.isbn});
+
+  final String isbn;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: cs.primaryContainer.withValues(alpha: .45),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cs.primary.withValues(alpha: .28)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.qr_code_rounded, size: 20, color: cs.primary),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Barkodu okuduk, künyeyi bulamadık',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 13.5,
+                    color: cs.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  'Türkçe baskıların çoğu çevrimiçi kataloglarda yok. '
+                  'Bilgileri sen gir; kapağı aşağıdan çekebilirsin.',
+                  style: TextStyle(
+                    color: cs.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'ISBN $isbn kaydedildi',
+                  style: TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w700,
+                    color: cs.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -23,6 +23,7 @@ import '../widgets/mascot.dart';
 import '../widgets/recommendations_section.dart';
 import '../widgets/navigation.dart';
 import '../widgets/yearly_challenge_card.dart';
+import '../widgets/home_shelf.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -725,6 +726,21 @@ class _HomePageState extends State<HomePage> {
                 ],
 
                 // Son eklenenler
+                // Rafı ana ekranın yüzü yap: uygulamayı açan ilk gördüğü
+                // şey kendi kitaplığı olsun. Tek gerçek farkımız bu ve
+                // üçüncü sekmede saklıydı.
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 18, bottom: 6),
+                    child: HomeShelf(
+                      books: _books,
+                      onOpenBook: _openDiary,
+                      onSeeAll: () =>
+                          Navigator.pushNamed(context, AppRoutes.collections),
+                    ),
+                  ),
+                ),
+
                 _sectionHeader(
                   context,
                   'Son eklenenler',

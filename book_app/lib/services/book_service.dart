@@ -69,6 +69,24 @@ class BookService {
     return rows.isEmpty ? null : bookFromRow(rows.first);
   }
 
+  /// Kitaplıkta geçen yazar adları, en çok kitabı olandan başlayarak.
+  ///
+  /// Ayrı bir "hafıza" tablosuna gerek yok: kitaplığın kendisi zaten hafıza.
+  /// Aynı yazarın ikinci kitabını eklerken adı tekrar yazmak — üstelik
+  /// Türkçe harflerle — en can sıkıcı tekrarlardan biri.
+  Future<List<String>> knownAuthors() async {
+    final db = await _db;
+    final rows = await db.rawQuery(
+      "SELECT author, COUNT(*) AS n FROM books "
+      "WHERE author IS NOT NULL AND TRIM(author) <> '' "
+      'GROUP BY author ORDER BY n DESC, author ASC',
+    );
+    return rows
+        .map((row) => (row['author'] as String).trim())
+        .where((author) => author.isNotEmpty)
+        .toList();
+  }
+
   Future<int> createBook({
     required String title,
     required int totalPages,

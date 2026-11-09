@@ -81,6 +81,7 @@ class _AddBookSheetState extends State<_AddBookSheet> {
   bool _favorite = false;
   bool _busy = false;
   String? _error;
+  List<String> _knownAuthors = const [];
 
   @override
   void initState() {
@@ -103,6 +104,16 @@ class _AddBookSheetState extends State<_AddBookSheet> {
       }
     }
     _cover.addListener(() => setState(() {}));
+    _loadKnownAuthors();
+  }
+
+  Future<void> _loadKnownAuthors() async {
+    try {
+      final authors = await _service.knownAuthors();
+      if (mounted) setState(() => _knownAuthors = authors);
+    } catch (_) {
+      // Öneri gelmezse form yine çalışır.
+    }
   }
 
   @override
@@ -236,14 +247,13 @@ class _AddBookSheetState extends State<_AddBookSheet> {
                                 : null,
                           ),
                           const SizedBox(height: 12),
-                          TextFormField(
+                          // Kitaplıkta geçen yazarlar öneri olarak çıkar:
+                          // aynı yazarın ikinci kitabında adı tekrar
+                          // yazmaya (üstelik Türkçe harflerle) gerek kalmaz.
+                          _AuthorField(
                             controller: _author,
-                            textInputAction: TextInputAction.next,
-                            onChanged: (_) => setState(() {}),
-                            decoration: const InputDecoration(
-                              labelText: 'Yazar',
-                              prefixIcon: Icon(Icons.person_outline_rounded),
-                            ),
+                            suggestions: _knownAuthors,
+                            onChanged: () => setState(() {}),
                           ),
                           const SizedBox(height: 12),
                           DropdownButtonFormField<String>(
@@ -612,6 +622,106 @@ class _ScannedHint extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Yazar alanı — kitaplıkta geçen adları önerir.
+///
+/// Autocomplete kullanılıyor ama alan serbest: öneri listesinde olmayan bir
+/// yazar da yazılabilir. Öneriler Türkçe harf duyarsız eşleşir ("sabahattin"
+/// yazınca "Sabahattin Ali" çıkar).
+class _AuthorField extends StatefulWidget {
+  const _AuthorField({
+    required this.controller,
+    required this.suggestions,
+    required this.onChanged,
+  });
+
+  final TextEditingController controller;
+  final List<String> suggestions;
+  final VoidCallback onChanged;
+
+  @override
+  State<_AuthorField> createState() => _AuthorFieldState();
+}
+
+class _AuthorFieldState extends State<_AuthorField> {
+  // RawAutocomplete'e verilen odak düğümü kalıcı olmalı; build içinde
+  // üretilirse her çizimde yenilenir, odak kaçar ve düğüm sızar.
+  final _focus = FocusNode();
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
+
+  static String _fold(String value) => value
+      .toLowerCase()
+      .replaceAll('ı', 'i')
+      .replaceAll('İ', 'i')
+      .replaceAll('ş', 's')
+      .replaceAll('ğ', 'g')
+      .replaceAll('ü', 'u')
+      .replaceAll('ö', 'o')
+      .replaceAll('ç', 'c');
+
+  @override
+  Widget build(BuildContext context) {
+    return RawAutocomplete<String>(
+      textEditingController: widget.controller,
+      focusNode: _focus,
+      optionsBuilder: (value) {
+        final query = _fold(value.text.trim());
+        if (query.isEmpty) return const Iterable<String>.empty();
+        return widget.suggestions
+            .where((author) => _fold(author).contains(query))
+            .take(5);
+      },
+      fieldViewBuilder: (context, textController, focusNode, onSubmit) {
+        return TextFormField(
+          controller: textController,
+          focusNode: focusNode,
+          textInputAction: TextInputAction.next,
+          onChanged: (_) => widget.onChanged(),
+          decoration: const InputDecoration(
+            labelText: 'Yazar',
+            prefixIcon: Icon(Icons.person_outline_rounded),
+          ),
+        );
+      },
+      optionsViewBuilder: (context, onSelected, options) {
+        final cs = Theme.of(context).colorScheme;
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(14),
+            color: cs.surfaceContainerHigh,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 220, maxWidth: 420),
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: options.length,
+                itemBuilder: (context, i) {
+                  final option = options.elementAt(i);
+                  return ListTile(
+                    dense: true,
+                    leading: const Icon(Icons.history_rounded, size: 18),
+                    title: Text(
+                      option,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    onTap: () => onSelected(option),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

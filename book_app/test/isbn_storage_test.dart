@@ -116,4 +116,39 @@ void main() {
     final names = columns.map((c) => c['name']).toList();
     expect(names, contains('isbn'));
   });
+
+  group('yazar önerileri', () {
+    test('kitaplıktaki yazarlar sıklığa göre gelir', () async {
+      await books.createBook(
+        title: 'Kürk Mantolu Madonna',
+        totalPages: 160,
+        author: 'Sabahattin Ali',
+      );
+      await books.createBook(
+        title: 'İçimizdeki Şeytan',
+        totalPages: 240,
+        author: 'Sabahattin Ali',
+      );
+      await books.createBook(
+        title: 'Tutunamayanlar',
+        totalPages: 724,
+        author: 'Oğuz Atay',
+      );
+
+      final authors = await books.knownAuthors();
+      expect(authors.first, 'Sabahattin Ali'); // iki kitabı var
+      expect(authors, contains('Oğuz Atay'));
+      expect(authors, hasLength(2));
+    });
+
+    test('yazarsız kitaplar listeye girmez', () async {
+      await books.createBook(title: 'Yazarsız', totalPages: 100);
+      await books.createBook(
+        title: 'Boşluklu',
+        totalPages: 100,
+        author: '   ',
+      );
+      expect(await books.knownAuthors(), isEmpty);
+    });
+  });
 }

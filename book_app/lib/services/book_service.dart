@@ -87,10 +87,28 @@ class BookService {
         .toList();
   }
 
+  /// Kitaplıkta geçen yayınevleri, en çok kitabı olandan başlayarak.
+  ///
+  /// Türk okur aynı yayınevinden çok kitap alır (İş Bankası, Can, YKY…);
+  /// her seferinde elle yazdırmak gereksiz.
+  Future<List<String>> knownPublishers() async {
+    final db = await _db;
+    final rows = await db.rawQuery(
+      "SELECT publisher, COUNT(*) AS n FROM books "
+      "WHERE publisher IS NOT NULL AND TRIM(publisher) <> '' "
+      'GROUP BY publisher ORDER BY n DESC, publisher ASC',
+    );
+    return rows
+        .map((row) => (row['publisher'] as String).trim())
+        .where((publisher) => publisher.isNotEmpty)
+        .toList();
+  }
+
   Future<int> createBook({
     required String title,
     required int totalPages,
     String? author,
+    String? publisher,
     String? isbn,
     String? coverUrl,
     String? category,
@@ -144,6 +162,7 @@ class BookService {
     return db.insert('books', {
       'title': cleanTitle,
       'author': _orNull(author),
+      'publisher': _orNull(publisher),
       'isbn': normalizeIsbn(isbn),
       'total_pages': totalPages,
       'cover_url': _orNull(coverUrl),
@@ -169,6 +188,7 @@ class BookService {
     int id, {
     String? title,
     String? author,
+    String? publisher,
     String? isbn,
     int? totalPages,
     String? coverUrl,
@@ -256,6 +276,9 @@ class BookService {
       {
         'title': newTitle,
         'author': author != null ? _orNull(author) : cur['author'],
+        'publisher': publisher != null
+            ? _orNull(publisher)
+            : cur['publisher'],
         'isbn': isbn != null ? normalizeIsbn(isbn) : cur['isbn'],
         'total_pages': newTotal,
         'cover_url': coverUrl != null ? _orNull(coverUrl) : cur['cover_url'],
@@ -571,6 +594,7 @@ Book bookFromRow(Map<String, Object?> row) => Book(
       DateTime.tryParse(row['created_at'] as String? ?? '') ??
       DateTime.fromMillisecondsSinceEpoch(0),
   author: row['author'] as String?,
+  publisher: row['publisher'] as String?,
   isbn: row['isbn'] as String?,
   coverUrl: row['cover_url'] as String?,
   category: row['category'] as String?,

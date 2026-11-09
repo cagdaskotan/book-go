@@ -763,6 +763,35 @@ class _DiaryPageState extends State<DiaryPage> {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
+                          // Yayınevi Türkçe baskılarda kitabın kimliğinin
+                          // parçası; bilinmiyorsa satır hiç görünmesin.
+                          if ((b.publisher ?? '').trim().isNotEmpty) ...[
+                            const SizedBox(height: 3),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.apartment_rounded,
+                                  size: 13,
+                                  color: Colors.white.withValues(alpha: .55),
+                                ),
+                                const SizedBox(width: 5),
+                                Flexible(
+                                  child: Text(
+                                    b.publisher!.trim(),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: .55,
+                                      ),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 12.5,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                           const SizedBox(height: 16),
                           Row(
                             children: [
@@ -1895,6 +1924,9 @@ class _BookEditSheetState extends State<_BookEditSheet> {
 
   late final _title = TextEditingController(text: widget.book.title);
   late final _author = TextEditingController(text: widget.book.author ?? '');
+  late final _publisher = TextEditingController(
+    text: widget.book.publisher ?? '',
+  );
   late final _total = TextEditingController(text: '${widget.book.totalPages}');
   late final _cover = TextEditingController(text: widget.book.coverUrl ?? '');
   late final _category = TextEditingController(
@@ -1929,6 +1961,7 @@ class _BookEditSheetState extends State<_BookEditSheet> {
   void dispose() {
     _title.dispose();
     _author.dispose();
+    _publisher.dispose();
     _total.dispose();
     _cover.dispose();
     _category.dispose();
@@ -2027,6 +2060,14 @@ class _BookEditSheetState extends State<_BookEditSheet> {
                             decoration: const InputDecoration(
                               labelText: 'Yazar',
                               prefixIcon: Icon(Icons.person_outline_rounded),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          TextFormField(
+                            controller: _publisher,
+                            decoration: const InputDecoration(
+                              labelText: 'Yayınevi',
+                              prefixIcon: Icon(Icons.apartment_rounded),
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -2186,7 +2227,11 @@ class _BookEditSheetState extends State<_BookEditSheet> {
       await _svc.updateBook(
         widget.book.id,
         title: _title.text.trim(),
-        author: _author.text.trim().isEmpty ? null : _author.text.trim(),
+        // Boş metni null'a çevirmiyoruz: updateBook'ta null "dokunma"
+        // demek, dolayısıyla alanı temizlemek imkânsız hale geliyordu.
+        // Boş string gönderince alan gerçekten siliniyor.
+        author: _author.text.trim(),
+        publisher: _publisher.text.trim(),
         totalPages: tp,
         coverUrl: _cover.text.trim().isEmpty ? null : _cover.text.trim(),
         category: _category.text.trim().isEmpty ? null : _category.text.trim(),

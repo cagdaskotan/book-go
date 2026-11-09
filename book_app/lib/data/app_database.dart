@@ -15,7 +15,7 @@ class AppDatabase {
 
   /// Şema sürümü. Yeni sütun/tablo eklerken artır ve [_migrate] içine
   /// karşılık gelen adımı yaz — kullanıcının verisi asla silinmez.
-  static const int schemaVersion = 2;
+  static const int schemaVersion = 3;
 
   Database? _db;
 
@@ -56,6 +56,13 @@ class AppDatabase {
       await d.execute('ALTER TABLE books ADD COLUMN isbn TEXT');
       await d.execute('CREATE INDEX idx_books_isbn ON books(isbn)');
     }
+
+    // 3: Yayınevi. Katalogdan zaten geliyordu ama saklanmıyordu. Türkçe
+    // okurda kitap yayıneviyle anılır: aynı eser farklı yayınevinde farklı
+    // çeviri ve farklı sayfa sayısı demek.
+    if (from < 3) {
+      await d.execute('ALTER TABLE books ADD COLUMN publisher TEXT');
+    }
   }
 
   /// Kullanıcı verisi tutan tablolar — yedekleme ve geri yükleme bu listeyi
@@ -83,6 +90,7 @@ class AppDatabase {
       id             INTEGER PRIMARY KEY AUTOINCREMENT,
       title          TEXT    NOT NULL,
       author         TEXT,
+      publisher      TEXT,
       isbn           TEXT,
       total_pages    INTEGER NOT NULL DEFAULT 0,
       cover_url      TEXT,

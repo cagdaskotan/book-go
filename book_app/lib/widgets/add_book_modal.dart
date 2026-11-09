@@ -65,6 +65,7 @@ class _AddBookSheetState extends State<_AddBookSheet> {
 
   final _title = TextEditingController();
   final _author = TextEditingController();
+  final _publisher = TextEditingController();
   final _pages = TextEditingController();
   final _currentPage = TextEditingController();
   final _category = TextEditingController();
@@ -82,6 +83,7 @@ class _AddBookSheetState extends State<_AddBookSheet> {
   bool _busy = false;
   String? _error;
   List<String> _knownAuthors = const [];
+  List<String> _knownPublishers = const [];
 
   @override
   void initState() {
@@ -90,6 +92,7 @@ class _AddBookSheetState extends State<_AddBookSheet> {
     if (book != null) {
       _title.text = book.title;
       _author.text = book.author ?? '';
+      _publisher.text = book.publisher ?? '';
       _pages.text = book.totalPages > 0 ? '${book.totalPages}' : '';
       _category.text = book.category ?? '';
       _cover.text = book.coverUrl ?? '';
@@ -110,7 +113,12 @@ class _AddBookSheetState extends State<_AddBookSheet> {
   Future<void> _loadKnownAuthors() async {
     try {
       final authors = await _service.knownAuthors();
-      if (mounted) setState(() => _knownAuthors = authors);
+      final publishers = await _service.knownPublishers();
+      if (!mounted) return;
+      setState(() {
+        _knownAuthors = authors;
+        _knownPublishers = publishers;
+      });
     } catch (_) {
       // Öneri gelmezse form yine çalışır.
     }
@@ -120,6 +128,7 @@ class _AddBookSheetState extends State<_AddBookSheet> {
   void dispose() {
     _title.dispose();
     _author.dispose();
+    _publisher.dispose();
     _pages.dispose();
     _currentPage.dispose();
     _category.dispose();
@@ -250,10 +259,22 @@ class _AddBookSheetState extends State<_AddBookSheet> {
                           // Kitaplıkta geçen yazarlar öneri olarak çıkar:
                           // aynı yazarın ikinci kitabında adı tekrar
                           // yazmaya (üstelik Türkçe harflerle) gerek kalmaz.
-                          _AuthorField(
+                          _SuggestField(
                             controller: _author,
                             suggestions: _knownAuthors,
                             onChanged: () => setState(() {}),
+                            label: 'Yazar',
+                            icon: Icons.person_outline_rounded,
+                          ),
+                          const SizedBox(height: 12),
+                          // Türkçe okurda kitap yayıneviyle anılır: aynı
+                          // eserin farklı yayınevi farklı çeviri demek.
+                          _SuggestField(
+                            controller: _publisher,
+                            suggestions: _knownPublishers,
+                            onChanged: () => setState(() {}),
+                            label: 'Yayınevi',
+                            icon: Icons.apartment_rounded,
                           ),
                           const SizedBox(height: 12),
                           DropdownButtonFormField<String>(
@@ -523,6 +544,7 @@ class _AddBookSheetState extends State<_AddBookSheet> {
         title: _title.text.trim(),
         totalPages: total,
         author: _nullIfEmpty(_author.text),
+        publisher: _nullIfEmpty(_publisher.text),
         isbn: widget.isbn ?? widget.initial?.isbn,
         category: _nullIfEmpty(_category.text),
         coverUrl: _nullIfEmpty(_cover.text),
@@ -631,22 +653,26 @@ class _ScannedHint extends StatelessWidget {
 /// Autocomplete kullanılıyor ama alan serbest: öneri listesinde olmayan bir
 /// yazar da yazılabilir. Öneriler Türkçe harf duyarsız eşleşir ("sabahattin"
 /// yazınca "Sabahattin Ali" çıkar).
-class _AuthorField extends StatefulWidget {
-  const _AuthorField({
+class _SuggestField extends StatefulWidget {
+  const _SuggestField({
     required this.controller,
     required this.suggestions,
     required this.onChanged,
+    required this.label,
+    required this.icon,
   });
 
   final TextEditingController controller;
   final List<String> suggestions;
   final VoidCallback onChanged;
+  final String label;
+  final IconData icon;
 
   @override
-  State<_AuthorField> createState() => _AuthorFieldState();
+  State<_SuggestField> createState() => _SuggestFieldState();
 }
 
-class _AuthorFieldState extends State<_AuthorField> {
+class _SuggestFieldState extends State<_SuggestField> {
   // RawAutocomplete'e verilen odak düğümü kalıcı olmalı; build içinde
   // üretilirse her çizimde yenilenir, odak kaçar ve düğüm sızar.
   final _focus = FocusNode();
@@ -685,9 +711,9 @@ class _AuthorFieldState extends State<_AuthorField> {
           focusNode: focusNode,
           textInputAction: TextInputAction.next,
           onChanged: (_) => widget.onChanged(),
-          decoration: const InputDecoration(
-            labelText: 'Yazar',
-            prefixIcon: Icon(Icons.person_outline_rounded),
+          decoration: InputDecoration(
+            labelText: widget.label,
+            prefixIcon: Icon(widget.icon),
           ),
         );
       },

@@ -1,4 +1,3 @@
-import 'package:book_app/data/app_database.dart';
 import 'package:book_app/services/backup_service.dart';
 import 'package:book_app/services/book_service.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -110,11 +109,9 @@ void main() {
     expect(book.isbn, '9789754700107');
   });
 
-  test('şema sürümü 2 ve isbn sütunu mevcut', () async {
-    expect(AppDatabase.schemaVersion, 2);
+  test('isbn sütunu şemada mevcut', () async {
     final columns = await db.rawQuery('PRAGMA table_info(books)');
-    final names = columns.map((c) => c['name']).toList();
-    expect(names, contains('isbn'));
+    expect(columns.map((c) => c['name']), contains('isbn'));
   });
 
   group('yazar önerileri', () {
@@ -149,6 +146,70 @@ void main() {
         author: '   ',
       );
       expect(await books.knownAuthors(), isEmpty);
+    });
+  });
+
+  group('yayınevi', () {
+    test('kaydedilir ve geri okunur', () async {
+      final id = await books.createBook(
+        title: 'Suç ve Ceza',
+        totalPages: 687,
+        publisher: 'İş Bankası Kültür Yayınları',
+      );
+      expect(
+        (await books.getBook(id)).publisher,
+        'İş Bankası Kültür Yayınları',
+      );
+    });
+
+    test('öneriler sıklığa göre gelir', () async {
+      await books.createBook(title: 'A', totalPages: 100, publisher: 'Can');
+      await books.createBook(title: 'B', totalPages: 100, publisher: 'Can');
+      await books.createBook(title: 'C', totalPages: 100, publisher: 'YKY');
+      final publishers = await books.knownPublishers();
+      expect(publishers.first, 'Can');
+      expect(publishers, hasLength(2));
+    });
+
+    test('boş string gönderince alan temizlenir', () async {
+      // updateBook'ta null "dokunma" demek; temizlemek için boş string
+      // gönderilmeli. Düzenleme formu bunu yanlış yapıyordu.
+      final id = await books.createBook(
+        title: 'Kitap',
+        totalPages: 100,
+        author: 'Yazar',
+        publisher: 'Yayınevi',
+      );
+      await books.updateBook(id, author: '', publisher: '');
+      final book = await books.getBook(id);
+      expect(book.author, isNull);
+      expect(book.publisher, isNull);
+    });
+
+    test('null gönderince mevcut değer korunur', () async {
+      final id = await books.createBook(
+        title: 'Kitap',
+        totalPages: 100,
+        publisher: 'Can',
+      );
+      await books.updateBook(id, title: 'Yeni Ad');
+      expect((await books.getBook(id)).publisher, 'Can');
+    });
+
+    test('yedeğe girer', () async {
+      await books.createBook(
+        title: 'Kitap',
+        totalPages: 100,
+        publisher: 'İletişim',
+      );
+      final manifest = await BackupService().buildManifest();
+      final row = (manifest['books'] as List).first as Map;
+      expect(row['publisher'], 'İletişim');
+    });
+
+    test('publisher sütunu şemada mevcut', () async {
+      final columns = await db.rawQuery('PRAGMA table_info(books)');
+      expect(columns.map((c) => c['name']), contains('publisher'));
     });
   });
 }

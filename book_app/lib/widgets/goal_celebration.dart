@@ -82,7 +82,7 @@ class _GoalCelebrationDialog extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: _Stat(
-                    icon: Icons.auto_awesome_rounded,
+                    icon: Icons.bar_chart_rounded,
                     color: const Color(0xFF7BE3C0),
                     value: '${summary.xp}',
                     label: 'XP',

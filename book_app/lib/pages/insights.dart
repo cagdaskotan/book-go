@@ -281,7 +281,7 @@ class _InsightsPageState extends State<InsightsPage> {
     _Achievement(
       title: 'Yükselen yıldız',
       description: '5. seviyeye ulaş',
-      icon: Icons.auto_awesome_rounded,
+      icon: Icons.trending_up_rounded,
       color: Color(0xFF8B5CF6),
       test: 'level',
       target: 5,
@@ -889,7 +889,7 @@ class _YearWrappedBanner extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: const Icon(
-                  Icons.auto_awesome_rounded,
+                  Icons.trending_up_rounded,
                   color: Colors.white,
                 ),
               ),

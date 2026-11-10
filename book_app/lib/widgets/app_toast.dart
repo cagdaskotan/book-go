@@ -84,7 +84,7 @@ class _ToastContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final (icon, color) = switch (kind) {
       AppToastKind.success => (
-        Icons.auto_awesome_rounded,
+        Icons.check_circle_rounded,
         const Color(0xFF55D6AE),
       ),
       AppToastKind.error => (

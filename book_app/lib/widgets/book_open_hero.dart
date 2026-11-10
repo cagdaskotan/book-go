@@ -1,14 +1,18 @@
 import 'dart:math' as math;
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-/// Raftaki kitap ile detay sayfasının kapağı arasındaki imza geçişi.
+import 'book_cover.dart';
+
+/// Raftaki kitap ile detay sayfası arasındaki açılış geçişi.
 ///
-/// Aynı [tag]'i paylaşan iki [BookOpenHero] arasında, kitap raftan çıkıp
-/// ekranın ortasına doğru büyür, 3B perspektifle kapağını açıp sayfalarını
-/// hızlıca çevirir, sonra kapanarak hedef kapağa oturur. Geri dönüşte tersi
-/// otomatik oynar.
+/// Aynı [tag]'i paylaşan iki [BookOpenHero] arasında kitap raftan çıkar,
+/// ekranın ortasında **iki sayfalık bir yayılıma** açılır, sayfaları cilt
+/// payından sağdan sola çevrilir, sonra kapanıp hedef kapağa oturur.
+///
+/// Önceki sürümde bu hareket okunmuyordu: yapraklar tam sayfa boyundaydı ve
+/// kapakla aynı kenardan menteşeliydi, dolayısıyla tek bir kapak çırpınıyor
+/// gibi görünüyordu — açık kitap hissi hiç oluşmuyordu.
 class BookOpenHero extends StatelessWidget {
   const BookOpenHero({
     super.key,
@@ -51,23 +55,41 @@ class BookOpenHero extends StatelessWidget {
   }
 }
 
-/// Uçuş yolu: önce ekranın ortasındaki büyük "okuma" boyutuna yumuşakça büyür,
-/// orada bir süre kalır (sayfalar çevrilir), sonra hedef kapağa yumuşakça iner.
-/// Geçişler easeInOut olduğu için hiçbir aşamada sıçrama/kesinti olmaz.
-/// Uçuş yolu: kitap önce ekranın ortasındaki büyük "okuma" boyutuna büyür,
-/// orada bir süre kalır (sayfalar çevrilir), sonra hedef kapağa iner ve
-/// son dilimde orada SABİT durur (detay sayfası o sırada açılır).
+/// Animasyonun zaman çizelgesi.
+///
+/// Tek yerde toplandı: hem uçuş dikdörtgeni hem kapak açılması hem sayfa
+/// çevirme aynı eşikleri kullanmazsa hareket kendi içinde tutarsız görünüyor.
+abstract final class _Beat {
+  /// Raftan kalkıp ortadaki yayılım boyutuna büyür.
+  static const double grow = .22;
+
+  /// Kapak açılır (yayılım görünür hale gelir).
+  static const double openEnd = .34;
+
+  /// Sayfalar çevrilir — zamanın en büyük dilimi, anlatılan şey bu.
+  static const double flipEnd = .66;
+
+  /// Kapak kapanır.
+  static const double closeEnd = .78;
+
+  /// Hedef kapağa iner.
+  static const double settle = .92;
+}
+
+/// Uçuş yolu: raftaki sırttan ortadaki açık yayılıma, oradan hedef kapağa.
 class _BookArcRectTween extends RectTween {
   _BookArcRectTween(Rect? begin, Rect? end, this.screen)
     : super(begin: begin, end: end);
 
   final Size screen;
 
-  Rect get _mid {
-    final w = screen.width * 0.88;
-    final h = w * 1.16;
+  /// Açık kitap yatay bir dikdörtgendir — kapalı kitabınkinden farklı oranda.
+  /// Bu oran değişimi, "açıldı" hissinin yarısını tek başına taşıyor.
+  Rect get _spread {
+    final w = math.min(screen.width * .92, 520.0);
+    final h = w * .66;
     return Rect.fromCenter(
-      center: Offset(screen.width * 0.5, screen.height * 0.40),
+      center: Offset(screen.width / 2, screen.height * .40),
       width: w,
       height: h,
     );
@@ -75,21 +97,27 @@ class _BookArcRectTween extends RectTween {
 
   @override
   Rect lerp(double t) {
-    final b = begin ?? Rect.zero;
-    final e = end ?? Rect.zero;
-    const grow = 0.28, hold = 0.55, settle = 0.80;
-    if (t <= grow) {
-      return Rect.lerp(b, _mid, Curves.easeOutCubic.transform(t / grow))!;
-    }
-    if (t <= hold) return _mid;
-    if (t <= settle) {
+    final from = begin ?? Rect.zero;
+    final to = end ?? Rect.zero;
+
+    if (t <= _Beat.grow) {
       return Rect.lerp(
-        _mid,
-        e,
-        Curves.easeInOutCubic.transform((t - hold) / (settle - hold)),
+        from,
+        _spread,
+        Curves.easeOutCubic.transform(t / _Beat.grow),
       )!;
     }
-    return e; // 0.80 → 1.0: kapakta sabit dur, detay sayfası açılırken
+    if (t <= _Beat.closeEnd) return _spread;
+    if (t <= _Beat.settle) {
+      final local = (t - _Beat.closeEnd) / (_Beat.settle - _Beat.closeEnd);
+      return Rect.lerp(
+        _spread,
+        to,
+        Curves.easeInOutCubic.transform(local),
+      )!;
+    }
+    // Son dilimde hedefte sabit dur; detay sayfası bu sırada belirir.
+    return to;
   }
 }
 
@@ -106,13 +134,18 @@ class _OpeningBook extends StatelessWidget {
   final String? coverUrl;
   final Color spineColor;
 
-  // Büyürken açılır, ortada açık kalır (sayfalar akıp giderken), sonra
-  // inişten önce kapanır — inişin sonunda kapalı kapak olarak oturur.
+  /// 0 = kapalı kapak, 1 = tamamen açık yayılım.
   double _openAmount(double t) {
-    if (t < 0.12) return 0;
-    if (t < 0.30) return Curves.easeInOutCubic.transform((t - 0.12) / 0.18);
-    if (t < 0.52) return 1;
-    if (t < 0.72) return 1 - Curves.easeInOutCubic.transform((t - 0.52) / 0.20);
+    if (t <= _Beat.grow) return 0;
+    if (t <= _Beat.openEnd) {
+      final local = (t - _Beat.grow) / (_Beat.openEnd - _Beat.grow);
+      return Curves.easeOutCubic.transform(local);
+    }
+    if (t <= _Beat.flipEnd) return 1;
+    if (t <= _Beat.closeEnd) {
+      final local = (t - _Beat.flipEnd) / (_Beat.closeEnd - _Beat.flipEnd);
+      return 1 - Curves.easeInCubic.transform(local);
+    }
     return 0;
   }
 
@@ -123,46 +156,17 @@ class _OpeningBook extends StatelessWidget {
       builder: (context, _) {
         final t = animation.value.clamp(0.0, 1.0);
         final open = _openAmount(t);
-        // Sayfa akışı açık-kalma penceresine yayılır (güzelce çevrilir).
-        final pageTurn = Curves.easeInOut.transform(
-          ((t - .14) / .40).clamp(0.0, 1.0),
-        );
-        final book = _BookBody(
+
+        // Sayfa çevirme yalnızca kitap açıkken ve kendi penceresinde akar.
+        final flip = t <= _Beat.openEnd || t > _Beat.flipEnd
+            ? (t > _Beat.flipEnd ? 1.0 : 0.0)
+            : (t - _Beat.openEnd) / (_Beat.flipEnd - _Beat.openEnd);
+
+        return _BookBody(
           open: open,
-          pageTurn: pageTurn,
+          flip: flip.clamp(0.0, 1.0),
           coverUrl: coverUrl,
           spineColor: spineColor,
-        );
-
-        // İnişe yaklaşırken temiz kapağa yumuşakça karış (sert kesme/kırmızı yok).
-        final landing = direction == HeroFlightDirection.push ? t : (1 - t);
-        final fade = ((landing - 0.80) / 0.14).clamp(0.0, 1.0);
-        if (fade <= 0) return book;
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            book,
-            Opacity(
-              opacity: Curves.easeInOut.transform(fade),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(14),
-                clipBehavior: Clip.hardEdge,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    ColoredBox(color: spineColor),
-                    if ((coverUrl ?? '').isNotEmpty)
-                      CachedNetworkImage(
-                        imageUrl: coverUrl!,
-                        fit: BoxFit.cover,
-                        fadeInDuration: Duration.zero,
-                        errorWidget: (_, __, ___) => const SizedBox.shrink(),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          ],
         );
       },
     );
@@ -172,15 +176,22 @@ class _OpeningBook extends StatelessWidget {
 class _BookBody extends StatelessWidget {
   const _BookBody({
     required this.open,
-    required this.pageTurn,
+    required this.flip,
     required this.coverUrl,
     required this.spineColor,
   });
 
+  /// 0 kapalı, 1 açık.
   final double open;
-  final double pageTurn;
+
+  /// Sayfa çevirme ilerlemesi (0–1).
+  final double flip;
+
   final String? coverUrl;
   final Color spineColor;
+
+  /// Aynı anda havada olan yaprak sayısı yerine toplam çevrilen yaprak.
+  static const int _leafCount = 7;
 
   @override
   Widget build(BuildContext context) {
@@ -188,148 +199,175 @@ class _BookBody extends StatelessWidget {
       builder: (context, c) {
         final w = c.maxWidth;
         final h = c.maxHeight;
-        final radius = BorderRadius.circular(math.min(w * 0.07, 14));
-        final coverDeg = open * 166.0; // 0 (kapalı) → 166 (açık)
-        final showBack = coverDeg > 90;
-        final coverShade = math.sin(coverDeg * math.pi / 180).abs();
-        return SizedBox(
-          width: w,
-          height: h,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              // Sayfa bloğu — dikdörtgeni doldurur (kapak açılınca görünür)
-              Positioned.fill(child: _pages(w, h, radius)),
-              // Riffling yapraklar
-              ..._leaves(w, h, radius),
-              // Ön kapak — sol kenardan (sırt) menteşeli; dikdörtgeni doldurur
-              Transform(
-                alignment: Alignment.centerLeft,
-                transform: Matrix4.identity()
-                  ..setEntry(3, 2, 0.0012)
-                  ..rotateY(-coverDeg * math.pi / 180),
-                child: SizedBox(
-                  width: w,
-                  height: h,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      showBack
-                          ? Transform(
-                              alignment: Alignment.center,
-                              transform: Matrix4.identity()..rotateY(math.pi),
-                              child: _coverBack(radius),
-                            )
-                          : _coverFront(w, h, radius),
-                      IgnorePointer(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: radius,
-                            color: Colors.black.withValues(
-                              alpha: .42 * coverShade,
-                            ),
-                          ),
-                        ),
+        final half = w / 2;
+        final radius = BorderRadius.circular(math.min(w * .035, 10));
+
+        // Kapak kapalıyken tüm dikdörtgeni kaplar; açılırken sol yarıya
+        // menteşelenip dışarı döner. Böylece altından iki sayfalık yayılım
+        // çıkar — kapalı kitapla aynı dikdörtgen değil.
+        final coverAngle = open * math.pi * .92;
+
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // --- Açık yayılım (kapak açıldıkça görünür) ---
+            if (open > 0.02) ...[
+              Positioned.fill(child: _spread(w, h, radius)),
+              ..._turningLeaves(half, h),
+              // Cilt payı gölgesi: iki sayfanın birleştiği yer. Açık kitabı
+              // "tek bir kâğıt" olmaktan çıkaran ayrıntı bu.
+              Positioned(
+                left: half - w * .035,
+                top: 0,
+                bottom: 0,
+                width: w * .07,
+                child: IgnorePointer(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: .30 * open),
+                          Colors.transparent,
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ],
-          ),
+
+            // --- Ön kapak: sol kenardan menteşeli ---
+            Transform(
+              alignment: Alignment.centerLeft,
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.0014)
+                ..rotateY(-coverAngle),
+              child: SizedBox(
+                width: open > 0.02 ? w / 2 : w,
+                height: h,
+                child: _cover(radius, open),
+              ),
+            ),
+          ],
         );
       },
     );
   }
 
-  Widget _pages(double w, double h, BorderRadius radius) {
+  /// Açık kitabın iki sayfası.
+  Widget _spread(double w, double h, BorderRadius radius) {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: radius,
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFFFBF7EC), Color(0xFFF1EAD8)],
-        ),
-      ),
-      child: Stack(
-        children: [
-          // Cilt payı gölgesi (sol)
-          Positioned(
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: w * 0.16,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.black.withValues(alpha: .22),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // Sayfa kenarı çizgileri (sağ)
-          Positioned(
-            right: w * 0.05,
-            top: h * 0.1,
-            bottom: h * 0.1,
-            child: Row(
-              children: List.generate(
-                3,
-                (_) => Container(
-                  width: 1,
-                  margin: const EdgeInsets.symmetric(horizontal: 1.4),
-                  color: Colors.black.withValues(alpha: .06),
-                ),
-              ),
-            ),
+        color: const Color(0xFFFBF7EC),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: .34),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: radius,
+        child: Row(
+          children: [
+            Expanded(child: _page(alignRight: true)),
+            Expanded(child: _page(alignRight: false)),
+          ],
+        ),
       ),
     );
   }
 
-  List<Widget> _leaves(double w, double h, BorderRadius radius) {
-    // Çok sayıda yaprak sağdan sola süzülerek çevrilir — sürekli akan riffle.
-    const n = 12;
-    final out = <Widget>[];
-    for (var i = 0; i < n; i++) {
-      final lp = ((pageTurn * (n + 2)) - i).clamp(0.0, 1.0);
-      if (lp <= 0 || lp >= 1) continue;
-      final deg = Curves.easeInOut.transform(lp) * 168;
-      final shade = math.sin(deg * math.pi / 180).abs();
-      out.add(
-        Transform(
-          alignment: Alignment.centerLeft,
-          transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.0012)
-            ..rotateY(-deg * math.pi / 180),
-          child: SizedBox(
-            width: w,
-            height: h,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: radius,
-                    gradient: const LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [Color(0xFFFCF8EE), Color(0xFFEFE7D3)],
+  /// Tek bir sayfa: kâğıt tonu, cilt payına doğru koyulaşan gölge ve
+  /// okunurluğu ima eden satır izleri.
+  Widget _page({required bool alignRight}) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: alignRight ? Alignment.centerLeft : Alignment.centerRight,
+          end: alignRight ? Alignment.centerRight : Alignment.centerLeft,
+          colors: const [Color(0xFFFDFAF2), Color(0xFFEFE7D5)],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var i = 0; i < 9; i++)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: i == 8 ? .52 : (i.isEven ? .95 : .88),
+                  child: Container(
+                    height: 2,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: .07),
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
                 ),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: radius,
-                    color: Colors.black.withValues(alpha: .4 * shade),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Cilt payından menteşelenip sağdan sola çevrilen yapraklar.
+  ///
+  /// Kritik fark: yaprak **yarım sayfa** genişliğinde ve menteşesi ortada.
+  /// Gerçek kitapta sayfa oradan döner; tam sayfa boyunda bir yaprak sol
+  /// kenardan dönünce kapak gibi görünüyordu.
+  List<Widget> _turningLeaves(double half, double h) {
+    if (open < .9) return const [];
+    final out = <Widget>[];
+
+    for (var i = 0; i < _leafCount; i++) {
+      // Yapraklar sırayla kalkar; birkaçı aynı anda havada olur.
+      final start = i / (_leafCount + 1.6);
+      final local = ((flip - start) * 3.2).clamp(0.0, 1.0);
+      if (local <= 0 || local >= 1) continue;
+
+      final angle = Curves.easeInOut.transform(local) * math.pi;
+      // Dönen yüzün ışığa göre koyulaşması — hacim hissi.
+      final shade = math.sin(angle).abs();
+      final isBackFace = angle > math.pi / 2;
+
+      out.add(
+        Positioned(
+          left: half,
+          top: h * .012,
+          width: half,
+          height: h * .976,
+          child: Transform(
+            alignment: Alignment.centerLeft,
+            transform: Matrix4.identity()
+              ..setEntry(3, 2, 0.0016)
+              ..rotateY(-angle),
+            child: Transform(
+              alignment: Alignment.center,
+              // Arka yüz aynalanır ki yazı izleri ters akmasın.
+              transform: isBackFace
+                  ? (Matrix4.identity()..rotateY(math.pi))
+                  : Matrix4.identity(),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  _page(alignRight: isBackFace),
+                  IgnorePointer(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: .34 * shade),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -338,15 +376,44 @@ class _BookBody extends StatelessWidget {
     return out;
   }
 
-  Widget _coverFront(double w, double h, BorderRadius radius) {
+  /// Kitabın ön kapağı. Açılırken dış yüzü döner, iç yüzü görünür.
+  Widget _cover(BorderRadius radius, double open) {
+    final showInside = open > .52;
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        if (showInside)
+          Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.identity()..rotateY(math.pi),
+            child: _coverInside(radius),
+          )
+        else
+          _coverOutside(radius),
+        // Açıldıkça kapak ışıktan uzaklaşır.
+        IgnorePointer(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: radius,
+              color: Colors.black.withValues(
+                alpha: .40 * math.sin(open * math.pi).abs(),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _coverOutside(BorderRadius radius) {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: radius,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: .38),
-            blurRadius: 11,
-            offset: const Offset(5, 8),
+            blurRadius: 14,
+            offset: const Offset(5, 9),
           ),
         ],
       ),
@@ -356,47 +423,22 @@ class _BookBody extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Sırt rengi taban — kapak yüklenene kadar bile boşluk görünmez
             ColoredBox(color: spineColor),
-            // Kapak fotoğrafı dikdörtgeni DOLDURUR (cover) — boş renkli kutu yok
-            if ((coverUrl ?? '').isNotEmpty)
-              CachedNetworkImage(
-                imageUrl: coverUrl!,
-                fit: BoxFit.cover,
-                fadeInDuration: Duration.zero,
-                placeholder: (_, __) => ColoredBox(color: spineColor),
-                errorWidget: (_, __, ___) => const SizedBox.shrink(),
-              ),
-            // Sırt vurgusu (sol)
+            // CachedCover hem internetten gelen kapağı hem kullanıcının
+            // çektiği fotoğrafı gösterebiliyor.
+            CachedCover(url: coverUrl, iconColor: Colors.white70),
             Positioned(
               left: 0,
               top: 0,
               bottom: 0,
-              width: w * 0.1,
+              width: 10,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.white.withValues(alpha: .22),
+                      Colors.white.withValues(alpha: .20),
                       Colors.transparent,
                     ],
-                  ),
-                ),
-              ),
-            ),
-            // Diyagonal parlama
-            Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.white.withValues(alpha: .14),
-                      Colors.transparent,
-                      Colors.black.withValues(alpha: .12),
-                    ],
-                    stops: const [0, .5, 1],
                   ),
                 ),
               ),
@@ -407,16 +449,16 @@ class _BookBody extends StatelessWidget {
     );
   }
 
-  Widget _coverBack(BorderRadius radius) {
-    return Container(
+  /// Kapağın iç yüzü — kâğıt kaplama, hafif dokulu.
+  Widget _coverInside(BorderRadius radius) {
+    return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: radius,
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFEFE8D6), Color(0xFFE2D8C0)],
+          colors: [Color(0xFFF0E9D8), Color(0xFFDFD4BA)],
         ),
-        border: Border.all(color: Colors.black.withValues(alpha: .10)),
       ),
     );
   }

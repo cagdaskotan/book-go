@@ -70,7 +70,25 @@ class AppRouter {
         if (bookId == null) {
           return MaterialPageRoute(builder: (_) => const _BadArgs());
         }
-        return MaterialPageRoute(builder: (_) => DiaryPage(bookId: bookId));
+        // Kitap açılış animasyonu Hero uçuşuna bağlı ve Hero, rotanın
+        // geçiş süresini kullanır. Varsayılan 300 ms'de sayfa çevirme
+        // penceresi ~80 ms'ye düşüyor; göz bunu animasyon olarak bile
+        // algılamıyor. Açılışa nefes alacak süre veriyoruz; geri dönüş
+        // daha kısa, çünkü orada anlatılacak bir şey yok.
+        return PageRouteBuilder<void>(
+          settings: settings,
+          transitionDuration: const Duration(milliseconds: 950),
+          reverseTransitionDuration: const Duration(milliseconds: 620),
+          pageBuilder: (_, __, ___) => DiaryPage(bookId: bookId),
+          transitionsBuilder: (_, animation, __, child) => FadeTransition(
+            opacity: CurvedAnimation(
+              parent: animation,
+              // Sayfa, kitap kapanıp yerine oturduktan sonra belirsin.
+              curve: const Interval(.72, 1, curve: Curves.easeOut),
+            ),
+            child: child,
+          ),
+        );
     }
     return null;
   }

@@ -174,7 +174,7 @@ class ReadingQuestCard extends StatelessWidget {
               ),
               Expanded(
                 child: _TinyMetric(
-                  icon: Icons.auto_awesome_rounded,
+                  icon: Icons.bar_chart_rounded,
                   text: '${summary.xp} XP',
                   color: const Color(0xFF8B5CF6),
                 ),

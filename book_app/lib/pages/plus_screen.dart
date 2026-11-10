@@ -17,7 +17,7 @@ class _PlusScreenState extends State<PlusScreen> {
   int _plan = 0;
 
   static const _perks = <(IconData, String)>[
-    (Icons.auto_awesome_rounded, 'Kişisel kitap önerileri'),
+    (Icons.recommend_rounded, 'Kişisel kitap önerileri'),
     (Icons.insights_rounded, 'Gelişmiş istatistikler & ısı haritası'),
     (Icons.collections_bookmark_rounded, 'Sınırsız koleksiyon ve alıntı'),
     (Icons.format_quote_rounded, 'Premium alıntı & paylaşım kartları'),

@@ -137,7 +137,7 @@ class _MascotSparkle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(Icons.auto_awesome_rounded, color: color, size: size);
+    return Icon(Icons.emoji_events_rounded, color: color, size: size);
   }
 }
 

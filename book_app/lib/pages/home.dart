@@ -172,7 +172,7 @@ class _DailyGoalSheetState extends State<_DailyGoalSheet> {
                       ),
                     ),
                     const Icon(
-                      Icons.auto_awesome_rounded,
+                      Icons.military_tech_rounded,
                       color: Color(0xFFFFD98A),
                     ),
                   ],
@@ -1267,7 +1267,7 @@ class _WelcomePanel extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(
-                        Icons.auto_awesome_rounded,
+                        Icons.military_tech_rounded,
                         color: Color(0xFFFFD98A),
                         size: 18,
                       ),

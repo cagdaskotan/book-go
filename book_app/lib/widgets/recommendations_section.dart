@@ -134,7 +134,7 @@ class _RecommendationsSectionState extends State<RecommendationsSection> {
           ),
           child: Row(
             children: [
-              Icon(Icons.auto_awesome_rounded, color: cs.primary, size: 28),
+              Icon(Icons.recommend_rounded, color: cs.primary, size: 28),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -195,7 +195,7 @@ class _RecommendationsSectionState extends State<RecommendationsSection> {
       padding: const EdgeInsets.fromLTRB(20, 16, 12, 0),
       child: Row(
         children: [
-          Icon(Icons.auto_awesome_rounded, color: cs.primary),
+          Icon(Icons.recommend_rounded, color: cs.primary),
           const SizedBox(width: 8),
           Text(
             'Sana özel öneriler',
@@ -285,7 +285,7 @@ class _LockedTeaser extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: const Icon(
-                    Icons.auto_awesome_rounded,
+                    Icons.recommend_rounded,
                     color: Colors.white,
                   ),
                 ),

@@ -206,7 +206,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 value: _MenuAction.recommendations,
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: Icon(Icons.auto_awesome_rounded),
+                  leading: Icon(Icons.recommend_rounded),
                   title: Text('Sana Özel'),
                 ),
               ),

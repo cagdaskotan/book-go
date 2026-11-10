@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'book_cover.dart';
+import '../models/reading_status.dart';
 
 /// Kitap ekleme/düzenleme sayfalarının paylaştığı tasarım yapı taşları.
 /// Tek bir görsel dil: başlık, bölüm kartı, kapak önizleme, tarih alanı, footer.
@@ -387,6 +388,11 @@ class BookFormError extends StatelessWidget {
 
 // ----------------------------- Status selector -----------------------------
 /// Okuma durumu seçici (3 segment). 'paused' da desteklenir.
+/// Okuma durumu seçici.
+///
+/// Beş durum (listemde / okuyorum / ara verdim / bıraktım / bitti) bir
+/// SegmentedButton'a sığmıyordu: dar ekranda etiketler eziliyordu. Sarmalayan
+/// çipler hem taşmıyor hem de seçili olanı daha net gösteriyor.
 class BookStatusSelector extends StatelessWidget {
   const BookStatusSelector({
     super.key,
@@ -397,32 +403,43 @@ class BookStatusSelector extends StatelessWidget {
 
   final String value;
   final ValueChanged<String>? onChanged;
-  final bool includePaused;
 
-  static Widget _seg(String text) => FittedBox(
-    fit: BoxFit.scaleDown,
-    child: Text(text, maxLines: 1, softWrap: false),
-  );
+  /// "Ara verdim" ve "Bıraktım" yalnızca düzenlemede anlamlı; yeni kitap
+  /// eklerken kullanıcı bunları seçmiyor.
+  final bool includePaused;
 
   @override
   Widget build(BuildContext context) {
-    return SegmentedButton<String>(
-      style: SegmentedButton.styleFrom(
-        visualDensity: VisualDensity.compact,
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-        textStyle: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12.5),
-      ),
-      segments: [
-        ButtonSegment(value: 'want_to_read', label: _seg('Listemde')),
-        ButtonSegment(value: 'reading', label: _seg('Okuyorum')),
-        if (includePaused) ButtonSegment(value: 'paused', label: _seg('Ara')),
-        ButtonSegment(value: 'finished', label: _seg('Bitti')),
+    final selected = ReadingStatus.parse(value);
+    final options = ReadingStatus.values
+        .where((s) => includePaused || !s.isDormant)
+        .toList();
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final status in options)
+          ChoiceChip(
+            label: Text(status.label),
+            avatar: Icon(
+              status.icon,
+              size: 16,
+              color: status == selected
+                  ? Theme.of(context).colorScheme.onSecondaryContainer
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            selected: status == selected,
+            showCheckmark: false,
+            labelStyle: const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 12.5,
+            ),
+            onSelected: onChanged == null
+                ? null
+                : (_) => onChanged!(status.value),
+          ),
       ],
-      selected: {value},
-      showSelectedIcon: false,
-      onSelectionChanged: onChanged == null
-          ? null
-          : (s) => onChanged!(s.first),
     );
   }
 }

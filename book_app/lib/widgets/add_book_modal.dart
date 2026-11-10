@@ -7,6 +7,7 @@ import '../services/book_service.dart';
 import '../services/cover_photo_service.dart';
 import 'app_toast.dart';
 import 'book_form.dart';
+import '../utils/turkish.dart';
 
 const _bookCategories = [
   'Roman',
@@ -683,26 +684,16 @@ class _SuggestFieldState extends State<_SuggestField> {
     super.dispose();
   }
 
-  static String _fold(String value) => value
-      .toLowerCase()
-      .replaceAll('ı', 'i')
-      .replaceAll('İ', 'i')
-      .replaceAll('ş', 's')
-      .replaceAll('ğ', 'g')
-      .replaceAll('ü', 'u')
-      .replaceAll('ö', 'o')
-      .replaceAll('ç', 'c');
-
   @override
   Widget build(BuildContext context) {
     return RawAutocomplete<String>(
       textEditingController: widget.controller,
       focusNode: _focus,
       optionsBuilder: (value) {
-        final query = _fold(value.text.trim());
+        final query = foldTurkish(value.text.trim());
         if (query.isEmpty) return const Iterable<String>.empty();
         return widget.suggestions
-            .where((author) => _fold(author).contains(query))
+            .where((author) => foldTurkish(author).contains(query))
             .take(5);
       },
       fieldViewBuilder: (context, textController, focusNode, onSubmit) {

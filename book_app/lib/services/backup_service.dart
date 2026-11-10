@@ -12,6 +12,7 @@ import '../utils/dates.dart';
 import 'api_exception.dart';
 import 'journal_store.dart';
 import 'profile_service.dart';
+import '../models/reading_status.dart';
 
 /// Yedekleme ve geri yükleme.
 ///
@@ -469,8 +470,9 @@ class BackupService {
   static String _status(Object? value, bool finished) {
     if (finished) return 'finished';
     final s = value?.toString().trim();
-    const allowed = {'want_to_read', 'reading', 'paused', 'finished'};
-    return (s != null && allowed.contains(s)) ? s : 'want_to_read';
+    return (s != null && ReadingStatus.dbValues.contains(s))
+        ? s
+        : ReadingStatus.wantToRead.value;
   }
 }
 

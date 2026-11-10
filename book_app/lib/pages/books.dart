@@ -17,6 +17,8 @@ import '../widgets/book_add_launcher.dart';
 import '../widgets/book_cover.dart';
 import '../widgets/mascot.dart';
 import '../widgets/navigation.dart';
+import '../models/reading_status.dart';
+import '../utils/turkish.dart';
 
 class BooksPage extends StatefulWidget {
   const BooksPage({super.key});
@@ -46,13 +48,18 @@ class _BooksPageState extends State<BooksPage> {
     if (_statusFilter != 'all') {
       list = list.where((book) => book.readingStatus == _statusFilter);
     }
-    final q = _query.trim().toLowerCase();
+    // Türkçe harf duyarsız ara ve yayınevi/barkodu da kapsa: kullanıcı
+    // "is bankasi" ya da barkodun son hanelerini yazarak da bulabilsin.
+    final q = foldTurkish(_query.trim());
     if (q.isNotEmpty) {
       list = list.where(
         (b) =>
-            b.title.toLowerCase().contains(q) ||
-            (b.author ?? '').toLowerCase().contains(q) ||
-            (b.category ?? '').toLowerCase().contains(q),
+            containsTurkish(b.title, q) ||
+            containsTurkish(b.author, q) ||
+            containsTurkish(b.publisher, q) ||
+            containsTurkish(b.category, q) ||
+            containsTurkish(b.tags, q) ||
+            (b.isbn ?? '').contains(q),
       );
     }
     final sorted = list.toList();
@@ -416,17 +423,18 @@ class _BooksPageState extends State<BooksPage> {
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 2),
                     child: Row(
                       children: [
-                        for (final (value, label) in const [
-                          ('all', 'Tümü'),
-                          ('want_to_read', 'Listemde'),
-                          ('reading', 'Okuyorum'),
-                          ('paused', 'Ara verdim'),
-                          ('finished', 'Bitti'),
-                        ])
+                        _StatusFilter(
+                          label: 'Tümü (${_countFor('all')})',
+                          selected: _statusFilter == 'all',
+                          onTap: () => setState(() => _statusFilter = 'all'),
+                        ),
+                        for (final status in ReadingStatus.values)
                           _StatusFilter(
-                            label: '$label (${_countFor(value)})',
-                            selected: _statusFilter == value,
-                            onTap: () => setState(() => _statusFilter = value),
+                            label:
+                                '${status.label} (${_countFor(status.value)})',
+                            selected: _statusFilter == status.value,
+                            onTap: () =>
+                                setState(() => _statusFilter = status.value),
                           ),
                       ],
                     ),
@@ -742,19 +750,9 @@ class _StatusFilter extends StatelessWidget {
   }
 }
 
-String _statusLabel(String status) => switch (status) {
-  'reading' => 'Okuyorum',
-  'paused' => 'Ara verdim',
-  'finished' => 'Bitti',
-  _ => 'Listemde',
-};
+String _statusLabel(String status) => ReadingStatus.parse(status).label;
 
-IconData _statusIcon(String status) => switch (status) {
-  'reading' => Icons.auto_stories_rounded,
-  'paused' => Icons.pause_circle_outline_rounded,
-  'finished' => Icons.flag_rounded,
-  _ => Icons.bookmark_add_outlined,
-};
+IconData _statusIcon(String status) => ReadingStatus.parse(status).icon;
 
 // ====== Hero şeridi: Light/Dark’a göre gradyan ======
 BoxDecoration _heroDecoration(BuildContext context) {

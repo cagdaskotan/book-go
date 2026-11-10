@@ -7,6 +7,7 @@ import '../models/book.dart';
 import '../utils/dates.dart';
 import 'api_exception.dart';
 import 'journal_store.dart';
+import '../models/reading_status.dart';
 
 /// Kitaplar ve okuma günlüğü için cihaz-içi depo.
 ///
@@ -19,7 +20,11 @@ class BookService {
 
   Future<Database> get _db => AppDatabase.instance.db;
 
-  static const _validStatuses = {'want_to_read', 'reading', 'paused'};
+  /// Kullanıcının doğrudan seçebildiği durumlar. 'finished' burada yok:
+  /// bitmişlik ayrı bir bayraktan ve günlükten türetiliyor.
+  static final Set<String> _validStatuses = ReadingStatus.dbValues
+      .where((v) => v != ReadingStatus.finished.value)
+      .toSet();
 
   // ---------------------------------------------------------------------------
   // KITAPLAR
@@ -504,10 +509,14 @@ class BookService {
     final String status;
     if (isFinished) {
       status = 'finished';
-    } else if (progress > 0 && previousStatus != 'paused') {
-      status = 'reading';
+    } else if (progress > 0 && !ReadingStatus.parse(previousStatus).isDormant) {
+      status = ReadingStatus.reading.value;
     } else {
-      status = previousStatus == 'finished' ? 'want_to_read' : previousStatus;
+      // "Ara verdim" ve "Bıraktım" kullanıcının kararı; sayfa kaydı gelse
+      // bile kitabı kendiliğinden okumaya döndürmüyoruz.
+      status = previousStatus == ReadingStatus.finished.value
+          ? ReadingStatus.wantToRead.value
+          : previousStatus;
     }
 
     await txn.update(

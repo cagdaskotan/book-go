@@ -31,7 +31,12 @@ class BackupService {
   /// sürümleri kabul etmeye devam eder.
   static const int formatVersion = 2;
 
-  static const String _appTag = 'Mobil Kütüphanem';
+  /// Yedek dosyasına yazılan uygulama kimliği.
+  static const String _appTag = 'Bilge';
+
+  /// Geçmişte yazılmış kimlikler. Uygulamanın adı değişti; eski yedekler
+  /// reddedilmesin diye hepsi kabul ediliyor.
+  static const Set<String> _knownAppTags = {_appTag, 'Mobil Kütüphanem'};
   static const String _manifestName = 'backup.json';
   static const String _journalPrefix = 'journal/';
 
@@ -47,7 +52,7 @@ class BackupService {
     final file = await writeBackupFile();
     await Share.shareXFiles(
       [XFile(file.path, mimeType: 'application/zip')],
-      subject: 'Mobil Kütüphanem yedeği',
+      subject: 'Bilge yedeği',
       text: 'Kitaplığımın ${todayYmd()} tarihli yedeği',
     );
   }
@@ -346,7 +351,7 @@ class BackupService {
 
   static void _assertReadable(Map<String, Object?> manifest) {
     final app = manifest['app']?.toString();
-    if (app != null && app.isNotEmpty && app != _appTag) {
+    if (app != null && app.isNotEmpty && !_knownAppTags.contains(app)) {
       throw const ApiException(
         400,
         'Bu dosya başka bir uygulamanın yedeği gibi görünüyor.',

@@ -62,7 +62,7 @@ class _BookAppState extends State<BookApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Mobil Kütüphanem',
+      title: 'Bilge',
       debugShowCheckedModeBanner: false,
       locale: const Locale('tr', 'TR'),
       supportedLocales: const [Locale('tr', 'TR')],

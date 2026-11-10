@@ -83,7 +83,7 @@ void main() {
     await seedLibrary();
     final manifest = await BackupService().buildManifest();
 
-    expect(manifest['app'], 'Mobil Kütüphanem');
+    expect(manifest['app'], 'Bilge');
     expect(manifest['format_version'], BackupService.formatVersion);
     expect(manifest['books'], hasLength(1));
     expect(manifest['reading_logs'], hasLength(1));
@@ -150,6 +150,18 @@ void main() {
     expect(preview.quotes, 1);
     // inspect sadece okur: mevcut veri yerinde kalmalı.
     expect(await BookService().fetchBooks(), hasLength(1));
+  });
+
+  test('eski uygulama adıyla yazılmış yedek hâlâ okunur', () async {
+    // Uygulamanın adı "Mobil Kütüphanem"den "Bilge"ye değişti; kullanıcının
+    // elindeki eski yedekler reddedilmemeli.
+    await seedLibrary();
+    final manifest = await BackupService().buildManifest();
+    manifest['app'] = 'Mobil Kütüphanem';
+    final file = await writeBackup(manifest);
+
+    final preview = await BackupService().restore(file);
+    expect(preview.books, 1);
   });
 
   test('başka uygulamanın dosyası reddedilir', () async {

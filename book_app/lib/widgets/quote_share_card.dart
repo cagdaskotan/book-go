@@ -215,7 +215,7 @@ class QuoteShareCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        'Mobil Kütüphanem',
+                        'Bilge · Mobil Kütüphanem',
                         style: TextStyle(
                           fontSize: 11,
                           letterSpacing: 1.5,

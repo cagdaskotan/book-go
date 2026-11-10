@@ -180,7 +180,7 @@ class _InsightsPageState extends State<InsightsPage> {
     final unlocked = _achievements.where((a) => a.unlocked(s, _library)).length;
     final text =
         '''
-📚 Mobil Kütüphanem istatistiklerim
+📚 Bilge · okuma istatistiklerim
 🏆 Seviye ${s.level} — ${levelTitle(s.level)}
 ✨ ${s.xp} XP biriktirdim
 🔥 En uzun okuma serim: ${s.longestStreak} gün

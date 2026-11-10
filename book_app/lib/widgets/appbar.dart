@@ -51,7 +51,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   String get _title =>
       titleOverride ??
       switch (activeTab) {
-        HeaderTab.home => 'Mobil Kütüphanem',
+        HeaderTab.home => 'Bilge',
         HeaderTab.books => 'Kütüphanem',
         HeaderTab.favorites => 'Favorilerim',
       };

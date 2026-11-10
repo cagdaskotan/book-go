@@ -171,7 +171,7 @@ class YearWrappedShareCard extends StatelessWidget {
                     ),
                     SizedBox(width: width * .018),
                     Text(
-                      'Mobil Kütüphanem',
+                      'Bilge · Mobil Kütüphanem',
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: .6),
                         fontWeight: FontWeight.w800,

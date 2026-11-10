@@ -8,18 +8,26 @@ import '../services/catalog_service.dart';
 import 'book_cover.dart';
 
 /// Başlığa göre kitap arama sayfası. Seçilen kitabı [CatalogBook] olarak döndürür.
-Future<CatalogBook?> showTitleSearch(BuildContext context) {
+///
+/// [initialQuery] verilirse arama kutusu dolu açılır ve sorgu hemen çalışır —
+/// kapak taraması okuduğu künyeyi böyle devrediyor.
+Future<CatalogBook?> showTitleSearch(
+  BuildContext context, {
+  String? initialQuery,
+}) {
   return showModalBottomSheet<CatalogBook>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => const _TitleSearchSheet(),
+    builder: (_) => _TitleSearchSheet(initialQuery: initialQuery),
   );
 }
 
 class _TitleSearchSheet extends StatefulWidget {
-  const _TitleSearchSheet();
+  const _TitleSearchSheet({this.initialQuery});
+
+  final String? initialQuery;
 
   @override
   State<_TitleSearchSheet> createState() => _TitleSearchSheetState();
@@ -70,6 +78,18 @@ class _TitleSearchSheetState extends State<_TitleSearchSheet> {
     _debounce?.cancel();
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final query = widget.initialQuery?.trim();
+    if (query != null && query.isNotEmpty) {
+      _controller.text = query;
+      // Kapaktan okunan künyeyi beklemeden aratıyoruz; kullanıcı zaten
+      // fotoğraf çekerek niyetini belli etti.
+      WidgetsBinding.instance.addPostFrameCallback((_) => _search(query));
+    }
   }
 
   void _onChanged(String value) {

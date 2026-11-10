@@ -9,6 +9,8 @@ import '../services/catalog_service.dart';
 import 'add_book_modal.dart';
 import 'app_toast.dart';
 import 'title_search_sheet.dart';
+import '../services/cover_scan_service.dart';
+import '../services/cover_photo_service.dart';
 
 Future<int?> showBookAddLauncher(BuildContext context) async {
   final action = await showModalBottomSheet<_AddAction>(
@@ -18,6 +20,8 @@ Future<int?> showBookAddLauncher(BuildContext context) async {
   );
   if (action == null || !context.mounted) return null;
   if (action == _AddAction.manual) return showAddBookModal(context);
+
+  if (action == _AddAction.cover) return _addFromCover(context);
 
   if (action == _AddAction.search) {
     final found = await showTitleSearch(context);
@@ -70,7 +74,83 @@ Future<int?> showBookAddLauncher(BuildContext context) async {
   return showAddBookModal(context, initial: found, isbn: isbn);
 }
 
-enum _AddAction { scan, search, manual }
+/// Kapak fotoğrafından kitap ekleme.
+///
+/// Barkodu kataloglarda bulunmayan Türkçe baskılar için ikinci yol. Akış
+/// şöyle: fotoğraf çek → kapaktaki yazıyı oku → künyeyi katalogda ara.
+/// Bulunursa kullanıcı seçer; bulunmazsa form okunan başlık ve yazarla
+/// dolu açılır. Her iki durumda da çekilen fotoğraf kapak olarak hazır —
+/// kullanıcı tek karede hem veriyi hem görseli vermiş olur.
+Future<int?> _addFromCover(BuildContext context) async {
+  final imagePath = await CoverPhotoService.capture();
+  if (imagePath == null || !context.mounted) return null;
+
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => const _LookupDialog(message: 'Kapak okunuyor'),
+  );
+
+  CoverScanResult scan;
+  try {
+    scan = await CoverScanService.scanImage(imagePath);
+  } catch (_) {
+    scan = CoverScanResult(
+      title: null,
+      author: null,
+      lines: const [],
+      imagePath: imagePath,
+    );
+  }
+  if (!context.mounted) return null;
+  Navigator.pop(context);
+
+  // Okunan künyeyi ve fotoğrafı forma taşıyan yedek plan.
+  CatalogBook fallback() => CatalogBook(
+    isbn: '',
+    title: scan.title ?? '',
+    totalPages: 0,
+    source: 'cover_scan',
+    author: scan.author,
+    coverUrl: imagePath,
+  );
+
+  if (scan.query.isEmpty) {
+    AppToast.info(
+      context,
+      'Kapaktaki yazı okunamadı. Bilgileri sen girebilirsin.',
+      title: 'Künye çıkmadı',
+    );
+    return showAddBookModal(context, initial: fallback());
+  }
+
+  final picked = await showTitleSearch(context, initialQuery: scan.query);
+  if (!context.mounted) return null;
+
+  if (picked == null) {
+    // Kullanıcı listeden seçmedi: okunan künyeyle forma geç, boşa çıkmasın.
+    return showAddBookModal(context, initial: fallback());
+  }
+
+  // Katalogda kapak yoksa çektiğimiz fotoğrafı kullan — raf kapaksız
+  // kitaplarla dolmasın.
+  final chosen = (picked.coverUrl ?? '').trim().isEmpty
+      ? CatalogBook(
+          isbn: picked.isbn,
+          title: picked.title,
+          totalPages: picked.totalPages,
+          source: picked.source,
+          author: picked.author,
+          coverUrl: imagePath,
+          category: picked.category,
+          publisher: picked.publisher,
+        )
+      : picked;
+
+  return showAddBookModal(context, initial: chosen);
+}
+
+enum _AddAction { scan, cover, search, manual }
 
 class _AddChoiceSheet extends StatelessWidget {
   const _AddChoiceSheet();
@@ -139,6 +219,14 @@ class _AddChoiceSheet extends StatelessWidget {
                 subtitle: 'Arka kapaktaki ISBN barkodunu okut',
                 colors: const [Color(0xFF2BAE8A), Color(0xFF34D399)],
                 onTap: () => Navigator.pop(context, _AddAction.scan),
+              ),
+              const SizedBox(height: 10),
+              _AddOptionRow(
+                icon: Icons.photo_camera_rounded,
+                title: 'Kapağı okut',
+                subtitle: 'Barkodu yoksa kapağın fotoğrafını çek',
+                colors: const [Color(0xFF3B82F6), Color(0xFF60A5FA)],
+                onTap: () => Navigator.pop(context, _AddAction.cover),
               ),
               const SizedBox(height: 10),
               _AddOptionRow(
@@ -238,16 +326,23 @@ class _AddOptionRow extends StatelessWidget {
 }
 
 class _LookupDialog extends StatelessWidget {
-  const _LookupDialog();
+  const _LookupDialog({this.message = 'Kitap aranıyor'});
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
-    return const AlertDialog(
+    return AlertDialog(
       content: Row(
         children: [
-          CircularProgressIndicator(),
-          SizedBox(width: 18),
-          Text('Kitap aranıyor', style: TextStyle(fontWeight: FontWeight.w800)),
+          const CircularProgressIndicator(),
+          const SizedBox(width: 18),
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
+          ),
         ],
       ),
     );

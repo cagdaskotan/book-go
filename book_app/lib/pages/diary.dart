@@ -488,7 +488,15 @@ class _DiaryPageState extends State<DiaryPage> {
           ),
 
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
+            // Sayfanın altında gezinme çubuğu yok ama içerik sistem gezinme
+            // çubuğunun altına uzanıyor. Sabit boşluk cihaza göre yetmiyordu:
+            // son günlük kaydı kırpılıyor ve kaydıracak yer kalmıyordu.
+            padding: EdgeInsets.fromLTRB(
+              16,
+              0,
+              16,
+              24 + MediaQuery.viewPaddingOf(context).bottom,
+            ),
             sliver: _logs.isEmpty
                 ? SliverToBoxAdapter(
                     child: _SurfaceCard(

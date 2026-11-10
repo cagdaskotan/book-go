@@ -150,7 +150,13 @@ class _RecommendationsPageState extends State<RecommendationsPage> {
           ),
         Expanded(
           child: GridView.builder(
-            padding: const EdgeInsets.fromLTRB(14, 8, 14, 24),
+            // Son satır sistem gezinme çubuğunun altında kalmasın.
+            padding: EdgeInsets.fromLTRB(
+              14,
+              8,
+              14,
+              24 + MediaQuery.viewPaddingOf(context).bottom,
+            ),
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 200,
               mainAxisSpacing: 12,

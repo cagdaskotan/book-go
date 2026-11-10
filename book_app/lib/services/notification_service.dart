@@ -40,7 +40,16 @@ class NotificationService {
     return androidResult && iosResult;
   }
 
-  Future<void> scheduleDaily({required int hour, required int minute}) async {
+  /// Günlük hatırlatıcıyı kurar.
+  ///
+  /// [title] ve [body] verilmezse genel metin kullanılır. Seri durumuna göre
+  /// konuşan metinler için [refreshStreakReminder] çağrılır.
+  Future<void> scheduleDaily({
+    required int hour,
+    required int minute,
+    String? title,
+    String? body,
+  }) async {
     await initialize();
     final now = tz.TZDateTime.now(tz.local);
     var scheduled = tz.TZDateTime(
@@ -56,8 +65,8 @@ class NotificationService {
     }
     await _plugin.zonedSchedule(
       7001,
-      'Kitabın seni bekliyor',
-      'Bir kaç sayfa okuyup serini korumaya ne dersin?',
+      title ?? 'Kitabın seni bekliyor',
+      body ?? 'Birkaç sayfa okuyup serini korumaya ne dersin?',
       scheduled,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -78,6 +87,62 @@ class NotificationService {
     await prefs.setBool('reading_reminder_enabled', true);
     await prefs.setInt('reading_reminder_hour', hour);
     await prefs.setInt('reading_reminder_minute', minute);
+  }
+
+  /// Hatırlatıcı metnini okuma serisine göre tazeler.
+  ///
+  /// Arka planda çalışan bir servisimiz yok (ve olmasını da istemiyoruz),
+  /// bu yüzden metin uygulama her açıldığında ve her kayıt sonrası yeniden
+  /// kuruluyor. Pratikte bu yeterli: kullanıcı gün içinde uygulamaya
+  /// girdiyse akşamki hatırlatma güncel seriyi biliyor.
+  ///
+  /// Hatırlatıcı kapalıysa hiçbir şey yapmaz — kullanıcı kapatmışsa
+  /// arkasından açmayız.
+  Future<void> refreshStreakReminder({
+    required int currentStreak,
+    required bool readToday,
+  }) async {
+    final current = await settings();
+    if (!current.enabled) return;
+
+    final (title, body) = _streakMessage(
+      streak: currentStreak,
+      readToday: readToday,
+    );
+    await scheduleDaily(
+      hour: current.hour,
+      minute: current.minute,
+      title: title,
+      body: body,
+    );
+  }
+
+  /// Seri durumuna göre bildirim metni.
+  ///
+  /// Suçlayıcı dil yok: "serini kaybettin" demek kullanıcıyı uygulamadan
+  /// soğutuyor. Kayıp yaşandıysa yeniden başlamaya davet ediyoruz.
+  static (String, String) _streakMessage({
+    required int streak,
+    required bool readToday,
+  }) {
+    if (readToday) {
+      return (
+        'Bugünü tamamladın',
+        streak > 1
+            ? '$streak günlük serin sürüyor. Yarın görüşürüz.'
+            : 'Yarın da birkaç sayfa, olur mu?',
+      );
+    }
+    if (streak >= 2) {
+      return (
+        'Serin tehlikede',
+        '$streak günlük serini korumak için birkaç sayfa yeter.',
+      );
+    }
+    if (streak == 1) {
+      return ('Serini büyütelim', 'Bugün de okursan seri ikiye çıkıyor.');
+    }
+    return ('Bilge seni bekliyor', 'Birkaç sayfayla yeniden başlayabilirsin.');
   }
 
   Future<void> cancelDaily() async {

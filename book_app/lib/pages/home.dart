@@ -24,6 +24,8 @@ import '../widgets/recommendations_section.dart';
 import '../widgets/navigation.dart';
 import '../widgets/yearly_challenge_card.dart';
 import '../widgets/home_shelf.dart';
+import '../services/notification_service.dart';
+import 'dart:async';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -401,6 +403,14 @@ class _HomePageState extends State<HomePage> {
         _yearlyGoal = yearlyGoal;
       });
       await _refreshHeroPace();
+      // Akşamki hatırlatma güncel seriyi bilsin. Arka planda çalışan bir
+      // servisimiz yok; metni uygulama her açıldığında tazeliyoruz.
+      unawaited(
+        NotificationService.instance.refreshStreakReminder(
+          currentStreak: gamification.currentStreak,
+          readToday: gamification.todayPages > 0,
+        ),
+      );
     } on ApiException catch (e) {
       if (!mounted) return;
       setState(() => _errorMessage = e.message);

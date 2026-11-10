@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/book.dart';
 import '../theme/app_theme.dart';
+import 'star_rating.dart';
 
 class BookCard extends StatelessWidget {
   const BookCard({
@@ -80,7 +81,7 @@ class BookCard extends StatelessWidget {
                   if (hasRating)
                     _Tag(
                       icon: Icons.star_rounded,
-                      text: '${book.rating}',
+                      text: StarRating.label(book.rating),
                       color: _ratingColor(book.rating!),
                     ),
                   const SizedBox(height: 12),

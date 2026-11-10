@@ -1,0 +1,18 @@
+# Yayın imza anahtarının konumu ve parolaları.
+#
+# Bu dosyayı key.properties olarak kopyala ve kendi değerlerinle doldur.
+# key.properties git'e GİRMEZ (.gitignore'da) — anahtar ve parolalar
+# depoda durmamalı.
+#
+# Anahtarı şu komutla üret (parolayı sen belirle, bir yere kaydet):
+#
+#   keytool -genkey -v -keystore C:\Users\cagda\bilge-release.jks \
+#     -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias bilge
+#
+# UYARI: Bu anahtar kaybolursa uygulama Play Store'da bir daha
+# güncellenemez. Yedeğini güvenli bir yerde sakla.
+
+storeFile=C:\Users\cagda\bilge-release.jks
+storePassword=BURAYA_STORE_PAROLASI
+keyAlias=bilge
+keyPassword=BURAYA_ANAHTAR_PAROLASI

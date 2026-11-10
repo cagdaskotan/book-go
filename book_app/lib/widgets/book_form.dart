@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'book_cover.dart';
 import '../models/reading_status.dart';
+import 'star_rating.dart';
 
 /// Kitap ekleme/düzenleme sayfalarının paylaştığı tasarım yapı taşları.
 /// Tek bir görsel dil: başlık, bölüm kartı, kapak önizleme, tarih alanı, footer.
@@ -446,6 +447,7 @@ class BookStatusSelector extends StatelessWidget {
 
 // ----------------------------- Rating picker -----------------------------
 /// 5 yıldızlı puan seçici (her yıldız = 20 puan). 0..100 arası int döner.
+/// Puanlama alanı — yarım yıldızlı [StarRatingInput]'a devrediyor.
 class BookRatingPicker extends StatelessWidget {
   const BookRatingPicker({
     super.key,
@@ -461,8 +463,8 @@ class BookRatingPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final stars = ((rating ?? 0) / 20).round();
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Puanın',
@@ -471,27 +473,11 @@ class BookRatingPicker extends StatelessWidget {
             color: cs.onSurfaceVariant,
           ),
         ),
-        const SizedBox(width: 8),
-        for (var i = 1; i <= 5; i++)
-          IconButton(
-            visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            onPressed: enabled
-                ? () => onChanged(i == stars ? null : i * 20)
-                : null,
-            icon: Icon(
-              i <= stars ? Icons.star_rounded : Icons.star_outline_rounded,
-              color: enabled ? Colors.amber : cs.outlineVariant,
-              size: 27,
-            ),
-          ),
-        const Spacer(),
-        if (rating != null)
-          Text(
-            '$rating/100',
-            style: TextStyle(fontWeight: FontWeight.w900, color: cs.onSurface),
-          ),
+        StarRatingInput(
+          rating: rating,
+          onChanged: onChanged,
+          enabled: enabled,
+        ),
       ],
     );
   }

@@ -27,6 +27,8 @@ import '../widgets/goal_celebration.dart';
 import '../widgets/mascot.dart';
 import '../widgets/quote_section.dart';
 import '../widgets/collection_picker.dart';
+import '../models/reading_status.dart';
+import '../widgets/star_rating.dart';
 
 class DiaryPage extends StatefulWidget {
   const DiaryPage({
@@ -980,8 +982,6 @@ class _DiaryPageState extends State<DiaryPage> {
   }
 
   Widget _ratingCard(Book b, ColorScheme cs) {
-    final rating = b.rating ?? 0;
-    final stars = (rating / 20).round().clamp(0, 5);
     return _SurfaceCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
@@ -1002,28 +1002,13 @@ class _DiaryPageState extends State<DiaryPage> {
               style: TextStyle(fontWeight: FontWeight.w900),
             ),
           ),
-          for (var i = 0; i < 5; i++)
-            Icon(
-              i < stars ? Icons.star_rounded : Icons.star_outline_rounded,
-              color: const Color(0xFFF59E0B),
-              size: 20,
-            ),
-          const SizedBox(width: 8),
-          Text(
-            '$rating',
-            style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w900),
-          ),
+          StarRatingView(rating: b.rating, size: 20, showLabel: true),
         ],
       ),
     );
   }
 
-  String _statusLabel(Book b) => switch (b.readingStatus) {
-    'reading' => 'Okuyorum',
-    'paused' => 'Ara verdim',
-    'finished' => 'Tamamlandı',
-    _ => 'Okuma listemde',
-  };
+  String _statusLabel(Book b) => ReadingStatus.parse(b.readingStatus).label;
 
   // Kept temporarily while the new detail hero settles.
   // ignore: unused_element

@@ -48,3 +48,8 @@ app.*.map.json
 /android/build/
 /android/.gradle/
 /android/app/build/
+
+# Yayın imza anahtarı ve parolaları — asla depoya girmemeli
+/android/key.properties
+**/*.jks
+**/*.keystore

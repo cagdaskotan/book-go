@@ -11,6 +11,7 @@ import 'app_toast.dart';
 import 'title_search_sheet.dart';
 import '../services/cover_scan_service.dart';
 import '../services/cover_photo_service.dart';
+import '../pages/shelf_scan_page.dart';
 
 Future<int?> showBookAddLauncher(BuildContext context) async {
   final action = await showModalBottomSheet<_AddAction>(
@@ -22,6 +23,8 @@ Future<int?> showBookAddLauncher(BuildContext context) async {
   if (action == _AddAction.manual) return showAddBookModal(context);
 
   if (action == _AddAction.cover) return _addFromCover(context);
+
+  if (action == _AddAction.shelf) return _addFromShelf(context);
 
   if (action == _AddAction.search) {
     final found = await showTitleSearch(context);
@@ -150,7 +153,22 @@ Future<int?> _addFromCover(BuildContext context) async {
   return showAddBookModal(context, initial: chosen);
 }
 
-enum _AddAction { scan, cover, search, manual }
+/// Raf fotoğrafından toplu ekleme.
+///
+/// Fotoğraf çekilir, sırtlar okunur, sonuçlar [ShelfScanPage] üzerinde
+/// onaya sunulur. Hiçbir kitap kullanıcı onaylamadan eklenmiyor.
+Future<int?> _addFromShelf(BuildContext context) async {
+  final imagePath = await CoverPhotoService.capture();
+  if (imagePath == null || !context.mounted) return null;
+
+  final added = await Navigator.of(context).push<int>(
+    MaterialPageRoute(builder: (_) => ShelfScanPage(imagePath: imagePath)),
+  );
+  // Eklenen kitap sayısını döndürüyoruz ki çağıran ekran listesini tazelesin.
+  return (added ?? 0) > 0 ? added : null;
+}
+
+enum _AddAction { scan, cover, shelf, search, manual }
 
 class _AddChoiceSheet extends StatelessWidget {
   const _AddChoiceSheet();
@@ -227,6 +245,14 @@ class _AddChoiceSheet extends StatelessWidget {
                 subtitle: 'Barkodu yoksa kapağın fotoğrafını çek',
                 colors: const [Color(0xFF3B82F6), Color(0xFF60A5FA)],
                 onTap: () => Navigator.pop(context, _AddAction.cover),
+              ),
+              const SizedBox(height: 10),
+              _AddOptionRow(
+                icon: Icons.shelves,
+                title: 'Rafını tara',
+                subtitle: 'Kitaplığının fotoğrafını çek, hepsi birden gelsin',
+                colors: const [Color(0xFFB45309), Color(0xFFF59E0B)],
+                onTap: () => Navigator.pop(context, _AddAction.shelf),
               ),
               const SizedBox(height: 10),
               _AddOptionRow(

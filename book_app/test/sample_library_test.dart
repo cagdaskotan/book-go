@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:book_app/models/reading_status.dart';
+import 'package:book_app/services/backup_service.dart';
 import 'package:book_app/services/book_service.dart';
 import 'package:book_app/services/collection_service.dart';
 import 'package:book_app/services/quote_service.dart';
 import 'package:book_app/services/sample_library_service.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -14,15 +19,35 @@ import 'support/test_database.dart';
 /// Örnek veriyi kaldırırken gerçek kitaplığı silmek onarılamaz bir hata
 /// olurdu; bu yüzden burada ayrıca sınanıyor.
 void main() {
+  // Defter sayfalarını geri yüklemek path_provider'a uzanıyor; birim
+  // testinde platform kanalı yok, o yüzden geçici bir klasörle taklit
+  // ediyoruz.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late Database db;
   late BookService books;
+  late Directory tempDir;
 
   setUp(() async {
     db = await openTestDatabase();
     books = BookService();
+    tempDir = await Directory.systemTemp.createTemp('ornek-kitaplik-test');
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          const MethodChannel('plugins.flutter.io/path_provider'),
+          (call) async => tempDir.path,
+        );
   });
 
-  tearDown(() async => db.close());
+  tearDown(() async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          const MethodChannel('plugins.flutter.io/path_provider'),
+          null,
+        );
+    await db.close();
+    await tempDir.delete(recursive: true);
+  });
 
   test('kurulum her özelliği besleyen veriyi üretir', () async {
     expect(await SampleLibraryService.isInstalled(), isFalse);
@@ -164,5 +189,29 @@ void main() {
 
     expect(second.books, first.books);
     expect(await books.fetchBooks(), hasLength(first.books));
+  });
+
+  test('yedek gidip gelince örnek veri yine temizlenebilir', () async {
+    // Riskin bedeli yüksek: işaretçi kitap kimliklerini tutuyor, yedek
+    // kimlikleri korumazsa ya da işaretçi yedeğe girmezse "temizle"
+    // kullanıcının gerçek kitaplarını silebilir.
+    final mine = await books.createBook(title: 'Benim Kitabım', totalPages: 90);
+    await SampleLibraryService.install();
+
+    final manifest = await BackupService().buildManifest();
+    final file = File('${tempDir.path}/yedek.json');
+    await file.writeAsString(jsonEncode(manifest));
+
+    await BackupService().restore(file);
+
+    // İşaretçi yedekle birlikte geldi mi?
+    expect(await SampleLibraryService.isInstalled(), isTrue);
+
+    await SampleLibraryService.remove();
+
+    final remaining = await books.fetchBooks();
+    expect(remaining, hasLength(1));
+    expect(remaining.single.title, 'Benim Kitabım');
+    expect(remaining.single.id, mine);
   });
 }

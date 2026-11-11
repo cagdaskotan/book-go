@@ -6,6 +6,7 @@ import '../models/book.dart';
 import '../models/gamification_summary.dart';
 import '../models/quote.dart';
 import '../services/quote_service.dart';
+import '../services/sample_library_service.dart';
 import '../services/api_exception.dart';
 import '../services/book_service.dart';
 import '../services/gamification_service.dart';
@@ -368,6 +369,7 @@ class _HomePageState extends State<HomePage> {
   List<Book> _books = const [];
   GamificationSummary? _gamification;
   bool _isLoading = false;
+  bool _installingSample = false;
   bool _savingGoal = false;
   String? _errorMessage;
   int _yearlyGoal = ReadingGoalService.defaultGoal;
@@ -522,6 +524,32 @@ class _HomePageState extends State<HomePage> {
   Future<void> _openAdd() async {
     final createdId = await showBookAddLauncher(context);
     if (createdId != null && mounted) await _fetchAll();
+  }
+
+  /// Boş raftan örnek kitaplığı kurar.
+  ///
+  /// Uygulamayı dolu görmeden hiçbir özellik kendini anlatamıyor: ısı
+  /// haritası boş, seri sıfır, yıl karnesi yok. Teklif boş rafın
+  /// göründüğü yerde duruyor.
+  Future<void> _loadSampleLibrary() async {
+    setState(() => _installingSample = true);
+    try {
+      final summary = await SampleLibraryService.install();
+      if (!mounted) return;
+      await _fetchAll();
+      if (!mounted) return;
+      AppToast.success(
+        context,
+        '${summary.books} kitap, ${summary.quotes} alıntı, '
+        '${summary.collections} raf ve ${summary.journalPages} defter '
+        'sayfası eklendi.',
+        title: 'Örnek kitaplık hazır',
+      );
+    } catch (_) {
+      if (mounted) AppToast.error(context, 'Örnek kitaplık eklenemedi.');
+    } finally {
+      if (mounted) setState(() => _installingSample = false);
+    }
   }
 
   Future<void> _openStreakCenter() async {
@@ -797,6 +825,50 @@ class _HomePageState extends State<HomePage> {
                                     vertical: 14,
                                   ),
                                 ),
+                              ),
+                            ),
+                            // Örnek kitaplık yalnızca karşılama akışında ve
+                            // profilin dibinde duruyordu; uygulamayı zaten
+                            // kurmuş olan kimse ikisini de görmüyordu. Boş
+                            // rafın görüldüğü yer burası, teklif de burada
+                            // olmalı.
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton.icon(
+                                onPressed: _installingSample
+                                    ? null
+                                    : _loadSampleLibrary,
+                                icon: _installingSample
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Icon(Icons.auto_stories_rounded),
+                                label: Text(
+                                  _installingSample
+                                      ? 'Örnekler ekleniyor'
+                                      : 'Örnek kitaplıkla gez',
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'Örnekleri profilden tek dokunuşla '
+                              'temizleyebilirsin.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
+                                color: cs.onSurfaceVariant,
                               ),
                             ),
                           ],

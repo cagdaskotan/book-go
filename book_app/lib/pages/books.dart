@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../models/book.dart';
+import '../services/sample_library_service.dart';
 import '../services/api_exception.dart';
 import '../services/book_service.dart';
 import '../services/profile_service.dart';
@@ -11,6 +12,7 @@ import 'collections.dart';
 import 'routes.dart';
 
 // Header/Nav bileşenleri
+import '../widgets/app_toast.dart';
 import '../widgets/appbar.dart';
 import '../widgets/app_progress_bar.dart';
 import '../widgets/book_add_launcher.dart';
@@ -34,6 +36,7 @@ class _BooksPageState extends State<BooksPage> {
 
   List<Book> _books = const [];
   bool _isLoading = false;
+  bool _installingSample = false;
   String? _errorMessage;
   String _statusFilter = 'all';
   String _query = '';
@@ -117,6 +120,27 @@ class _BooksPageState extends State<BooksPage> {
         _books = [b, ..._books];
       }
     });
+  }
+
+  /// Boş kitaplıktan örnek verileri kurar. Teklif hem burada hem ana
+  /// ekranda duruyor: kullanıcı boş rafı hangisinde görürse orada.
+  Future<void> _loadSampleLibrary() async {
+    setState(() => _installingSample = true);
+    try {
+      await SampleLibraryService.install();
+      if (!mounted) return;
+      await _fetchBooks();
+      if (!mounted) return;
+      AppToast.success(
+        context,
+        'Örnek kitaplar, raflar ve alıntılar eklendi.',
+        title: 'Örnek kitaplık hazır',
+      );
+    } catch (_) {
+      if (mounted) AppToast.error(context, 'Örnek kitaplık eklenemedi.');
+    } finally {
+      if (mounted) setState(() => _installingSample = false);
+    }
   }
 
   Future<void> _openAdd() async {
@@ -303,6 +327,21 @@ class _BooksPageState extends State<BooksPage> {
                             onPressed: _openAdd,
                             icon: const Icon(Icons.add_rounded),
                             label: const Text('İlk kitabını ekle'),
+                          ),
+                          const SizedBox(height: 4),
+                          TextButton.icon(
+                            onPressed: _installingSample
+                                ? null
+                                : _loadSampleLibrary,
+                            icon: const Icon(
+                              Icons.auto_stories_rounded,
+                              size: 18,
+                            ),
+                            label: Text(
+                              _installingSample
+                                  ? 'Örnekler ekleniyor'
+                                  : 'Örnek kitaplıkla gez',
+                            ),
                           ),
                         ],
                       ),

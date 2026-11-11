@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../data/app_database.dart';
 import '../models/quote.dart';
+import '../utils/turkish.dart';
 import 'api_exception.dart';
 
 /// Alıntı defteri için cihaz-içi depo.
@@ -107,4 +108,37 @@ Quote? pickDailyQuote(List<Quote> quotes, DateTime day) {
   final pool = favorites.isNotEmpty ? favorites : quotes;
   final dayOfYear = day.difference(DateTime(day.year)).inDays;
   return pool[dayOfYear % pool.length];
+}
+
+/// Alıntı defterindeki süzme.
+///
+/// Ekrandan ayrı tutuluyor çünkü sayfanın kendisi gerçek veritabanı
+/// okuduğu için widget testinde sınanamıyor: `testWidgets` sahte bir saat
+/// kullanıyor, gerçek disk okumaları o saatte hiç tamamlanmıyor. Mantık
+/// burada saf durunca doğrudan test edilebiliyor.
+///
+/// [query] ham kullanıcı girdisi; katlama burada yapılıyor ki çağrı yeri
+/// unutamasın — unutulduğunda "Şu" yazan kullanıcı hiçbir şey bulamıyor.
+List<Quote> filterQuotes(
+  List<Quote> quotes, {
+  String query = '',
+  bool onlyFavorites = false,
+}) {
+  var list = quotes;
+  if (onlyFavorites) {
+    list = list.where((q) => q.favorite).toList();
+  }
+  final needle = foldTurkish(query.trim());
+  if (needle.isEmpty) return list;
+
+  // Arama üç alanda birlikte bakıyor: kullanıcı bazen cümleyi, bazen
+  // kitabı, bazen yazarı hatırlıyor.
+  return list
+      .where(
+        (q) =>
+            containsTurkish(q.text, needle) ||
+            containsTurkish(q.bookTitle ?? '', needle) ||
+            containsTurkish(q.bookAuthor ?? '', needle),
+      )
+      .toList();
 }

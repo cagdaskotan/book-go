@@ -70,30 +70,9 @@ class _QuotesPageState extends State<QuotesPage> {
     }
   }
 
-  /// Süzülmüş liste.
-  ///
-  /// Arama hem alıntı metninde hem kitap adında hem yazarda geçiyor:
-  /// kullanıcı bazen cümleyi, bazen kitabı hatırlıyor.
-  List<Quote> get _visible {
-    var list = _all;
-    if (_onlyFavorites) {
-      list = list.where((q) => q.favorite).toList();
-    }
-    // containsTurkish katlanmış metin bekliyor: sorguyu önce katlamazsak
-    // "Şu" yazan kullanıcı hiçbir şey bulamıyor.
-    final q = foldTurkish(_query.trim());
-    if (q.isNotEmpty) {
-      list = list
-          .where(
-            (quote) =>
-                containsTurkish(quote.text, q) ||
-                containsTurkish(quote.bookTitle ?? '', q) ||
-                containsTurkish(quote.bookAuthor ?? '', q),
-          )
-          .toList();
-    }
-    return list;
-  }
+  /// Süzülmüş liste — mantığı [filterQuotes] tutuyor, test oradan.
+  List<Quote> get _visible =>
+      filterQuotes(_all, query: _query, onlyFavorites: _onlyFavorites);
 
   int get _favoriteCount => _all.where((q) => q.favorite).length;
 

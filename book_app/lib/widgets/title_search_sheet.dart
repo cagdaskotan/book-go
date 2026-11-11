@@ -387,7 +387,11 @@ class _ResultTile extends StatelessWidget {
                   width: 48,
                   height: 68,
                   color: cs.surfaceContainerHighest,
-                  child: CachedCover(url: book.coverUrl, iconSize: 22),
+                  child: CachedCover(
+                    url: book.coverUrl,
+                    iconSize: 22,
+                    title: book.title,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),

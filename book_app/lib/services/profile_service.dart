@@ -36,10 +36,8 @@ class ProfileService extends ChangeNotifier {
 
   Future<void> load() async {
     try {
-      _displayName = await SettingsStore.getString(
-            SettingsStore.profileName,
-          ) ??
-          '';
+      _displayName =
+          await SettingsStore.getString(SettingsStore.profileName) ?? '';
     } catch (_) {
       _displayName = '';
     }

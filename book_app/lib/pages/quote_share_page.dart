@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../services/share_image.dart';
@@ -47,9 +46,9 @@ class _QuoteSharePageState extends State<QuoteSharePage> {
       );
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Görsel oluşturulamadı.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Görsel oluşturulamadı.')));
       }
     } finally {
       if (mounted) setState(() => _busy = false);

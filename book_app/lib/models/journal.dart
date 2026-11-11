@@ -75,7 +75,10 @@ class JournalPage {
       text: j['text']?.toString() ?? '',
       createdAt: (j['createdAt'] is num) ? (j['createdAt'] as num).toInt() : 0,
       highlights: raw is List
-          ? raw.whereType<Map<String, dynamic>>().map(Highlight.fromJson).toList()
+          ? raw
+                .whereType<Map<String, dynamic>>()
+                .map(Highlight.fromJson)
+                .toList()
           : <Highlight>[],
     );
   }

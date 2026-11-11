@@ -6,6 +6,8 @@ import '../models/gamification_summary.dart';
 import '../services/api_exception.dart';
 import '../services/book_service.dart';
 import '../services/gamification_service.dart';
+import '../widgets/empty_state.dart';
+import '../widgets/mascot.dart';
 import '../widgets/app_progress_bar.dart';
 import '../widgets/appbar.dart';
 import '../services/stats_service.dart';
@@ -77,6 +79,11 @@ class _InsightsPageState extends State<InsightsPage> {
     );
   }
 
+  Future<void> _addFirstBook() async {
+    final added = await showBookAddLauncher(context);
+    if (added != null && mounted) await _load();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,11 +110,21 @@ class _InsightsPageState extends State<InsightsPage> {
               message: _error ?? 'İstatistikler bulunamadı.',
               onRetry: _load,
             )
+          // Kitaplık boşken bu sayfa sıfırlarla dolu gri bir tablo
+          // oluyordu: ısı haritası boş, bütün rozetler kilitli. Hiçbir şey
+          // anlatmayan bir tablo yerine ne yapılacağını söylüyoruz.
+          : _library.isEmpty
+          ? _InsightsEmpty(onAdd: _addFirstBook)
           : RefreshIndicator(
               onRefresh: _load,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.fromLTRB(16, 18, 16, bottomNavInset(context)),
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  18,
+                  16,
+                  bottomNavInset(context),
+                ),
                 children: [
                   _LevelHero(summary: _summary!),
                   const SizedBox(height: 14),
@@ -115,10 +132,8 @@ class _InsightsPageState extends State<InsightsPage> {
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         fullscreenDialog: true,
-                        builder: (_) => YearWrappedPage(
-                          books: _library,
-                          summary: _summary,
-                        ),
+                        builder: (_) =>
+                            YearWrappedPage(books: _library, summary: _summary),
                       ),
                     ),
                   ),
@@ -953,6 +968,35 @@ class _SectionTitle extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Kitaplık boşken istatistik sayfası.
+///
+/// Rakamlar ancak okunmuş bir şey varsa anlam taşıyor; sıfırlarla dolu bir
+/// tablo kullanıcıya uygulamanın bozuk olduğunu düşündürüyor.
+class _InsightsEmpty extends StatelessWidget {
+  const _InsightsEmpty({required this.onAdd});
+
+  final VoidCallback onAdd;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: EmptyState(
+          mood: MascotMood.reading,
+          title: 'Henüz ölçecek bir şey yok',
+          message:
+              'İlk kitabını ekleyip okuduğunu işaretlediğinde seri, ısı '
+              'haritası ve rozetler burada canlanmaya başlar.',
+          actionLabel: 'Kitap ekle',
+          actionIcon: Icons.add_rounded,
+          onAction: onAdd,
+        ),
+      ),
     );
   }
 }

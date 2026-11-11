@@ -1395,6 +1395,7 @@ class _HeroBookCard extends StatelessWidget {
                     url: book.coverUrl,
                     iconColor: Colors.white70,
                     iconSize: 22,
+                    title: book.title,
                   ),
                 ),
               ),
@@ -1554,7 +1555,11 @@ class _BookRowCard extends StatelessWidget {
         child: Row(
           children: [
             const SizedBox(width: 2),
-            _CoverThumb(url: book.coverUrl, finished: book.isFinished),
+            _CoverThumb(
+              url: book.coverUrl,
+              finished: book.isFinished,
+              title: book.title,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Padding(
@@ -1634,7 +1639,7 @@ class _ContinueCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _CoverThumb.large(url: book.coverUrl),
+            _CoverThumb.large(url: book.coverUrl, title: book.title),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -1716,7 +1721,11 @@ class _MiniContinueCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              _CoverThumb(url: book.coverUrl, finished: false),
+              _CoverThumb(
+                url: book.coverUrl,
+                finished: false,
+                title: book.title,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -2081,18 +2090,19 @@ class _LoadingSkeleton extends StatelessWidget {
 class _CoverThumb extends StatelessWidget {
   // İki boy var ve ölçüler çağrı yerinden verilmiyor; o yüzden her boyut
   // kendi kurucusunda sabit.
-  const _CoverThumb({required this.url, required this.finished})
+  const _CoverThumb({required this.url, required this.finished, this.title})
     : showBadge = true,
       w = 62,
       h = 86;
 
-  const _CoverThumb.large({required this.url})
+  const _CoverThumb.large({required this.url, this.title})
     : finished = false,
       showBadge = false,
       w = 80,
       h = 112;
 
   final String? url;
+  final String? title;
   final bool finished;
   final bool showBadge;
   final double w;
@@ -2113,7 +2123,7 @@ class _CoverThumb extends StatelessWidget {
           border: Border.all(color: cs.outlineVariant),
           borderRadius: BorderRadius.circular(14),
         ),
-        child: CachedCover(url: url),
+        child: CachedCover(url: url, title: title),
       ),
     );
   }

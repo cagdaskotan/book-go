@@ -159,8 +159,6 @@ class _BooksPageState extends State<BooksPage> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -612,7 +610,11 @@ class _BookGridCard extends StatelessWidget {
                     color: isDark
                         ? cs.surfaceContainer
                         : const Color(0xFFEFFAF4),
-                    child: CachedCover(url: book.coverUrl, iconSize: 38),
+                    child: CachedCover(
+                      url: book.coverUrl,
+                      iconSize: 38,
+                      title: book.title,
+                    ),
                   ),
                   // Favori
                   Positioned(
@@ -762,7 +764,11 @@ BoxDecoration _heroDecoration(BuildContext context) {
       begin: const Alignment(0, -1.2),
       end: const Alignment(0, 1),
       colors: isDark
-          ? const [Color(0xFF0B1020), Color(0xFF1F1B4B), AppTheme.brandSecondaryDark]
+          ? const [
+              Color(0xFF0B1020),
+              Color(0xFF1F1B4B),
+              AppTheme.brandSecondaryDark,
+            ]
           : const [
               Color(0xFF0E402B),
               AppTheme.brandPrimary,
@@ -793,7 +799,11 @@ class _BookTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _CoverThumb(url: book.coverUrl, finished: book.isFinished),
+          _CoverThumb(
+            url: book.coverUrl,
+            finished: book.isFinished,
+            title: book.title,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Padding(
@@ -926,8 +936,9 @@ class _MetaPill extends StatelessWidget {
 }
 
 class _CoverThumb extends StatelessWidget {
-  const _CoverThumb({required this.url, required this.finished});
+  const _CoverThumb({required this.url, required this.finished, this.title});
   final String? url;
+  final String? title;
   final bool finished;
 
   @override
@@ -947,7 +958,7 @@ class _CoverThumb extends StatelessWidget {
               border: Border.all(color: cs.outlineVariant),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: CachedCover(url: url),
+            child: CachedCover(url: url, title: title),
           ),
         ],
       ),

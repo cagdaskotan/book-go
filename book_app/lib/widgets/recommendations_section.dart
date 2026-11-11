@@ -180,10 +180,8 @@ class _RecommendationsSectionState extends State<RecommendationsSection> {
             physics: const BouncingScrollPhysics(),
             itemCount: _recs.length,
             separatorBuilder: (_, __) => const SizedBox(width: 12),
-            itemBuilder: (_, i) => _RecCard(
-              rec: _recs[i],
-              onAdd: () => _add(_recs[i]),
-            ),
+            itemBuilder: (_, i) =>
+                _RecCard(rec: _recs[i], onAdd: () => _add(_recs[i])),
           ),
         ),
       ],
@@ -375,10 +373,12 @@ class _RecCard extends StatelessWidget {
               Container(
                 height: 150,
                 width: double.infinity,
-                color: isDark
-                    ? cs.surfaceContainer
-                    : const Color(0xFFEFFAF4),
-                child: CachedCover(url: rec.coverUrl, iconSize: 34),
+                color: isDark ? cs.surfaceContainer : const Color(0xFFEFFAF4),
+                child: CachedCover(
+                  url: rec.coverUrl,
+                  iconSize: 34,
+                  title: rec.title,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),

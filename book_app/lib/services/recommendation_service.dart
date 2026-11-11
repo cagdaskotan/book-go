@@ -199,9 +199,10 @@ class RecommendationService {
   }
 
   /// Karşılaştırma için başlığı sadeleştirir (harf ve rakam dışını atar).
-  static String _normalizeTitle(String value) => value
-      .toLowerCase()
-      .replaceAll(RegExp(r'[^\p{L}\p{N}]', unicode: true), '');
+  static String _normalizeTitle(String value) => value.toLowerCase().replaceAll(
+    RegExp(r'[^\p{L}\p{N}]', unicode: true),
+    '',
+  );
 }
 
 class _ProfileBook {

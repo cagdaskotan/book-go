@@ -27,10 +27,7 @@ class CoverScanResult {
 
   /// Katalogda aratılacak metin.
   String get query {
-    final parts = [
-      if (title != null) title!,
-      if (author != null) author!,
-    ];
+    final parts = [if (title != null) title!, if (author != null) author!];
     return parts.join(' ').trim();
   }
 }

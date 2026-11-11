@@ -75,8 +75,9 @@ class _RecommendationsPageState extends State<RecommendationsPage> {
     return set.toList();
   }
 
-  List<Recommendation> get _filtered =>
-      _filter == null ? _recs : _recs.where((r) => r.reason == _filter).toList();
+  List<Recommendation> get _filtered => _filter == null
+      ? _recs
+      : _recs.where((r) => r.reason == _filter).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -164,10 +165,8 @@ class _RecommendationsPageState extends State<RecommendationsPage> {
               childAspectRatio: .60,
             ),
             itemCount: filtered.length,
-            itemBuilder: (_, i) => _GridRecCard(
-              rec: filtered[i],
-              onAdd: () => _add(filtered[i]),
-            ),
+            itemBuilder: (_, i) =>
+                _GridRecCard(rec: filtered[i], onAdd: () => _add(filtered[i])),
           ),
         ),
       ],
@@ -291,7 +290,11 @@ class _GridRecCard extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 color: isDark ? cs.surfaceContainer : const Color(0xFFEFFAF4),
-                child: CachedCover(url: rec.coverUrl, iconSize: 34),
+                child: CachedCover(
+                  url: rec.coverUrl,
+                  iconSize: 34,
+                  title: rec.title,
+                ),
               ),
             ),
             Padding(
@@ -322,7 +325,11 @@ class _GridRecCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      Icon(Icons.recommend_rounded, size: 12, color: cs.primary),
+                      Icon(
+                        Icons.recommend_rounded,
+                        size: 12,
+                        color: cs.primary,
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
@@ -350,7 +357,11 @@ class _GridRecCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Icon(Icons.add_circle_rounded, color: cs.primary, size: 22),
+                      Icon(
+                        Icons.add_circle_rounded,
+                        color: cs.primary,
+                        size: 22,
+                      ),
                     ],
                   ),
                 ],

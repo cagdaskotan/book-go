@@ -28,14 +28,23 @@ class YearlyChallengeCard extends StatelessWidget {
     final ahead = finished - expected;
 
     final (paceText, paceColor, paceIcon) = finished >= goal
-        ? ('Hedefini tamamladın! 🎉', const Color(0xFF2BAE8A),
-            Icons.verified_rounded)
+        ? (
+            'Hedefini tamamladın! 🎉',
+            const Color(0xFF2BAE8A),
+            Icons.verified_rounded,
+          )
         : ahead >= 0.5
-        ? ('${ahead.floor()} kitap öndesin', const Color(0xFF2BAE8A),
-            Icons.trending_up_rounded)
+        ? (
+            '${ahead.floor()} kitap öndesin',
+            const Color(0xFF2BAE8A),
+            Icons.trending_up_rounded,
+          )
         : ahead <= -0.5
-        ? ('${(-ahead).ceil()} kitap geridesin', const Color(0xFFF59E0B),
-            Icons.trending_down_rounded)
+        ? (
+            '${(-ahead).ceil()} kitap geridesin',
+            const Color(0xFFF59E0B),
+            Icons.trending_down_rounded,
+          )
         : ('Tam temponda gidiyorsun', cs.primary, Icons.bolt_rounded);
 
     return Padding(

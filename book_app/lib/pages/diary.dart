@@ -35,6 +35,7 @@ class DiaryPage extends StatefulWidget {
     required this.bookId,
     this.heroTag,
     this.initialCoverUrl,
+    this.initialTitle,
     this.initialSpineColor,
     this.initialFinished = false,
   });
@@ -44,6 +45,11 @@ class DiaryPage extends StatefulWidget {
   /// çizilebilmesi için ön bilgiler. Diğer girişlerde null kalır.
   final Object? heroTag;
   final String? initialCoverUrl;
+
+  /// Kapak inene kadar üretilmiş cilde yazılacak ad — hero uçuşu
+  /// sırasında kitabın kimliği kaybolmasın.
+  final String? initialTitle;
+
   final Color? initialSpineColor;
   final bool initialFinished;
 
@@ -582,6 +588,7 @@ class _DiaryPageState extends State<DiaryPage> {
                             url: widget.initialCoverUrl,
                             finished: widget.initialFinished,
                             size: const Size(126, 184),
+                            title: widget.initialTitle,
                           ),
                         ),
                       ),
@@ -726,6 +733,7 @@ class _DiaryPageState extends State<DiaryPage> {
                         url: b.coverUrl,
                         finished: b.isFinished,
                         size: const Size(126, 184),
+                        title: b.title,
                       ),
                     ),
                     const SizedBox(width: 18),
@@ -2509,10 +2517,12 @@ class _CoverThumb extends StatelessWidget {
     required this.url,
     required this.finished,
     this.size = const Size(62, 86),
+    this.title,
   });
   final String? url;
   final bool finished;
   final Size size;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -2528,7 +2538,7 @@ class _CoverThumb extends StatelessWidget {
           border: Border.all(color: cs.outlineVariant),
           borderRadius: BorderRadius.circular(14),
         ),
-        child: CachedCover(url: url),
+        child: CachedCover(url: url, title: title),
       ),
     );
   }

@@ -40,9 +40,7 @@ class RotatedOcr {
       try {
         final rotatedPath = await _writeRotated(decoded, angle);
         final lines = await OcrService.recognizeLines(rotatedPath);
-        out.addAll(
-          lines.map((l) => _mapBack(l, angle, width, height)),
-        );
+        out.addAll(lines.map((l) => _mapBack(l, angle, width, height)));
         try {
           await File(rotatedPath).delete();
         } catch (_) {
@@ -70,12 +68,7 @@ class RotatedOcr {
   ///
   /// [w] ve [h] orijinal görüntünün ölçüleri. 90° döndürmede orijinalin
   /// yüksekliği yeni genişlik oluyor; eksenler yer değiştiriyor.
-  static ScannedLine _mapBack(
-    ScannedLine line,
-    int angle,
-    double w,
-    double h,
-  ) {
+  static ScannedLine _mapBack(ScannedLine line, int angle, double w, double h) {
     final double left;
     final double top;
     if (angle == 90) {

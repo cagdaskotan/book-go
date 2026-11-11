@@ -110,11 +110,7 @@ class _BookArcRectTween extends RectTween {
     if (t <= _Beat.closeEnd) return _spread;
     if (t <= _Beat.settle) {
       final local = (t - _Beat.closeEnd) / (_Beat.settle - _Beat.closeEnd);
-      return Rect.lerp(
-        _spread,
-        to,
-        Curves.easeInOutCubic.transform(local),
-      )!;
+      return Rect.lerp(_spread, to, Curves.easeInOutCubic.transform(local))!;
     }
     // Son dilimde hedefte sabit dur; detay sayfası bu sırada belirir.
     return to;

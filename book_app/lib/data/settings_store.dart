@@ -45,8 +45,7 @@ class SettingsStore {
     return raw == null ? fallback : (int.tryParse(raw) ?? fallback);
   }
 
-  static Future<void> setInt(String key, int value) =>
-      setString(key, '$value');
+  static Future<void> setInt(String key, int value) => setString(key, '$value');
 
   /// Sunucu dönemindeki SharedPreferences değerlerini bir kez veritabanına
   /// taşır; mevcut telefonlarda hedefler sıfırlanmasın.

@@ -145,10 +145,7 @@ class YearWrappedShareCard extends StatelessWidget {
                   _detail('En uzun serim', '$longestStreak gün', width),
 
                 SizedBox(height: width * .06),
-                Divider(
-                  color: Colors.white.withValues(alpha: .18),
-                  height: 1,
-                ),
+                Divider(color: Colors.white.withValues(alpha: .18), height: 1),
                 SizedBox(height: width * .04),
                 Row(
                   children: [

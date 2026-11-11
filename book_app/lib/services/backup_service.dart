@@ -276,7 +276,9 @@ class BackupService {
         final entry = archive.find(archiveName);
         final data = entry?.readBytes();
         if (data != null) {
-          final target = File('${journalDir.path}/${archiveName.split('/').last}');
+          final target = File(
+            '${journalDir.path}/${archiveName.split('/').last}',
+          );
           await target.writeAsBytes(data, flush: true);
           imagePath = target.path;
         }
@@ -357,7 +359,9 @@ class BackupService {
         'Bu dosya başka bir uygulamanın yedeği gibi görünüyor.',
       );
     }
-    final version = _int(manifest['format_version'] ?? manifest['schema_version']);
+    final version = _int(
+      manifest['format_version'] ?? manifest['schema_version'],
+    );
     if (version > formatVersion) {
       throw const ApiException(
         400,
@@ -394,8 +398,7 @@ class BackupService {
       'favorite': _bool(row['favorite']) ? 1 : 0,
       'rating': row['rating'] == null ? null : _int(row['rating']),
       'tags': _str(row['tags']),
-      'created_at':
-          _str(row['created_at']) ?? DateTime.now().toIso8601String(),
+      'created_at': _str(row['created_at']) ?? DateTime.now().toIso8601String(),
     };
   }
 

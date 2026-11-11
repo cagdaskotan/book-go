@@ -155,12 +155,14 @@ class QuoteShareCard extends StatelessWidget {
                             child: CachedNetworkImage(
                               imageUrl: coverUrl!,
                               fit: BoxFit.cover,
-                              errorWidget: (_, __, ___) =>
-                                  ColoredBox(color: t.soft.withValues(alpha: .3)),
+                              errorWidget: (_, __, ___) => ColoredBox(
+                                color: t.soft.withValues(alpha: .3),
+                              ),
                             ),
                           ),
                         ),
-                      if ((coverUrl ?? '').isNotEmpty) const SizedBox(width: 14),
+                      if ((coverUrl ?? '').isNotEmpty)
+                        const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

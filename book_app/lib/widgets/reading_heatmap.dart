@@ -8,8 +8,18 @@ class ReadingHeatmap extends StatelessWidget {
   final Map<String, int> data;
 
   static const _months = [
-    'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
-    'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara',
+    'Oca',
+    'Şub',
+    'Mar',
+    'Nis',
+    'May',
+    'Haz',
+    'Tem',
+    'Ağu',
+    'Eyl',
+    'Eki',
+    'Kas',
+    'Ara',
   ];
   static const _weekdays = ['Pzt', '', 'Çar', '', 'Cum', '', 'Paz'];
 
@@ -34,8 +44,7 @@ class ReadingHeatmap extends StatelessWidget {
       final offset = col * 7 + row - lead;
       if (offset < 0 || offset >= totalDays) return null;
       final date = first.add(Duration(days: offset));
-      final key =
-          '${date.year}-${_two(date.month)}-${_two(date.day)}';
+      final key = '${date.year}-${_two(date.month)}-${_two(date.day)}';
       return data[key] ?? 0;
     }
 

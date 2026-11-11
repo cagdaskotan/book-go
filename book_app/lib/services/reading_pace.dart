@@ -245,8 +245,18 @@ String formatFinishDate(DateTime date, {DateTime? today}) {
   if (days < 7) return '$days gün içinde';
 
   const months = [
-    'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
+    'Ocak',
+    'Şubat',
+    'Mart',
+    'Nisan',
+    'Mayıs',
+    'Haziran',
+    'Temmuz',
+    'Ağustos',
+    'Eylül',
+    'Ekim',
+    'Kasım',
+    'Aralık',
   ];
   final monthName = months[target.month - 1];
   if (target.year == reference.year) return '${target.day} $monthName';

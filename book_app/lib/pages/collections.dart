@@ -208,7 +208,10 @@ class _CollectionsPageState extends State<CollectionsPage> {
                               tileColor: Theme.of(
                                 context,
                               ).colorScheme.surfaceContainerLow,
-                              leading: _BookCover(url: book.coverUrl),
+                              leading: _BookCover(
+                                url: book.coverUrl,
+                                title: book.title,
+                              ),
                               title: Text(
                                 book.title,
                                 maxLines: 2,
@@ -357,6 +360,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
           bookId: book.id,
           heroTag: tag,
           initialCoverUrl: book.coverUrl,
+          initialTitle: book.title,
           initialSpineColor: spineColor,
           initialFinished: book.isFinished,
         ),
@@ -2384,6 +2388,7 @@ class _BookFaceOut extends StatelessWidget {
                       child: CachedCover(
                         url: book.coverUrl,
                         iconColor: Colors.white70,
+                        title: book.title,
                       ),
                     ),
                     // Sırt vurgusu (sol)
@@ -2629,7 +2634,10 @@ class _ShelfBookPickerState extends State<_ShelfBookPicker> {
                                 padding: const EdgeInsets.all(9),
                                 child: Row(
                                   children: [
-                                    _BookCover(url: book.coverUrl),
+                                    _BookCover(
+                                      url: book.coverUrl,
+                                      title: book.title,
+                                    ),
                                     const SizedBox(width: 12),
                                     Expanded(
                                       child: Column(
@@ -2899,8 +2907,9 @@ class _CreateCollectionSheetState extends State<_CreateCollectionSheet> {
 }
 
 class _BookCover extends StatelessWidget {
-  const _BookCover({required this.url});
+  const _BookCover({required this.url, this.title});
   final String? url;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -2912,7 +2921,7 @@ class _BookCover extends StatelessWidget {
         height: 58,
         child: ColoredBox(
           color: cs.surfaceContainerHighest,
-          child: CachedCover(url: url, iconSize: 20),
+          child: CachedCover(url: url, iconSize: 20, title: title),
         ),
       ),
     );
@@ -3171,6 +3180,7 @@ class _EditTile extends StatelessWidget {
                     child: CachedCover(
                       url: book.coverUrl,
                       iconColor: Colors.white70,
+                      title: book.title,
                     ),
                   ),
                 ),

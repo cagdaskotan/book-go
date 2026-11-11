@@ -150,10 +150,7 @@ class _BookFormSectionState extends State<BookFormSection> {
               ],
             ),
           ),
-          if (_open) ...[
-            const SizedBox(height: 14),
-            ...widget.children,
-          ],
+          if (_open) ...[const SizedBox(height: 14), ...widget.children],
         ],
       ),
     );
@@ -319,7 +316,9 @@ class BookDateField extends StatelessWidget {
             child: Text(
               display,
               style: TextStyle(
-                color: enabled ? cs.onSurface : cs.onSurface.withValues(alpha: .4),
+                color: enabled
+                    ? cs.onSurface
+                    : cs.onSurface.withValues(alpha: .4),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -473,11 +472,7 @@ class BookRatingPicker extends StatelessWidget {
             color: cs.onSurfaceVariant,
           ),
         ),
-        StarRatingInput(
-          rating: rating,
-          onChanged: onChanged,
-          enabled: enabled,
-        ),
+        StarRatingInput(rating: rating, onChanged: onChanged, enabled: enabled),
       ],
     );
   }

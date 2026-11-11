@@ -166,7 +166,8 @@ class _BookPageReaderState extends State<BookPageReader> {
     if (!_showHighlights || page.highlights.isEmpty) {
       return [TextSpan(text: text)];
     }
-    final sorted = [...page.highlights]..sort((a, b) => a.start.compareTo(b.start));
+    final sorted = [...page.highlights]
+      ..sort((a, b) => a.start.compareTo(b.start));
     final spans = <InlineSpan>[];
     var cursor = 0;
     for (final h in sorted) {
@@ -178,8 +179,9 @@ class _BookPageReaderState extends State<BookPageReader> {
         TextSpan(
           text: text.substring(s, e),
           style: base.copyWith(
-            backgroundColor: kHighlightColors[h.colorIndex % kHighlightColors.length]
-                .withValues(alpha: .62),
+            backgroundColor:
+                kHighlightColors[h.colorIndex % kHighlightColors.length]
+                    .withValues(alpha: .62),
             color: const Color(0xFF2A2118),
           ),
         ),
@@ -215,8 +217,11 @@ class _BookPageReaderState extends State<BookPageReader> {
         actions: [
           if (page.highlights.isNotEmpty)
             IconButton(
-              tooltip: _showHighlights ? 'İşaretleri gizle' : 'İşaretleri göster',
-              onPressed: () => setState(() => _showHighlights = !_showHighlights),
+              tooltip: _showHighlights
+                  ? 'İşaretleri gizle'
+                  : 'İşaretleri göster',
+              onPressed: () =>
+                  setState(() => _showHighlights = !_showHighlights),
               icon: Icon(
                 _showHighlights
                     ? Icons.highlight_rounded
@@ -262,8 +267,7 @@ class _BookPageReaderState extends State<BookPageReader> {
                         key: ValueKey('t$_textKey'),
                         textAlign: TextAlign.justify,
                         selectionControls: MaterialTextSelectionControls(),
-                        onSelectionChanged: (s, _) =>
-                            setState(() => _sel = s),
+                        onSelectionChanged: (s, _) => setState(() => _sel = s),
                       ),
               ),
             ),
@@ -284,7 +288,9 @@ class _BookPageReaderState extends State<BookPageReader> {
     if (page.highlights.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Metinden bir bölüm seçip fosforla; alıntın burada toplansın.'),
+          content: Text(
+            'Metinden bir bölüm seçip fosforla; alıntın burada toplansın.',
+          ),
         ),
       );
       return;
@@ -306,7 +312,9 @@ class _BookPageReaderState extends State<BookPageReader> {
               ),
               decoration: BoxDecoration(
                 color: cs.surface,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(28),
+                ),
               ),
               child: SafeArea(
                 top: false,
@@ -341,7 +349,8 @@ class _BookPageReaderState extends State<BookPageReader> {
                         itemBuilder: (_, i) {
                           final h = list[i];
                           final color =
-                              kHighlightColors[h.colorIndex % kHighlightColors.length];
+                              kHighlightColors[h.colorIndex %
+                                  kHighlightColors.length];
                           final snippet = page.text.substring(
                             h.start.clamp(0, page.text.length),
                             h.end.clamp(0, page.text.length),
@@ -359,7 +368,10 @@ class _BookPageReaderState extends State<BookPageReader> {
                               setSheet(() {});
                             },
                             onColor: () async {
-                              final c = await _pickColorDialog(ctx, h.colorIndex);
+                              final c = await _pickColorDialog(
+                                ctx,
+                                h.colorIndex,
+                              );
                               if (c != null) {
                                 _changeColor(h, c);
                                 setSheet(() {});
@@ -555,8 +567,9 @@ class _PaperPainter extends CustomPainter {
       final dx = rnd.nextDouble() * size.width;
       final dy = rnd.nextDouble() * size.height;
       final dark = rnd.nextBool();
-      grain.color = (dark ? Colors.brown : Colors.white)
-          .withValues(alpha: rnd.nextDouble() * .05 + .015);
+      grain.color = (dark ? Colors.brown : Colors.white).withValues(
+        alpha: rnd.nextDouble() * .05 + .015,
+      );
       canvas.drawCircle(Offset(dx, dy), rnd.nextDouble() * 1.1 + .3, grain);
     }
 
@@ -567,10 +580,7 @@ class _PaperPainter extends CustomPainter {
         ..shader = LinearGradient(
           begin: Alignment.centerRight,
           end: Alignment.centerLeft,
-          colors: [
-            const Color(0x18000000),
-            const Color(0x00000000),
-          ],
+          colors: [const Color(0x18000000), const Color(0x00000000)],
         ).createShader(Rect.fromLTWH(size.width - 10, 0, 10, size.height)),
     );
   }
@@ -669,8 +679,9 @@ class _PenBar extends StatelessWidget {
                         boxShadow: selected == i
                             ? [
                                 BoxShadow(
-                                  color: kHighlightColors[i]
-                                      .withValues(alpha: .6),
+                                  color: kHighlightColors[i].withValues(
+                                    alpha: .6,
+                                  ),
                                   blurRadius: 12,
                                   spreadRadius: 1,
                                 ),
@@ -761,7 +772,9 @@ class _HighlightTile extends StatelessWidget {
                 onPressed: onNote,
                 icon: const Icon(Icons.edit_note_rounded, size: 18),
                 label: Text(note.trim().isEmpty ? 'Not ekle' : 'Notu düzenle'),
-                style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                style: TextButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                ),
               ),
               IconButton(
                 tooltip: 'Renk',
@@ -784,7 +797,11 @@ class _HighlightTile extends StatelessWidget {
                 tooltip: 'Sil',
                 onPressed: onDelete,
                 visualDensity: VisualDensity.compact,
-                icon: Icon(Icons.delete_outline_rounded, color: cs.error, size: 20),
+                icon: Icon(
+                  Icons.delete_outline_rounded,
+                  color: cs.error,
+                  size: 20,
+                ),
               ),
             ],
           ),
@@ -842,7 +859,10 @@ class _NoteSheet extends StatelessWidget {
                 const SizedBox(height: 14),
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
                 const SizedBox(height: 10),
                 TextField(

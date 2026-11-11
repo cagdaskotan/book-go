@@ -47,9 +47,9 @@ class _YearWrappedSharePageState extends State<YearWrappedSharePage> {
       );
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Görsel oluşturulamadı.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Görsel oluşturulamadı.')));
       }
     } finally {
       if (mounted) setState(() => _busy = false);

@@ -36,7 +36,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
     _fetchFavorites();
   }
 
-
   Future<void> _fetchFavorites() async {
     setState(() {
       _loading = true;
@@ -245,7 +244,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   ),
                 ),
                 SliverPadding(
-                  padding: EdgeInsets.fromLTRB(16, 10, 16, bottomNavInset(context)),
+                  padding: EdgeInsets.fromLTRB(
+                    16,
+                    10,
+                    16,
+                    bottomNavInset(context),
+                  ),
                   sliver: SliverList.separated(
                     itemCount: _items.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
@@ -282,7 +286,11 @@ BoxDecoration _heroDecoration(BuildContext context) {
       begin: const Alignment(0, -1.2),
       end: const Alignment(0, 1),
       colors: isDark
-          ? const [Color(0xFF0B1020), Color(0xFF1F1B4B), AppTheme.brandSecondaryDark]
+          ? const [
+              Color(0xFF0B1020),
+              Color(0xFF1F1B4B),
+              AppTheme.brandSecondaryDark,
+            ]
           : const [
               Color(0xFF0E402B),
               AppTheme.brandPrimary,
@@ -312,7 +320,7 @@ class _BookTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _CoverThumb(url: book.coverUrl),
+          _CoverThumb(url: book.coverUrl, title: book.title),
           const SizedBox(width: 12),
           Expanded(
             child: Padding(
@@ -501,8 +509,9 @@ class _GradientProgressBar extends StatelessWidget {
 }
 
 class _CoverThumb extends StatelessWidget {
-  const _CoverThumb({required this.url});
+  const _CoverThumb({required this.url, this.title});
   final String? url;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -518,7 +527,7 @@ class _CoverThumb extends StatelessWidget {
           border: Border.all(color: cs.outlineVariant),
           borderRadius: BorderRadius.circular(14),
         ),
-        child: CachedCover(url: url),
+        child: CachedCover(url: url, title: title),
       ),
     );
   }

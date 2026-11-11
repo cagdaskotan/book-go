@@ -38,11 +38,8 @@ Future<int?> showAddBookModal(
     isScrollControlled: true,
     useSafeArea: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => _AddBookSheet(
-      initial: initial,
-      isbn: isbn,
-      toastContext: context,
-    ),
+    builder: (_) =>
+        _AddBookSheet(initial: initial, isbn: isbn, toastContext: context),
   );
 }
 
@@ -146,8 +143,7 @@ class _AddBookSheetState extends State<_AddBookSheet> {
 
   Future<void> _captureCover() => _setCoverFrom(CoverPhotoService.capture);
 
-  Future<void> _pickCover() =>
-      _setCoverFrom(CoverPhotoService.pickFromGallery);
+  Future<void> _pickCover() => _setCoverFrom(CoverPhotoService.pickFromGallery);
 
   Future<void> _setCoverFrom(Future<String?> Function() source) async {
     try {
@@ -157,8 +153,8 @@ class _AddBookSheetState extends State<_AddBookSheet> {
     } catch (_) {
       if (!mounted) return;
       setState(
-        () => _error =
-            'Kapak alınamadı. Kamera/galeri izni verilmemiş olabilir.',
+        () =>
+            _error = 'Kapak alınamadı. Kamera/galeri izni verilmemiş olabilir.',
       );
     }
   }

@@ -49,8 +49,7 @@ class StarRatingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stars = StarRating.starsOf(rating);
-    final empty =
-        emptyColor ?? Theme.of(context).colorScheme.outlineVariant;
+    final empty = emptyColor ?? Theme.of(context).colorScheme.outlineVariant;
 
     return Row(
       mainAxisSize: MainAxisSize.min,

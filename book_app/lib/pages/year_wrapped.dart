@@ -94,7 +94,11 @@ class _YearWrappedPageState extends State<YearWrappedPage> {
     }
     return [
       _WrapCard(
-        gradient: const [Color(0xFF28205F), Color(0xFF6750E8), Color(0xFFA063ED)],
+        gradient: const [
+          Color(0xFF28205F),
+          Color(0xFF6750E8),
+          Color(0xFFA063ED),
+        ],
         child: _IntroCard(year: s.year),
       ),
       _WrapCard(
@@ -140,13 +144,14 @@ class _YearWrappedPageState extends State<YearWrappedPage> {
       if (s.highestRated != null)
         _WrapCard(
           gradient: const [Color(0xFF8C2B4B), Color(0xFFF0617B)],
-          child: _BookCard(
-            title: 'Yılın favorisi',
-            book: s.highestRated!,
-          ),
+          child: _BookCard(title: 'Yılın favorisi', book: s.highestRated!),
         ),
       _WrapCard(
-        gradient: const [Color(0xFF1C1646), Color(0xFF4B3CB1), Color(0xFF9B63E6)],
+        gradient: const [
+          Color(0xFF1C1646),
+          Color(0xFF4B3CB1),
+          Color(0xFF9B63E6),
+        ],
         child: _FinaleCard(stats: s, onShare: _share),
       ),
     ];
@@ -212,7 +217,10 @@ class _YearWrappedPageState extends State<YearWrappedPage> {
                   padding: const EdgeInsets.only(top: 14, right: 4),
                   child: IconButton(
                     onPressed: () => Navigator.of(context).maybePop(),
-                    icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      color: Colors.white70,
+                    ),
                   ),
                 ),
               ),
@@ -294,8 +302,7 @@ class _YearStats {
       final a = (b.author ?? '').trim();
       if (a.isNotEmpty) authorCounts[a] = (authorCounts[a] ?? 0) + 1;
       if (b.rating != null) {
-        if (topRated == null ||
-            (b.rating ?? 0) > (topRated.rating ?? 0)) {
+        if (topRated == null || (b.rating ?? 0) > (topRated.rating ?? 0)) {
           topRated = b;
         }
       }
@@ -303,8 +310,7 @@ class _YearStats {
 
     MapEntry<String, int>? topOf(Map<String, int> m) {
       if (m.isEmpty) return null;
-      final e = m.entries.toList()
-        ..sort((a, b) => b.value.compareTo(a.value));
+      final e = m.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
       return e.first;
     }
 
@@ -423,8 +429,7 @@ class _BigStatCard extends StatelessWidget {
           tween: Tween(begin: 0, end: 1),
           duration: const Duration(milliseconds: 700),
           curve: Curves.easeOut,
-          builder: (context, t, child) =>
-              Opacity(opacity: t, child: child),
+          builder: (context, t, child) => Opacity(opacity: t, child: child),
           child: Text(
             number,
             style: const TextStyle(
@@ -550,6 +555,7 @@ class _BookCard extends StatelessWidget {
                 url: book.coverUrl,
                 iconColor: Colors.white54,
                 iconSize: 50,
+                title: book.title,
               ),
             ),
           ),

@@ -68,10 +68,7 @@ class HomeShelf extends StatelessWidget {
                 ),
               const Spacer(),
               if (onSeeAll != null)
-                TextButton(
-                  onPressed: onSeeAll,
-                  child: const Text('Tümü'),
-                ),
+                TextButton(onPressed: onSeeAll, child: const Text('Tümü')),
             ],
           ),
         ),

@@ -281,9 +281,7 @@ class BookService {
       {
         'title': newTitle,
         'author': author != null ? _orNull(author) : cur['author'],
-        'publisher': publisher != null
-            ? _orNull(publisher)
-            : cur['publisher'],
+        'publisher': publisher != null ? _orNull(publisher) : cur['publisher'],
         'isbn': isbn != null ? normalizeIsbn(isbn) : cur['isbn'],
         'total_pages': newTotal,
         'cover_url': coverUrl != null ? _orNull(coverUrl) : cur['cover_url'],

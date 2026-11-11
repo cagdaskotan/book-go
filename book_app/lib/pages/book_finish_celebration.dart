@@ -238,13 +238,20 @@ class _BookFinishCelebrationState extends State<BookFinishCelebration>
                 child: IgnorePointer(
                   child: Opacity(
                     opacity:
-                        (1 - (_flight.value - .52).abs() / .05).clamp(0.0, 1.0) *
+                        (1 - (_flight.value - .52).abs() / .05).clamp(
+                          0.0,
+                          1.0,
+                        ) *
                         .92,
                     child: const DecoratedBox(
                       decoration: BoxDecoration(
                         gradient: RadialGradient(
                           radius: 1.15,
-                          colors: [Colors.white, Color(0x66FFFFFF), Color(0x00FFFFFF)],
+                          colors: [
+                            Colors.white,
+                            Color(0x66FFFFFF),
+                            Color(0x00FFFFFF),
+                          ],
                           stops: [0.0, 0.45, 1.0],
                         ),
                       ),
@@ -641,7 +648,11 @@ class _ReportCard extends StatelessWidget {
               width: 64,
               height: 90,
               color: Colors.white.withValues(alpha: .08),
-              child: CachedCover(url: book.coverUrl, iconColor: Colors.white54),
+              child: CachedCover(
+                url: book.coverUrl,
+                iconColor: Colors.white54,
+                title: book.title,
+              ),
             ),
           ),
           const SizedBox(width: 14),
@@ -896,7 +907,8 @@ class _CelebrationSkyPainter extends CustomPainter {
       canvas.drawCircle(
         pos,
         s.size * (1 + tw * .3),
-        Paint()..color = c.withValues(alpha: (.85 * tw * boost).clamp(0.0, 1.0)),
+        Paint()
+          ..color = c.withValues(alpha: (.85 * tw * boost).clamp(0.0, 1.0)),
       );
       // Büyük yıldızlara hafif hâle
       if (s.size > 1.9) {

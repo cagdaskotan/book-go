@@ -100,9 +100,7 @@ class AppTheme {
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: colorScheme.surface,
         surfaceTintColor: Colors.transparent,
-        shape: const RoundedRectangleBorder(
-          borderRadius: Radii.sheet,
-        ),
+        shape: const RoundedRectangleBorder(borderRadius: Radii.sheet),
         showDragHandle: false,
         dragHandleColor: colorScheme.onSurface.withValues(alpha: .35),
       ),
@@ -136,9 +134,7 @@ class AppTheme {
           backgroundColor: colorScheme.primary,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: Radii.brMd,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: Radii.brMd),
         ),
       ),
 
@@ -147,9 +143,7 @@ class AppTheme {
           foregroundColor: colorScheme.onSurface,
           side: BorderSide(color: colorScheme.outline),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: Radii.brMd,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: Radii.brMd),
         ),
       ),
 
@@ -157,9 +151,7 @@ class AppTheme {
         style: TextButton.styleFrom(
           foregroundColor: colorScheme.primary,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          shape: RoundedRectangleBorder(
-            borderRadius: Radii.brSm,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: Radii.brSm),
         ),
       ),
 
@@ -315,9 +307,7 @@ class AppTheme {
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: cs.surface,
         surfaceTintColor: Colors.transparent,
-        shape: const RoundedRectangleBorder(
-          borderRadius: Radii.sheet,
-        ),
+        shape: const RoundedRectangleBorder(borderRadius: Radii.sheet),
         showDragHandle: false,
         dragHandleColor: cs.onSurface.withValues(alpha: .35),
       ),
@@ -336,9 +326,7 @@ class AppTheme {
           backgroundColor: cs.primary,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: Radii.brMd,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: Radii.brMd),
         ),
       ),
 
@@ -347,9 +335,7 @@ class AppTheme {
           foregroundColor: cs.onSurface,
           side: BorderSide(color: cs.outline),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: Radii.brMd,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: Radii.brMd),
         ),
       ),
 
@@ -357,9 +343,7 @@ class AppTheme {
         style: TextButton.styleFrom(
           foregroundColor: cs.primary,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          shape: RoundedRectangleBorder(
-            borderRadius: Radii.brSm,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: Radii.brSm),
         ),
       ),
 

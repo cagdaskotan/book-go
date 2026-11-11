@@ -71,7 +71,6 @@ class _BookAppState extends State<BookApp> {
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: themeController.mode, // toggle ile değişir
-
       // Giriş ekranı yok: ilk açılışta karşılama, sonrasında doğrudan kitaplık.
       initialRoute: widget.showOnboarding
           ? AppRoutes.onboarding

@@ -222,10 +222,7 @@ class _ShelfScanPageState extends State<ShelfScanPage> {
               ),
             ),
             Gap.vXl,
-            const SizedBox(
-              width: 180,
-              child: LinearProgressIndicator(),
-            ),
+            const SizedBox(width: 180, child: LinearProgressIndicator()),
           ],
         ),
       );
@@ -322,7 +319,11 @@ class _MatchTile extends StatelessWidget {
                   height: 62,
                   child: ColoredBox(
                     color: cs.surfaceContainerHighest,
-                    child: CachedCover(url: book?.coverUrl, iconSize: 20),
+                    child: CachedCover(
+                      url: book?.coverUrl,
+                      iconSize: 20,
+                      title: book?.title,
+                    ),
                   ),
                 ),
               ),

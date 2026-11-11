@@ -28,9 +28,12 @@ class ShelfScanPage extends StatefulWidget {
 }
 
 class _ShelfScanPageState extends State<ShelfScanPage> {
-  /// Tek karede bu kadar sırttan fazlasını aramıyoruz: hem katalog
-  /// servislerini yormamak hem kullanıcıyı uzun listede boğmamak için.
-  static const int _maxCandidates = 12;
+  /// Tek karede aranacak en fazla sırt sayısı.
+  ///
+  /// Gerçek bir raf fotoğrafında 30'dan fazla kitap çıkabiliyor; 12 sınırı
+  /// rafın yarısını görmeden kesiyordu. Katalog servislerini yormamak için
+  /// bir sınır gerekli ama bu kadar dar olmamalı.
+  static const int _maxCandidates = 30;
 
   final _catalog = CatalogService();
   final _books = BookService();
@@ -68,7 +71,16 @@ class _ShelfScanPageState extends State<ShelfScanPage> {
         CatalogBook? best;
         try {
           final results = await _catalog.searchByTitle(spine.text);
-          if (results.isNotEmpty) best = results.first;
+          // İlk sonucu körlemesine almıyoruz: gerçek denemede "UYANIS"
+          // için katalog bambaşka bir yazarın kitabını döndürdü ve
+          // kullanıcının kitaplığına yanlış kitap eklenecekti. Yanlış
+          // kitap, kitap bulunamamasından kötüdür.
+          best = SpineMatch.best<CatalogBook>(
+            spine.text,
+            results,
+            title: (b) => b.title,
+            author: (b) => b.author,
+          );
         } catch (_) {
           // Tek sırt bulunamadıysa tarama durmasın.
         }

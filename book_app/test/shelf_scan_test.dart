@@ -131,4 +131,70 @@ void main() {
       expect(spines, hasLength(2));
     });
   });
+
+  group('eşleşme puanlaması', () {
+    // Gerçek denemeden: "UYANIS" için katalog Kate Chopin'in kitabını
+    // döndürdü, oysa raftaki Scott Sigler'ın "Uyanış"ıydı. İlk sonucu
+    // körlemesine almak kullanıcının kitaplığına yanlış kitap ekliyordu.
+    test('yazar sırtta geçiyorsa puan yükselir', () {
+      final dogru = SpineMatch.score(
+        spineText: 'SCOTT SIGLER UYANIŞ',
+        candidateTitle: 'Uyanış',
+        candidateAuthor: 'Scott Sigler',
+      );
+      final yanlis = SpineMatch.score(
+        spineText: 'SCOTT SIGLER UYANIŞ',
+        candidateTitle: 'Uyanış',
+        candidateAuthor: 'Kate Chopin',
+      );
+      expect(dogru, greaterThan(yanlis));
+    });
+
+    test('OCR harf hatasına toleranslı', () {
+      // Gerçek okuma: "WARCROSS" -> "WAREROSS"
+      final score = SpineMatch.score(
+        spineText: 'MARIE LU WAREROSS',
+        candidateTitle: 'Warcross',
+        candidateAuthor: 'Marie Lu',
+      );
+      expect(score, greaterThanOrEqualTo(SpineMatch.minimumScore));
+    });
+
+    test('alakasız kitap eşiği geçemez', () {
+      final score = SpineMatch.score(
+        spineText: 'KURTULUŞ SCOTT SIGLER',
+        candidateTitle: 'Sefiller',
+        candidateAuthor: 'Victor Hugo',
+      );
+      expect(score, lessThan(SpineMatch.minimumScore));
+    });
+
+    test('hiçbiri eşiği geçemezse null döner', () {
+      final chosen = SpineMatch.best<String>(
+        'ALAKASIZ SIRT METNI',
+        ['Sefiller', 'Suç ve Ceza'],
+        title: (t) => t,
+        author: (_) => null,
+      );
+      // Yanlış kitap eklemektense hiç eklememek doğru.
+      expect(chosen, isNull);
+    });
+
+    test('doğru aday seçilir', () {
+      final chosen = SpineMatch.best<String>(
+        'SCOTT SIGLER KURTULUŞ',
+        ['Sefiller', 'Kurtuluş', 'Körlük'],
+        title: (t) => t,
+        author: (_) => null,
+      );
+      expect(chosen, 'Kurtuluş');
+    });
+
+    test('boş metin eşleşmez', () {
+      expect(
+        SpineMatch.score(spineText: '', candidateTitle: 'Kitap'),
+        0,
+      );
+    });
+  });
 }

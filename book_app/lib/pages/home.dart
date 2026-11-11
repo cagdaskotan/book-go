@@ -470,6 +470,7 @@ class _HomePageState extends State<HomePage> {
 
     final result = await showModalBottomSheet<int>(
       context: context,
+      isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _DailyGoalSheet(currentGoal: current.dailyPageGoal),
@@ -497,6 +498,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _editYearlyGoal() async {
     final result = await showModalBottomSheet<int>(
       context: context,
+      isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _YearlyGoalSheet(currentGoal: _yearlyGoal),

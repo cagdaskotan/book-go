@@ -20,6 +20,9 @@ Future<void> showCollectionPicker(BuildContext context, int bookId) async {
 
   final selected = await showModalBottomSheet<BookCollection>(
     context: context,
+    // Raf sayısı arttıkça liste uzuyor; sabit yükseklikte kırpılmasın.
+    isScrollControlled: true,
+    useSafeArea: true,
     showDragHandle: true,
     backgroundColor: Theme.of(context).colorScheme.surface,
     builder: (context) => SafeArea(

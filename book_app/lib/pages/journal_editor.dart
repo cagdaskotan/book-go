@@ -115,6 +115,7 @@ class _BookPageReaderState extends State<BookPageReader> {
     final controller = TextEditingController(text: h.note);
     final result = await showModalBottomSheet<String>(
       context: context,
+      useSafeArea: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => _NoteSheet(controller: controller),
@@ -290,6 +291,7 @@ class _BookPageReaderState extends State<BookPageReader> {
     }
     showModalBottomSheet<void>(
       context: context,
+      useSafeArea: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
@@ -385,6 +387,8 @@ class _BookPageReaderState extends State<BookPageReader> {
   Future<int?> _pickColorDialog(BuildContext ctx, int current) {
     return showModalBottomSheet<int>(
       context: ctx,
+      isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (c) => Container(
         decoration: BoxDecoration(
@@ -431,6 +435,7 @@ class _BookPageReaderState extends State<BookPageReader> {
     final result = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => _NoteSheet(
         controller: controller,

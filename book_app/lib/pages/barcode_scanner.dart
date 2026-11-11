@@ -61,6 +61,8 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
 
       final confirmed = await showModalBottomSheet<bool>(
         context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
         isDismissible: false,
         enableDrag: false,
         backgroundColor: Theme.of(context).colorScheme.surface,

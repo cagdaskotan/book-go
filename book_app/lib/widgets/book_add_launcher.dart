@@ -12,12 +12,12 @@ import 'title_search_sheet.dart';
 import '../services/cover_scan_service.dart';
 import '../services/cover_photo_service.dart';
 import '../pages/shelf_scan_page.dart';
+import 'app_sheet.dart';
 
 Future<int?> showBookAddLauncher(BuildContext context) async {
-  final action = await showModalBottomSheet<_AddAction>(
+  final action = await showAppSheet<_AddAction>(
     context: context,
-    backgroundColor: Colors.transparent,
-    builder: (_) => const _AddChoiceSheet(),
+    child: const _AddChoiceSheet(),
   );
   if (action == null || !context.mounted) return null;
   if (action == _AddAction.manual) return showAddBookModal(context);
@@ -175,95 +175,57 @@ class _AddChoiceSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 12, 18, 22),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 42,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: cs.outlineVariant,
-                  borderRadius: BorderRadius.circular(99),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Text(
-                    'Kitap ekle',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -.6,
-                    ),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    tooltip: 'Kapat',
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close_rounded),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Kitabını nasıl eklemek istersin?',
-                style: TextStyle(
-                  color: cs.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _AddOptionRow(
-                icon: Icons.search_rounded,
-                title: 'Ada göre ara',
-                subtitle: 'Kapak, yazar ve sayfa otomatik dolsun',
-                colors: const [Color(0xFF6750E8), Color(0xFF9B6AF4)],
-                onTap: () => Navigator.pop(context, _AddAction.search),
-              ),
-              const SizedBox(height: 10),
-              _AddOptionRow(
-                icon: Icons.document_scanner_rounded,
-                title: 'Barkodu tara',
-                subtitle: 'Arka kapaktaki ISBN barkodunu okut',
-                colors: const [Color(0xFF2BAE8A), Color(0xFF34D399)],
-                onTap: () => Navigator.pop(context, _AddAction.scan),
-              ),
-              const SizedBox(height: 10),
-              _AddOptionRow(
-                icon: Icons.photo_camera_rounded,
-                title: 'Kapağı okut',
-                subtitle: 'Barkodu yoksa kapağın fotoğrafını çek',
-                colors: const [Color(0xFF3B82F6), Color(0xFF60A5FA)],
-                onTap: () => Navigator.pop(context, _AddAction.cover),
-              ),
-              const SizedBox(height: 10),
-              _AddOptionRow(
-                icon: Icons.shelves,
-                title: 'Rafını tara',
-                subtitle: 'Kitaplığının fotoğrafını çek, hepsi birden gelsin',
-                colors: const [Color(0xFFB45309), Color(0xFFF59E0B)],
-                onTap: () => Navigator.pop(context, _AddAction.shelf),
-              ),
-              const SizedBox(height: 10),
-              _AddOptionRow(
-                icon: Icons.edit_note_rounded,
-                title: 'Elle ekle',
-                subtitle: 'Tüm bilgileri kendin gir',
-                colors: const [Color(0xFFFFA55B), Color(0xFFF06473)],
-                onTap: () => Navigator.pop(context, _AddAction.manual),
-              ),
-            ],
-          ),
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(18, 0, 18, 22),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const AppSheetHeader(
+              title: 'Kitap ekle',
+              subtitle: 'Kitabını nasıl eklemek istersin?',
+            ),
+            _AddOptionRow(
+              icon: Icons.search_rounded,
+              title: 'Ada göre ara',
+              subtitle: 'Kapak, yazar ve sayfa otomatik dolsun',
+              colors: const [Color(0xFF6750E8), Color(0xFF9B6AF4)],
+              onTap: () => Navigator.pop(context, _AddAction.search),
+            ),
+            const SizedBox(height: 10),
+            _AddOptionRow(
+              icon: Icons.document_scanner_rounded,
+              title: 'Barkodu tara',
+              subtitle: 'Arka kapaktaki ISBN barkodunu okut',
+              colors: const [Color(0xFF2BAE8A), Color(0xFF34D399)],
+              onTap: () => Navigator.pop(context, _AddAction.scan),
+            ),
+            const SizedBox(height: 10),
+            _AddOptionRow(
+              icon: Icons.photo_camera_rounded,
+              title: 'Kapağı okut',
+              subtitle: 'Barkodu yoksa kapağın fotoğrafını çek',
+              colors: const [Color(0xFF3B82F6), Color(0xFF60A5FA)],
+              onTap: () => Navigator.pop(context, _AddAction.cover),
+            ),
+            const SizedBox(height: 10),
+            _AddOptionRow(
+              icon: Icons.shelves,
+              title: 'Rafını tara',
+              subtitle: 'Kitaplığının fotoğrafını çek, hepsi birden gelsin',
+              colors: const [Color(0xFFB45309), Color(0xFFF59E0B)],
+              onTap: () => Navigator.pop(context, _AddAction.shelf),
+            ),
+            const SizedBox(height: 10),
+            _AddOptionRow(
+              icon: Icons.edit_note_rounded,
+              title: 'Elle ekle',
+              subtitle: 'Tüm bilgileri kendin gir',
+              colors: const [Color(0xFFFFA55B), Color(0xFFF06473)],
+              onTap: () => Navigator.pop(context, _AddAction.manual),
+            ),
+          ],
         ),
       ),
     );
@@ -339,10 +301,7 @@ class _AddOptionRow extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: cs.onSurfaceVariant,
-              ),
+              Icon(Icons.chevron_right_rounded, color: cs.onSurfaceVariant),
             ],
           ),
         ),

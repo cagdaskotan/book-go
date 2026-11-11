@@ -213,6 +213,7 @@ class _DiaryPageState extends State<DiaryPage> {
 
     final ok = await showModalBottomSheet<bool>(
       context: context,
+      useSafeArea: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _LogEditSheet(

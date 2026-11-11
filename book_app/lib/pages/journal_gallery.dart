@@ -45,6 +45,8 @@ class _JournalGalleryPageState extends State<JournalGalleryPage> {
   Future<void> _addPage() async {
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
         final cs = Theme.of(ctx).colorScheme;

@@ -102,6 +102,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
   Future<void> _create() async {
     final created = await showModalBottomSheet<bool>(
       context: context,
+      useSafeArea: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _CreateCollectionSheet(
@@ -116,6 +117,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
   Future<void> _editCollection(BookCollection collection) async {
     final saved = await showModalBottomSheet<bool>(
       context: context,
+      useSafeArea: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _CreateCollectionSheet(
@@ -478,6 +480,8 @@ class _CollectionsPageState extends State<CollectionsPage> {
     if (_selected.isEmpty) return;
     final action = await showModalBottomSheet<String>(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _BulkEditSheet(count: _selected.length),
     );
@@ -1383,6 +1387,8 @@ class _BookshelfSection extends StatelessWidget {
   void _showShelfActions(BuildContext context, Color color) {
     showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (sheetCtx) => _ShelfActionsSheet(
         name: collection.name,

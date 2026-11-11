@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/first_run.dart';
 import '../services/gamification_service.dart';
 import '../services/profile_service.dart';
+import '../services/sample_library_service.dart';
 import '../theme/app_scale.dart';
 import '../theme/app_theme.dart';
 import '../widgets/book_add_launcher.dart';
@@ -81,6 +82,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
     await _finish(addedBookId: id);
   }
 
+  /// Eli boş gelen kullanıcı için örnek kitaplık.
+  ///
+  /// Boş bir kitaplıkta ısı haritası, seri, yıl karnesi ve alıntı defteri
+  /// hep gri duruyor; uygulamanın ne yaptığı ancak dolu hâlinde görülüyor.
+  /// Örnekler profilden tek dokunuşla temizlenebiliyor.
+  Future<void> _browseSample() async {
+    if (_finishing) return;
+    setState(() => _finishing = true);
+    try {
+      await SampleLibraryService.install();
+    } catch (_) {
+      // Örnek kurulamadıysa karşılamayı tıkamayalım, boş kitaplıkla geç.
+    }
+    if (!mounted) return;
+    setState(() => _finishing = false);
+    await _finish();
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -98,11 +117,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               child: PageView(
                 controller: _pager,
                 physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _nameStep(cs),
-                  _goalStep(cs),
-                  _bookStep(cs),
-                ],
+                children: [_nameStep(cs), _goalStep(cs), _bookStep(cs)],
               ),
             ),
           ],
@@ -233,9 +248,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
               padding: const EdgeInsets.symmetric(vertical: Gap.lg),
             ),
           ),
+          Gap.vSm,
+          OutlinedButton.icon(
+            onPressed: _finishing ? null : _browseSample,
+            icon: const Icon(Icons.auto_stories_rounded),
+            label: const Text('Örnek kitaplıkla gez'),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: Gap.md),
+            ),
+          ),
           Gap.vMd,
           Text(
-            'Elinde kitap yoksa sorun değil — sonra da ekleyebilirsin.',
+            'Elinde kitap yoksa örnek kitaplıkla dolaşabilirsin; '
+            'örnekleri profilden tek dokunuşla temizlersin.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12,
@@ -288,10 +313,7 @@ class _TopBar extends StatelessWidget {
             ),
           ],
           const Spacer(),
-          TextButton(
-            onPressed: onSkip,
-            child: const Text('Şimdilik geç'),
-          ),
+          TextButton(onPressed: onSkip, child: const Text('Şimdilik geç')),
         ],
       ),
     );

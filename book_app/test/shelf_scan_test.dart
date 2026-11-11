@@ -48,10 +48,11 @@ void main() {
         spine('Soldaki Kitap', 20, 40),
         spine('Ortadaki Kitap', 160, 40),
       ]);
-      expect(
-        spines.map((s) => s.text).toList(),
-        ['Soldaki Kitap', 'Ortadaki Kitap', 'Sağdaki Kitap'],
-      );
+      expect(spines.map((s) => s.text).toList(), [
+        'Soldaki Kitap',
+        'Ortadaki Kitap',
+        'Sağdaki Kitap',
+      ]);
     });
 
     test('yakın duran ince kitaplar birbirine karışmaz', () {
@@ -191,10 +192,101 @@ void main() {
     });
 
     test('boş metin eşleşmez', () {
+      expect(SpineMatch.score(spineText: '', candidateTitle: 'Kitap'), 0);
+    });
+  });
+
+  /// Yatık duran kitap: yazı düz okunur, kutu geniş ve basık.
+  ///
+  /// Raf fotoğraflarının çoğunda rafın üstünde böyle bir yığın oluyor.
+  /// Bütün yığın aynı yatay aralıkta durduğu için "dar dikey şerit"
+  /// mantığına girmiyor; kitapları ayıran şey dikey konum.
+  ScannedLine flat(
+    String text,
+    double top, {
+    double left = 40,
+    double w = 300,
+  }) => ScannedLine(
+    text: text,
+    width: w,
+    height: 24,
+    left: left,
+    top: top,
+    angle: 0,
+  );
+
+  group('yatık yığın', () {
+    test('üst üste duran kitaplar ayrı ayrı tanınır', () {
+      // Dört kitap üst üste: kalınlıkları kadar aralıklı.
+      final spines = ShelfScanService.parseLines([
+        flat('Aleksandr Puşkin Yüzbaşının Kızı', 20),
+        flat('Dede Korkut Hikayeleri', 90),
+        flat('Lewis Carroll Alice Harikalar Diyarında', 160),
+        flat('Jack London Beyaz Diş', 230),
+      ]);
+
+      expect(spines, hasLength(4));
       expect(
-        SpineMatch.score(spineText: '', candidateTitle: 'Kitap'),
-        0,
+        spines.map((s) => s.text),
+        containsAll([
+          'Aleksandr Puşkin Yüzbaşının Kızı',
+          'Dede Korkut Hikayeleri',
+          'Lewis Carroll Alice Harikalar Diyarında',
+          'Jack London Beyaz Diş',
+        ]),
       );
+    });
+
+    test('aynı kapaktaki iki satır tek kitap sayılır', () {
+      // Yakın duran iki satır (başlık ve altındaki yazar) bölünmemeli.
+      final spines = ShelfScanService.parseLines([
+        flat('Beyaz Diş', 100),
+        flat('Jack London', 118),
+      ]);
+
+      expect(spines, hasLength(1));
+      expect(spines.single.lineCount, 2);
+      expect(spines.single.text, 'Beyaz Diş Jack London');
+    });
+
+    test('aynı hizadaki iki ayrı yığın karışmaz', () {
+      // Rafın iki ucunda, aynı yükseklikte iki yığın: yatayda örtüşmüyorlar.
+      final spines = ShelfScanService.parseLines([
+        flat('Beyaz Diş Jack London', 100, left: 20, w: 240),
+        flat('Dede Korkut Hikayeleri', 104, left: 420, w: 240),
+      ]);
+
+      expect(spines, hasLength(2));
+    });
+
+    test('ayakta duranlarla yatıklar bir arada çözülür', () {
+      // Gerçek raf: altta ayakta sırtlar, üstte yatık yığın.
+      final spines = ShelfScanService.parseLines([
+        spine('Tutunamayanlar', 20, 300),
+        spine('Kürk Mantolu Madonna', 120, 300),
+        flat('Jack London Beyaz Diş', 20, left: 20, w: 300),
+        flat('Dede Korkut Hikayeleri', 90, left: 24, w: 300),
+      ]);
+
+      expect(spines, hasLength(4));
+      // Yatık satırlar ayakta duran sırtlara yapışmamalı.
+      expect(
+        spines.map((s) => s.text),
+        containsAll(['Tutunamayanlar', 'Kürk Mantolu Madonna']),
+      );
+    });
+
+    test('yatık satırlar sütun eşiğini şişirmez', () {
+      // Yatık kutular 600 piksel geniş. Eşik onlardan hesaplanırsa yan yana
+      // duran ince sırtlar tek kitaba çöker.
+      final spines = ShelfScanService.parseLines([
+        flat('Dede Korkut Hikayeleri Oğuz Boyları', 20, left: 10, w: 600),
+        spine('Tutunamayanlar', 100, 300),
+        spine('Kürk Mantolu Madonna', 150, 300),
+        spine('İnce Memed', 200, 300),
+      ]);
+
+      expect(spines, hasLength(4));
     });
   });
 }

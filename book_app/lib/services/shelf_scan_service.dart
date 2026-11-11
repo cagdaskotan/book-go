@@ -55,43 +55,101 @@ class ShelfScanService {
   /// OCR satırlarından kitap sırtlarını çıkarır.
   ///
   /// Saf ve testli: raf fotoğrafı çekmeden sınanabilsin diye.
+  ///
+  /// Rafta iki ayrı duruş var ve bunlar aynı mantığa girmiyor:
+  ///
+  /// * **Ayakta duran sırtlar** — yazı döndürülmüş, her kitap dar bir dikey
+  ///   şerit kaplar. Kitapları ayıran şey *yatay* konum.
+  /// * **Yatık duran yığınlar** — üst üste konmuş kitaplar. Yazı düz okunur
+  ///   ve bütün yığın aynı yatay aralıkta durur; kitapları ayıran şey
+  ///   *dikey* konum.
+  ///
+  /// Hepsi tek mantıkla öbeklenince yatık yığın tek bir kitaba çöküyordu:
+  /// aynı şeritte olduğu için üst üste duran dört kitabın adı birbirine
+  /// yapışıp hiçbir şeyle eşleşmeyen bir metin oluyordu.
   static List<SpineCandidate> parseLines(List<ScannedLine> lines) {
     final usable = lines.where(_isMeaningful).toList();
     if (usable.isEmpty) return const [];
 
-    final tolerance = _clusterTolerance(usable);
+    final standing = usable.where((l) => l.isVertical).toList();
+    final lying = usable.where((l) => !l.isVertical).toList();
 
-    final sorted = [...usable]
-      ..sort((a, b) => a.centerX.compareTo(b.centerX));
+    final out = <SpineCandidate>[
+      // Yatıkları ayıklayınca ayakta kalanlar da düzeliyor: eşik artık
+      // geniş yatay kutulardan şişmiyor.
+      ..._toCandidates(_groupByColumn(standing), sortParts: _byTop),
+      ..._toCandidates(_groupByRow(lying), sortParts: _byLeft),
+    ];
 
-    final clusters = <List<ScannedLine>>[];
-    final centers = <double>[];
+    out.sort((a, b) => a.centerX.compareTo(b.centerX));
+    return out;
+  }
 
+  static int _byTop(ScannedLine a, ScannedLine b) => a.top.compareTo(b.top);
+  static int _byLeft(ScannedLine a, ScannedLine b) => a.left.compareTo(b.left);
+
+  /// Ayakta duran sırtlar: her kitap bir **sütun**.
+  static List<List<ScannedLine>> _groupByColumn(List<ScannedLine> lines) {
+    if (lines.isEmpty) return const [];
+    final tolerance = _clusterTolerance(lines);
+    final sorted = [...lines]..sort((a, b) => a.centerX.compareTo(b.centerX));
+
+    final groups = <List<ScannedLine>>[];
     for (final line in sorted) {
-      if (clusters.isEmpty) {
-        clusters.add([line]);
-        centers.add(line.centerX);
-        continue;
-      }
       // Öbeğin ortalamasıyla kıyasla: son elemanla kıyaslamak zincirleme
       // kaymaya yol açıyor, ince kitaplar tek öbeğe yapışıyordu.
-      final mean = centers.last;
-      if ((line.centerX - mean).abs() <= tolerance) {
-        clusters.last.add(line);
-        final c = clusters.last;
-        centers[centers.length - 1] =
-            c.map((l) => l.centerX).reduce((a, b) => a + b) / c.length;
+      final target = groups.isEmpty ? null : groups.last;
+      if (target != null &&
+          (line.centerX - _mean(target, (l) => l.centerX)).abs() <= tolerance) {
+        target.add(line);
       } else {
-        clusters.add([line]);
-        centers.add(line.centerX);
+        groups.add([line]);
       }
     }
+    return groups;
+  }
 
+  /// Yatık duran kitaplar: her kitap bir **satır**.
+  ///
+  /// Satıra katılmanın iki koşulu var: aynı hizada durmak ve yatayda
+  /// örtüşmek. İkincisi olmadan, rafın iki ucundaki iki ayrı yığın aynı
+  /// yükseklikte diye tek kitap sayılıyordu.
+  static List<List<ScannedLine>> _groupByRow(List<ScannedLine> lines) {
+    if (lines.isEmpty) return const [];
+    final tolerance = _rowTolerance(lines);
+    final sorted = [...lines]..sort((a, b) => a.centerY.compareTo(b.centerY));
+
+    final groups = <List<ScannedLine>>[];
+    for (final line in sorted) {
+      List<ScannedLine>? target;
+      for (final group in groups.reversed) {
+        if ((line.centerY - _mean(group, (l) => l.centerY)).abs() > tolerance) {
+          continue;
+        }
+        if (group.any((l) => l.horizontalOverlap(line) >= .3)) {
+          target = group;
+          break;
+        }
+      }
+      if (target != null) {
+        target.add(line);
+      } else {
+        groups.add([line]);
+      }
+    }
+    return groups;
+  }
+
+  /// Öbekleri aday kitaplara çevirir.
+  static List<SpineCandidate> _toCandidates(
+    List<List<ScannedLine>> groups, {
+    required int Function(ScannedLine, ScannedLine) sortParts,
+  }) {
     final out = <SpineCandidate>[];
-    for (var i = 0; i < clusters.length; i++) {
-      final cluster = clusters[i]..sort((a, b) => a.top.compareTo(b.top));
+    for (final group in groups) {
+      final ordered = [...group]..sort(sortParts);
       final parts = <String>[];
-      for (final line in cluster) {
+      for (final line in ordered) {
         final text = _clean(line.text);
         if (text.isNotEmpty && !parts.contains(text)) parts.add(text);
       }
@@ -102,18 +160,21 @@ class ShelfScanService {
       out.add(
         SpineCandidate(
           text: text,
-          centerX: centers[i],
-          lineCount: cluster.length,
+          centerX: _mean(group, (l) => l.centerX),
+          lineCount: group.length,
           parts: parts,
         ),
       );
     }
-
-    out.sort((a, b) => a.centerX.compareTo(b.centerX));
     return out;
   }
 
-  /// Öbek eşiği: kitapların ne kadar yakın sayılacağı.
+  static double _mean(
+    List<ScannedLine> lines,
+    double Function(ScannedLine) of,
+  ) => lines.map(of).reduce((a, b) => a + b) / lines.length;
+
+  /// Sütun eşiği: ayakta duran kitapların ne kadar yakın sayılacağı.
   ///
   /// Yalnızca **dar** kutulardan hesaplanıyor. Fotoğrafta yatay yazılar
   /// (kapağı dönük kitaplar, yatık yığınlar) çok geniş kutular üretiyor;
@@ -125,6 +186,17 @@ class ShelfScanService {
     final widths = source.map((l) => l.width).toList()..sort();
     final median = widths[widths.length ~/ 2];
     return (median * 0.85).clamp(12.0, 90.0);
+  }
+
+  /// Satır eşiği: yatık kitapların ne kadar yakın sayılacağı.
+  ///
+  /// Ölçü yazının **yüksekliği**. Yığında iki kitabın adını ayıran boşluk
+  /// kitap kalınlığı kadar, yani yazı yüksekliğinden belirgin biçimde
+  /// büyük; aynı kapaktaki iki satırı ayıran boşluk ise ondan küçük.
+  static double _rowTolerance(List<ScannedLine> lines) {
+    final heights = lines.map((l) => l.height).toList()..sort();
+    final median = heights[heights.length ~/ 2];
+    return (median * 1.1).clamp(10.0, 70.0);
   }
 
   /// Raf fotoğrafında künyeye ait olmayan satırlar.
@@ -189,8 +261,9 @@ abstract final class SpineMatch {
 
     // Başlıktaki kelimelerin kaçı sırtta geçiyor? Yön önemli: sırt metni
     // yazarı da içerdiği için başlıktan uzun olabilir.
-    final matchedTitle =
-        titleTokens.where((t) => spineTokens.any((s) => _close(s, t))).length;
+    final matchedTitle = titleTokens
+        .where((t) => spineTokens.any((s) => _close(s, t)))
+        .length;
     var value = matchedTitle / titleTokens.length;
 
     // Yazar, aynı adlı farklı kitapları ayıran asıl sinyal. Sırt metni

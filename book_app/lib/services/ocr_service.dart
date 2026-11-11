@@ -76,8 +76,27 @@ class ScannedLine {
   /// Yazının eğimi. Sırt yazıları genelde 90 dereceye yakın döner.
   final double? angle;
 
-  /// Satırın yatay merkezi — öbekleme bunun üzerinden yapılır.
+  /// Satırın yatay merkezi — ayakta duran sırtları öbeklemek bunun üzerinden.
   double get centerX => left + width / 2;
+
+  /// Satırın dikey merkezi — yatık duran kitapları satıra bölmek için.
+  double get centerY => top + height / 2;
+
+  /// Kutunun [other] ile yatayda örtüşme oranı (0–1).
+  ///
+  /// Aynı yükseklikteki iki ayrı yığını birbirine karıştırmamak için:
+  /// yatıkta "aynı satır" olmanın koşulu yalnızca aynı hizada durmak değil,
+  /// aynı sütunda da durmak.
+  double horizontalOverlap(ScannedLine other) {
+    final start = left > other.left ? left : other.left;
+    final end = (left + width) < (other.left + other.width)
+        ? (left + width)
+        : (other.left + other.width);
+    final shared = end - start;
+    if (shared <= 0) return 0;
+    final narrower = width < other.width ? width : other.width;
+    return narrower <= 0 ? 0 : shared / narrower;
+  }
 
   /// Dikey yazı mı? Sırtlarda yazı döndürülmüş olur; kapakta olmaz.
   bool get isVertical {

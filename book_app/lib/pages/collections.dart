@@ -6,6 +6,7 @@ import 'package:flutter/services.dart' show HapticFeedback;
 
 import '../models/book.dart';
 import '../models/book_collection.dart';
+import '../widgets/app_sheet.dart';
 import '../services/api_exception.dart';
 import '../services/book_service.dart';
 import '../services/collection_service.dart';
@@ -286,32 +287,12 @@ class _CollectionsPageState extends State<CollectionsPage> {
   }
 
   Future<void> _deleteCollection(BookCollection collection) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        icon: Icon(
-          Icons.delete_outline_rounded,
-          color: Theme.of(dialogContext).colorScheme.error,
-        ),
-        title: Text('${collection.name} silinsin mi?'),
-        content: const Text(
-          'Kitapların silinmez; yalnızca bu raf kitaplığından kaldırılır.',
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Vazgeç'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(dialogContext).colorScheme.error,
-            ),
-            child: const Text('Rafı kaldır'),
-          ),
-        ],
-      ),
+    final confirmed = await showAppConfirm(
+      context,
+      title: '${collection.name} silinsin mi?',
+      message: 'Kitapların silinmez; yalnızca bu raf kitaplığından kaldırılır.',
+      confirmLabel: 'Rafı kaldır',
+      destructive: true,
     );
     if (confirmed != true) return;
     await _service.deleteCollection(collection.id);
@@ -398,9 +379,9 @@ class _CollectionsPageState extends State<CollectionsPage> {
                   Positioned.fill(
                     child: IgnorePointer(
                       child: ColoredBox(
-                        color: const Color(0xFF0B0716).withValues(
-                          alpha: 0.92 * scrim,
-                        ),
+                        color: const Color(
+                          0xFF0B0716,
+                        ).withValues(alpha: 0.92 * scrim),
                       ),
                     ),
                   ),
@@ -1226,7 +1207,10 @@ class _CabinetCornice extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withValues(alpha: .42)],
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: .42),
+                  ],
                 ),
               ),
             ),
@@ -1340,7 +1324,10 @@ class _CabinetBase extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  colors: [Colors.transparent, Colors.black.withValues(alpha: .3)],
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: .3),
+                  ],
                 ),
               ),
             ),
@@ -1505,8 +1492,10 @@ class _BookshelfSection extends StatelessWidget {
           child: child,
         );
       },
-      onReorder: (oldI, newI) {
-        if (newI > oldI) newI -= 1;
+      // onReorderItem, taşınan öğe listeden çıkarıldıktan sonraki hedef
+      // sırayı veriyor; eski onReorder'da elle yapılan -1 düzeltmesine
+      // artık gerek yok.
+      onReorderItem: (oldI, newI) {
         final ids = books.map((b) => b.id).toList();
         final moved = ids.removeAt(oldI);
         ids.insert(newI, moved);
@@ -2079,8 +2068,18 @@ class _ShelfActionsSheet extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               _action(context, Icons.open_in_new_rounded, 'Rafı aç', onOpen),
-              _action(context, Icons.add_circle_outline_rounded, 'Kitap ekle', onAdd),
-              _action(context, Icons.edit_rounded, 'Adı ve rengi düzenle', onEdit),
+              _action(
+                context,
+                Icons.add_circle_outline_rounded,
+                'Kitap ekle',
+                onAdd,
+              ),
+              _action(
+                context,
+                Icons.edit_rounded,
+                'Adı ve rengi düzenle',
+                onEdit,
+              ),
               _action(
                 context,
                 Icons.delete_outline_rounded,
@@ -2167,7 +2166,11 @@ class _NewShelfSlot extends StatelessWidget {
                         shape: BoxShape.circle,
                         border: Border.all(color: gold, width: 1.6),
                       ),
-                      child: const Icon(Icons.add_rounded, color: gold, size: 19),
+                      child: const Icon(
+                        Icons.add_rounded,
+                        color: gold,
+                        size: 19,
+                      ),
                     ),
                     const SizedBox(width: 11),
                     Column(
@@ -2438,7 +2441,6 @@ class _BookFaceOut extends StatelessWidget {
     );
   }
 }
-
 
 class _EmptyShelfRow extends StatelessWidget {
   const _EmptyShelfRow({required this.color, required this.onTap});

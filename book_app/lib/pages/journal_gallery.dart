@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../models/journal.dart';
+import '../widgets/app_sheet.dart';
 import '../services/journal_store.dart';
 import '../services/ocr_service.dart';
 import 'journal_editor.dart' show BookPageReader, kHighlightColors;
@@ -78,7 +79,10 @@ class _JournalGalleryPageState extends State<JournalGalleryPage> {
                     padding: EdgeInsets.symmetric(horizontal: 4),
                     child: Text(
                       'Sayfa ekle',
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -137,9 +141,9 @@ class _JournalGalleryPageState extends State<JournalGalleryPage> {
     } catch (_) {
       if (mounted) {
         setState(() => _busy = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Fotoğraf alınamadı.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Fotoğraf alınamadı.')));
       }
     }
   }
@@ -213,25 +217,12 @@ class _JournalGalleryPageState extends State<JournalGalleryPage> {
   }
 
   Future<void> _confirmDelete(JournalPage p) async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Sayfa silinsin mi?'),
-        content: const Text('Bu sayfa ve üzerindeki post-it’ler kaldırılır.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Vazgeç'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(ctx).colorScheme.error,
-            ),
-            child: const Text('Sil'),
-          ),
-        ],
-      ),
+    final ok = await showAppConfirm(
+      context,
+      title: 'Sayfa silinsin mi?',
+      message: 'Bu sayfa ve üzerindeki post-it’ler kaldırılır.',
+      confirmLabel: 'Sil',
+      destructive: true,
     );
     if (ok == true) await _store.deletePage(p.id);
   }
@@ -252,9 +243,9 @@ class _JournalCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final preview = page.text.trim().replaceAll(RegExp(r'\s+'), ' ');
     // Sayfadaki fosfor renklerini topla (tekil), küçük noktalar olarak göster.
-    final usedColors = <int>{for (final h in page.highlights) h.colorIndex}
-        .take(5)
-        .toList();
+    final usedColors = <int>{
+      for (final h in page.highlights) h.colorIndex,
+    }.take(5).toList();
     return Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(14),

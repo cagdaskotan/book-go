@@ -7,7 +7,9 @@ import '../services/api_exception.dart';
 import '../services/backup_service.dart';
 import '../services/notification_service.dart';
 import '../services/profile_service.dart';
+import '../services/sample_library_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_sheet.dart';
 import '../widgets/appbar.dart';
 import '../widgets/book_add_launcher.dart';
 import '../widgets/navigation.dart';
@@ -27,6 +29,8 @@ class _ProfilePageState extends State<ProfilePage> {
   TimeOfDay _reminderTime = const TimeOfDay(hour: 21, minute: 0);
   bool _exporting = false;
   bool _restoring = false;
+  bool _sampleBusy = false;
+  bool _sampleInstalled = false;
 
   @override
   void initState() {
@@ -34,6 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _displayName.text = profileService.displayName;
     profileService.addListener(_onProfileChanged);
     _loadReminder();
+    _loadSampleState();
   }
 
   @override
@@ -169,49 +174,23 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<bool?> _confirmRestore(BackupPreview preview) {
     final date = preview.exportedAt;
-    return showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Yedeği geri yükle'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (date != null)
-              Text(
-                '${date.day}.${date.month}.${date.year} tarihli yedek',
-                style: const TextStyle(fontWeight: FontWeight.w800),
-              ),
-            const SizedBox(height: 8),
-            Text(
-              '${preview.books} kitap, ${preview.logs} günlük kaydı, '
-              '${preview.collections} raf, ${preview.quotes} alıntı, '
-              '${preview.journalPages} defter sayfası.',
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Şu anda cihazda olan kitaplık silinip yerine bu yedek '
-              'yazılacak. Bu işlem geri alınamaz.',
-              style: TextStyle(fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('İptal'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
-            child: const Text('Geri yükle'),
-          ),
-        ],
-      ),
+    final stamp = date == null
+        ? ''
+        : '${date.day}.${date.month}.${date.year} tarihli yedek — ';
+    return showAppConfirm(
+      context,
+      title: 'Yedeği geri yükle',
+      message:
+          '$stamp${preview.books} kitap, ${preview.logs} günlük kaydı, '
+          '${preview.collections} raf, ${preview.quotes} alıntı, '
+          '${preview.journalPages} defter sayfası. '
+          'Şu anda cihazda olan kitaplık silinip yerine bu yedek yazılacak. '
+          'Bu işlem geri alınamaz.',
+      confirmLabel: 'Geri yükle',
+      destructive: true,
+      icon: Icons.settings_backup_restore_rounded,
     );
   }
-
-  // ---------------------------------------------------------------------------
 
   void _toast(String message) {
     ScaffoldMessenger.of(
@@ -260,6 +239,8 @@ class _ProfilePageState extends State<ProfilePage> {
             _habitCard(),
             const SizedBox(height: 12),
             _backupCard(),
+            const SizedBox(height: 12),
+            _sampleCard(),
           ],
         ),
       ),
@@ -487,6 +468,151 @@ class _ProfilePageState extends State<ProfilePage> {
                 ? const _Spinner()
                 : const Icon(Icons.chevron_right_rounded),
             onTap: busy ? null : _restoreBackup,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Örnek kitaplık
+
+  Future<void> _loadSampleState() async {
+    final installed = await SampleLibraryService.isInstalled();
+    if (mounted) setState(() => _sampleInstalled = installed);
+  }
+
+  Future<void> _installSample() async {
+    final onay = await showAppConfirm(
+      context,
+      title: 'Örnek kitaplık eklensin mi?',
+      message:
+          'Kitaplığına 10 örnek kitap, okuma geçmişi, iki raf, alıntılar ve '
+          'defter sayfaları eklenecek. Kendi kitapların olduğu gibi kalır; '
+          'örnekleri daha sonra tek dokunuşla temizleyebilirsin.',
+      confirmLabel: 'Ekle',
+    );
+    if (onay != true) return;
+
+    setState(() => _sampleBusy = true);
+    try {
+      final summary = await SampleLibraryService.install();
+      if (!mounted) return;
+      setState(() {
+        _sampleInstalled = true;
+        _sampleBusy = false;
+      });
+      _toast(
+        '${summary.books} kitap, ${summary.quotes} alıntı, '
+        '${summary.collections} raf ve ${summary.journalPages} defter '
+        'sayfası eklendi.',
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _sampleBusy = false);
+      _toast(e is ApiException ? e.message : 'Örnek kitaplık eklenemedi.');
+    }
+  }
+
+  Future<void> _removeSample() async {
+    final onay = await showAppConfirm(
+      context,
+      title: 'Örnek veriler silinsin mi?',
+      message:
+          'Yalnızca örnek kitaplar ve onlara bağlı kayıtlar silinir. '
+          'Kendi eklediğin kitaplara dokunulmaz.',
+      confirmLabel: 'Sil',
+      destructive: true,
+    );
+    if (onay != true) return;
+
+    setState(() => _sampleBusy = true);
+    try {
+      await SampleLibraryService.remove();
+      if (!mounted) return;
+      setState(() {
+        _sampleInstalled = false;
+        _sampleBusy = false;
+      });
+      _toast('Örnek veriler temizlendi.');
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _sampleBusy = false);
+      _toast('Örnek veriler silinemedi.');
+    }
+  }
+
+  Widget _sampleCard() {
+    final cs = Theme.of(context).colorScheme;
+    return _SurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Örnek kitaplık',
+                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+                ),
+              ),
+              if (_sampleInstalled)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: cs.primary.withValues(alpha: .12),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    'Yüklü',
+                    style: TextStyle(
+                      color: cs.primary,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 11,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            _sampleInstalled
+                ? 'Örnekleri silmek kendi kitaplarına dokunmaz.'
+                : 'Uygulamayı dolu hâliyle gezmek için örnek kitaplar, okuma '
+                      'geçmişi, raflar, alıntılar ve defter sayfaları ekler.',
+            style: TextStyle(
+              color: cs.onSurfaceVariant,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 10),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(
+              _sampleInstalled
+                  ? Icons.delete_sweep_rounded
+                  : Icons.auto_stories_rounded,
+            ),
+            title: Text(
+              _sampleInstalled
+                  ? 'Örnek verileri temizle'
+                  : 'Örnek verileri ekle',
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
+            subtitle: Text(
+              _sampleInstalled
+                  ? 'Eklenen örnek kayıtların tamamı silinir'
+                  : '10 kitap · okuma geçmişi · 2 raf · alıntılar · defter',
+            ),
+            trailing: _sampleBusy
+                ? const _Spinner()
+                : const Icon(Icons.chevron_right_rounded),
+            onTap: _sampleBusy
+                ? null
+                : (_sampleInstalled ? _removeSample : _installSample),
           ),
         ],
       ),

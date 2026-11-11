@@ -1,6 +1,5 @@
 // lib/screens/diary.dart
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,6 +17,7 @@ import 'journal_gallery.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../widgets/app_sheet.dart';
 import '../widgets/app_progress_bar.dart';
 import '../widgets/app_toast.dart';
 import '../widgets/book_cover.dart';
@@ -104,7 +104,6 @@ class _DiaryPageState extends State<DiaryPage> {
       if (mounted) setState(() => _loading = false);
     }
   }
-
 
   // -------------------- Derived & helpers --------------------
   int get _totalPages => _book?.totalPages ?? 0;
@@ -241,9 +240,7 @@ class _DiaryPageState extends State<DiaryPage> {
       all = await _service.fetchBooks();
     } catch (_) {}
     final goal = await ReadingGoalService.getYearlyGoal();
-    final finished = ReadingGoalService.finishedInYear(
-      all.isEmpty ? [b] : all,
-    );
+    final finished = ReadingGoalService.finishedInYear(all.isEmpty ? [b] : all);
     if (!mounted) return false;
 
     await Navigator.of(context).push(
@@ -457,7 +454,9 @@ class _DiaryPageState extends State<DiaryPage> {
             ),
 
           // ------- Alıntılar -------
-          SliverToBoxAdapter(child: QuoteSection(key: ValueKey(b.id), book: b)),
+          SliverToBoxAdapter(
+            child: QuoteSection(key: ValueKey(b.id), book: b),
+          ),
 
           // ------- "Okuma Günlüğü" başlığı -------
           SliverToBoxAdapter(
@@ -1446,15 +1445,9 @@ class _DiaryPageState extends State<DiaryPage> {
                 Icons.bolt_rounded,
                 'günde ~${avgPerDay.round()} sayfa',
               ),
-              _paceChip(
-                Icons.menu_book_rounded,
-                'kalan $remaining sayfa',
-              ),
+              _paceChip(Icons.menu_book_rounded, 'kalan $remaining sayfa'),
               if (pagesPerHour != null && pagesPerHour > 0)
-                _paceChip(
-                  Icons.speed_rounded,
-                  '≈ $pagesPerHour sayfa/saat',
-                ),
+                _paceChip(Icons.speed_rounded, '≈ $pagesPerHour sayfa/saat'),
               if (estimate.minutesLeft case final minutes?)
                 _paceChip(
                   Icons.timer_outlined,
@@ -1681,7 +1674,9 @@ class _DiaryPageState extends State<DiaryPage> {
                         _logActions(log, cs),
                       ],
                     ),
-                    if (pages > 0 || log.durationMinutes > 0 || log.finished) ...[
+                    if (pages > 0 ||
+                        log.durationMinutes > 0 ||
+                        log.finished) ...[
                       const SizedBox(height: 10),
                       Wrap(
                         spacing: 7,
@@ -1790,9 +1785,7 @@ class _DiaryPageState extends State<DiaryPage> {
           size: 20,
           color: cs.onSurfaceVariant,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         onSelected: (v) {
           if (v == 'edit') {
             _openLogModal(edit: log);
@@ -1855,52 +1848,13 @@ Future<bool?> _confirmSheet(
   required String confirmText,
   Color? confirmColor,
 }) {
-  final cs = Theme.of(context).colorScheme;
-  return showModalBottomSheet<bool>(
-    context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
-    showDragHandle: true,
-    backgroundColor: Theme.of(context).colorScheme.surface,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-    ),
-    builder: (ctx) {
-      return Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
-        child: _GlassSheet(
-          title: title,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                message,
-                style: TextStyle(color: cs.onSurface.withValues(alpha: .8)),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx, false),
-                    child: const Text('İptal'),
-                  ),
-                  const SizedBox(width: 8),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: confirmColor ?? cs.primary,
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () => Navigator.pop(ctx, true),
-                    child: Text(confirmText),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    },
+  // Onay görünümü artık ortak: renk kararı "yıkıcı mı" sorusuna indi.
+  return showAppConfirm(
+    context,
+    title: title,
+    message: message,
+    confirmLabel: confirmText,
+    destructive: confirmColor != null,
   );
 }
 
@@ -2728,107 +2682,6 @@ class _ReadingTimerSheetState extends State<_ReadingTimerSheet> {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-// ---------- Shared sheet scaffolding ----------
-
-class _GlassSheet extends StatelessWidget {
-  // ignore: unused_element_parameter
-  const _GlassSheet({required this.title, required this.child, this.error});
-  final String title;
-  final Widget child;
-  final String? error;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final mq = MediaQuery.of(context);
-    final clamped = mq.copyWith(
-      textScaler: mq.textScaler.clamp(minScaleFactor: 0.9, maxScaleFactor: 1.2),
-    );
-
-    return MediaQuery(
-      data: clamped,
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              color: cs.surface,
-              border: Border(top: BorderSide(color: cs.outlineVariant)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 24,
-                  offset: const Offset(0, -6),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-            child: SafeArea(
-              top: false,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Başlık
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8, top: 4),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              title,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            tooltip: 'Kapat',
-                            onPressed: () => Navigator.pop(context, false),
-                            icon: const Icon(Icons.close),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (error != null) ...[
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: cs.errorContainer,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.error_outline,
-                              color: cs.onErrorContainer,
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                error!,
-                                style: TextStyle(color: cs.onErrorContainer),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                    ],
-                    child,
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

@@ -62,19 +62,14 @@ class AppSheet extends StatelessWidget {
       padding: EdgeInsets.only(bottom: keyboard),
       child: Container(
         constraints: BoxConstraints(maxHeight: maxHeight),
-        decoration: BoxDecoration(
-          color: cs.surface,
-          borderRadius: Radii.sheet,
-        ),
+        decoration: BoxDecoration(color: cs.surface, borderRadius: Radii.sheet),
         clipBehavior: Clip.antiAlias,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const _SheetHandle(),
             Flexible(
-              child: scrollable
-                  ? SingleChildScrollView(child: child)
-                  : child,
+              child: scrollable ? SingleChildScrollView(child: child) : child,
             ),
           ],
         ),
@@ -157,6 +152,136 @@ class AppSheetHeader extends StatelessWidget {
             icon: const Icon(Icons.close_rounded),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Tek tip onay sorusu.
+///
+/// Onay pencereleri uygulamada üç ayrı şekilde yazılmıştı: kitap silme alt
+/// sayfa açıyordu, raf silme ve yedek geri yükleme ise `AlertDialog`. Aynı
+/// ağırlıktaki kararlar farklı göründüğü için kullanıcı neyin geri
+/// alınamaz olduğunu görünüşe bakarak ayırt edemiyordu. Artık hepsi buradan
+/// geçiyor: [destructive] true ise kırmızı, değilse normal.
+///
+/// `true` döner yalnızca kullanıcı onaylarsa; kapatma ve iptal `null`/`false`.
+Future<bool?> showAppConfirm(
+  BuildContext context, {
+  required String title,
+  required String message,
+  required String confirmLabel,
+  String cancelLabel = 'Vazgeç',
+  bool destructive = false,
+  IconData? icon,
+}) {
+  return showAppSheet<bool>(
+    context: context,
+    child: _ConfirmSheet(
+      title: title,
+      message: message,
+      confirmLabel: confirmLabel,
+      cancelLabel: cancelLabel,
+      destructive: destructive,
+      icon: icon,
+    ),
+  );
+}
+
+class _ConfirmSheet extends StatelessWidget {
+  const _ConfirmSheet({
+    required this.title,
+    required this.message,
+    required this.confirmLabel,
+    required this.cancelLabel,
+    required this.destructive,
+    this.icon,
+  });
+
+  final String title;
+  final String message;
+  final String confirmLabel;
+  final String cancelLabel;
+  final bool destructive;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final accent = destructive ? cs.error : cs.primary;
+    final mark =
+        icon ??
+        (destructive
+            ? Icons.delete_outline_rounded
+            : Icons.help_outline_rounded);
+
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(Gap.lg, Gap.xs, Gap.lg, Gap.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: accent.withValues(alpha: .12),
+                borderRadius: Radii.brLg,
+              ),
+              child: Icon(mark, color: accent, size: 27),
+            ),
+            const SizedBox(height: Gap.md),
+            Text(
+              title,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w900,
+                letterSpacing: -.4,
+              ),
+            ),
+            const SizedBox(height: Gap.xs),
+            Text(
+              message,
+              style: TextStyle(
+                color: cs.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: Gap.lg),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 50,
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text(cancelLabel),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: Gap.sm),
+                Expanded(
+                  child: SizedBox(
+                    height: 50,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: accent,
+                        foregroundColor: destructive
+                            ? cs.onError
+                            : cs.onPrimary,
+                      ),
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text(confirmLabel),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

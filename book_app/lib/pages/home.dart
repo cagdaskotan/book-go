@@ -425,7 +425,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
   /// Kahraman kitabın günlük kayıtlarından bitirme tahminini çıkarır.
   ///
   /// Kitap listesi ana ekranda zaten var; tek ek sorgu o kitabın günlüğü.
@@ -462,7 +461,6 @@ class _HomePageState extends State<HomePage> {
       Navigator.pushReplacementNamed(context, dest);
     }
   }
-
 
   Future<void> _editDailyGoal() async {
     final current = _gamification;
@@ -766,10 +764,7 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.all(22),
                         child: Column(
                           children: [
-                            const Mascot(
-                              mood: MascotMood.encourage,
-                              size: 96,
-                            ),
+                            const Mascot(mood: MascotMood.encourage, size: 96),
                             const SizedBox(height: 12),
                             Text(
                               'Rafın boş duruyor',
@@ -793,9 +788,7 @@ class _HomePageState extends State<HomePage> {
                               width: double.infinity,
                               child: FilledButton.icon(
                                 onPressed: _openAdd,
-                                icon: const Icon(
-                                  Icons.qr_code_scanner_rounded,
-                                ),
+                                icon: const Icon(Icons.qr_code_scanner_rounded),
                                 label: const Text('İlk kitabını ekle'),
                                 style: FilledButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
@@ -811,7 +804,12 @@ class _HomePageState extends State<HomePage> {
                   )
                 else
                   SliverPadding(
-                    padding: EdgeInsets.fromLTRB(16, 8, 16, bottomNavInset(context)),
+                    padding: EdgeInsets.fromLTRB(
+                      16,
+                      8,
+                      16,
+                      bottomNavInset(context),
+                    ),
                     sliver: SliverList.separated(
                       itemCount: _recent.length.clamp(0, 6),
                       separatorBuilder: (_, __) => const SizedBox(height: 10),
@@ -1262,60 +1260,60 @@ class _WelcomePanel extends StatelessWidget {
                         ),
                       ),
                     ),
-              if (summary case final value?)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 11,
-                    vertical: 7,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: .13),
-                    borderRadius: BorderRadius.circular(99),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: .16),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.military_tech_rounded,
-                        color: Color(0xFFFFD98A),
-                        size: 18,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Seviye ${value.level}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 11,
+                    if (summary case final value?)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 11,
+                          vertical: 7,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: .13),
+                          borderRadius: BorderRadius.circular(99),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: .16),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.military_tech_rounded,
+                              color: Color(0xFFFFD98A),
+                              size: 18,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Seviye ${value.level}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
+                  ],
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Bugün hangi hikâyede kayboluyoruz?',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 27,
+                    height: 1.08,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -.9,
                   ),
                 ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          const Text(
-            'Bugün hangi hikâyede kayboluyoruz?',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 27,
-              height: 1.08,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -.9,
-            ),
-          ),
-          if (heroBook case final book?) ...[
-            const SizedBox(height: 18),
-            _HeroBookCard(
-              book: book,
-              paceNote: heroPaceNote,
-              onOpen: onOpenHero,
-            ),
-          ],
+                if (heroBook case final book?) ...[
+                  const SizedBox(height: 18),
+                  _HeroBookCard(
+                    book: book,
+                    paceNote: heroPaceNote,
+                    onOpen: onOpenHero,
+                  ),
+                ],
               ],
             ),
           ),
@@ -1331,9 +1329,7 @@ class _WelcomePanel extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [color, color.withValues(alpha: 0)],
-          ),
+          gradient: RadialGradient(colors: [color, color.withValues(alpha: 0)]),
         ),
       ),
     );
@@ -2241,15 +2237,18 @@ class _LoadingSkeleton extends StatelessWidget {
 
 // Kapak görseli
 class _CoverThumb extends StatelessWidget {
-  const _CoverThumb({
-    required this.url,
-    required this.finished,
-    this.showBadge = true,
-    this.w = 62,
-    this.h = 86,
-  });
-  const _CoverThumb.large({required String? url})
-    : this(url: url, finished: false, showBadge: false, w: 80, h: 112);
+  // İki boy var ve ölçüler çağrı yerinden verilmiyor; o yüzden her boyut
+  // kendi kurucusunda sabit.
+  const _CoverThumb({required this.url, required this.finished})
+    : showBadge = true,
+      w = 62,
+      h = 86;
+
+  const _CoverThumb.large({required this.url})
+    : finished = false,
+      showBadge = false,
+      w = 80,
+      h = 112;
 
   final String? url;
   final bool finished;

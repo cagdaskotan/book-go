@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 
 import '../models/book.dart';
 import '../models/gamification_summary.dart';
+import '../models/quote.dart';
+import '../services/quote_service.dart';
 import '../services/api_exception.dart';
 import '../services/book_service.dart';
 import '../services/gamification_service.dart';
@@ -1770,8 +1772,36 @@ class _MiniContinueCard extends StatelessWidget {
   }
 }
 
-class _MascotQuoteCard extends StatelessWidget {
+/// Günün alıntısı.
+///
+/// Önce kullanıcının kendi defterine bakıyor: insanın kendi altını çizdiği
+/// cümleyi görmesi, hazır bir ünlü sözden çok daha kıymetli. Defter boşsa
+/// aşağıdaki seçkiye düşüyor ve karta dokunmak defteri açıyor.
+class _MascotQuoteCard extends StatefulWidget {
   const _MascotQuoteCard();
+
+  @override
+  State<_MascotQuoteCard> createState() => _MascotQuoteCardState();
+}
+
+class _MascotQuoteCardState extends State<_MascotQuoteCard> {
+  Quote? _mine;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final quotes = await QuoteService().fetchQuotes();
+      if (!mounted) return;
+      setState(() => _mine = pickDailyQuote(quotes, DateTime.now()));
+    } catch (_) {
+      // Defter okunamazsa hazır seçkiyle devam; kart boş kalmasın.
+    }
+  }
 
   static const _quotes = <(String, String)>[
     (
@@ -1796,310 +1826,122 @@ class _MascotQuoteCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final now = DateTime.now();
     final dayOfYear = now.difference(DateTime(now.year)).inDays;
-    final (quote, author) = _quotes[dayOfYear % _quotes.length];
+    final fallback = _quotes[dayOfYear % _quotes.length];
+
+    final mine = _mine;
+    final quote = mine?.text ?? fallback.$1;
+    final author = mine == null
+        ? fallback.$2
+        : [
+            mine.bookTitle ?? 'Defterimden',
+            if (mine.page != null) 's. ${mine.page}',
+          ].join(' · ');
+    // Kendi alıntısı varsa başlık da onu söylesin.
+    final label = mine == null ? 'GÜNÜN ALINTISI' : 'DEFTERİNDEN';
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 2),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(8, 14, 14, 14),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: isDark
-                ? const [Color(0xFF20243A), Color(0xFF29213E)]
-                : const [Color(0xFFF2EEFF), Color(0xFFFFF4EA)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: cs.primary.withValues(alpha: .14)),
-          boxShadow: [
-            BoxShadow(
-              color: cs.primary.withValues(alpha: .08),
-              blurRadius: 22,
-              offset: const Offset(0, 10),
+      child: GestureDetector(
+        onTap: () => Navigator.pushNamed(context, AppRoutes.quotes),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(8, 14, 14, 14),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: isDark
+                  ? const [Color(0xFF20243A), Color(0xFF29213E)]
+                  : const [Color(0xFFF2EEFF), Color(0xFFFFF4EA)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            const SizedBox(
-              width: 106,
-              child: Mascot(mood: MascotMood.reading, size: 106),
-            ),
-            Expanded(
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Positioned(
-                    left: -7,
-                    bottom: 22,
-                    child: Transform.rotate(
-                      angle: .78,
-                      child: Container(
-                        width: 15,
-                        height: 15,
-                        color: isDark
-                            ? const Color(0xFF27223D)
-                            : const Color(0xFFFCF3EF),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-                    decoration: BoxDecoration(
-                      color: cs.surface.withValues(alpha: .72),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white.withValues(
-                          alpha: isDark ? .06 : .6,
-                        ),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'GÜNÜN ALINTISI',
-                          style: TextStyle(
-                            color: cs.primary,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 9,
-                            letterSpacing: .8,
-                          ),
-                        ),
-                        const SizedBox(height: 7),
-                        Text(
-                          '“$quote”',
-                          style: TextStyle(
-                            color: cs.onSurface,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 13.5,
-                            height: 1.35,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          '— $author',
-                          style: TextStyle(
-                            color: cs.primary,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: cs.primary.withValues(alpha: .14)),
+            boxShadow: [
+              BoxShadow(
+                color: cs.primary.withValues(alpha: .08),
+                blurRadius: 22,
+                offset: const Offset(0, 10),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Kept temporarily for quote rotation compatibility while the new mascot card
-// settles into the home layout.
-// ignore: unused_element
-class _DailyQuoteCard extends StatelessWidget {
-  const _DailyQuoteCard();
-
-  static const _quotes = <(String, String)>[
-    (
-      'Bir kitap, içimizdeki donmuş denize indirilmiş bir baltadır.',
-      'Franz Kafka',
-    ),
-    (
-      'Cennet’in bir tür kütüphane olacağını hep düşlemişimdir.',
-      'Jorge Luis Borges',
-    ),
-    ('Okumak, zihnin egzersizidir.', 'Joseph Addison'),
-    (
-      'Bizi uzak diyarlara götüren, kitap kadar güçlü bir gemi yoktur.',
-      'Emily Dickinson',
-    ),
-    ('Kitaplar, eşsiz ve taşınabilir bir sihirdir.', 'Stephen King'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final now = DateTime.now();
-    final dayOfYear = now.difference(DateTime(now.year)).inDays;
-    final (quote, author) = _quotes[dayOfYear % _quotes.length];
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 2),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(18, 18, 18, 17),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: isDark
-                ? const [Color(0xFF21253B), Color(0xFF2A2342)]
-                : const [Color(0xFFF3F0FF), Color(0xFFFDF1EA)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(26),
-          border: Border.all(color: cs.primary.withValues(alpha: .14)),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              right: -2,
-              top: -18,
-              child: Text(
-                '“',
-                style: TextStyle(
-                  color: cs.primary.withValues(alpha: .10),
-                  fontSize: 110,
-                  height: 1,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: cs.primary.withValues(alpha: .10),
-                    borderRadius: BorderRadius.circular(99),
-                  ),
-                  child: Text(
-                    'BUGÜNÜN ALINTISI',
-                    style: TextStyle(
-                      color: cs.primary,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 9,
-                      letterSpacing: .8,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  '“$quote”',
-                  style: TextStyle(
-                    color: cs.onSurface,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 15,
-                    height: 1.42,
-                    letterSpacing: -.15,
-                  ),
-                ),
-                const SizedBox(height: 9),
-                Text(
-                  author,
-                  style: TextStyle(
-                    color: cs.primary,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 11,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ---------- Görsel katmanlar ----------
-/// Welcome hero için zarif, yavaş bir ışık parıltısı (cam yansıması hissi).
-/// Eski gökkuşağı şeridin yerine markaya uygun, sakin bir dokunuş.
-// ignore: unused_element
-class _AnimatedWelcomeEdge extends StatefulWidget {
-  const _AnimatedWelcomeEdge({required this.child});
-  final Widget child;
-
-  @override
-  State<_AnimatedWelcomeEdge> createState() => _AnimatedWelcomeEdgeState();
-}
-
-class _AnimatedWelcomeEdgeState extends State<_AnimatedWelcomeEdge>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 6),
-  )..repeat();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      excludeSemantics: true,
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(34)),
-        child: Stack(
-          children: [
-            widget.child,
-            // Yavaşça geçen yumuşak beyaz parıltı (glint)
-            Positioned.fill(
-              child: IgnorePointer(
-                child: AnimatedBuilder(
-                  animation: _controller,
-                  builder: (context, _) {
-                    final shift = _controller.value * 2.4 - 1.2;
-                    return DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment(shift - .35, -1),
-                          end: Alignment(shift + .35, 1),
-                          colors: [
-                            Colors.white.withValues(alpha: 0),
-                            Colors.white.withValues(alpha: .06),
-                            Colors.white.withValues(alpha: 0),
-                          ],
-                          stops: const [0.35, 0.5, 0.65],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Light/Dark’a göre hero gradyanı
-// ignore: unused_element
-BoxDecoration _heroDecoration(BuildContext context) {
-  final isDark = Theme.of(context).brightness == Brightness.dark;
-  return BoxDecoration(
-    gradient: LinearGradient(
-      begin: const Alignment(0, -1.2),
-      end: const Alignment(0, 1),
-      colors: isDark
-          ? const [
-              Color(0xFF0B1020), // deep slate
-              Color(0xFF1F1B4B), // indigo-mor karışımı
-              AppTheme.brandSecondaryDark,
-            ]
-          : const [
-              Color(0xFF0E402B),
-              AppTheme.brandPrimary,
-              AppTheme.brandSecondary,
             ],
-      stops: const [0.0, 0.55, 1.0],
-    ),
-  );
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const SizedBox(
+                width: 106,
+                child: Mascot(mood: MascotMood.reading, size: 106),
+              ),
+              Expanded(
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned(
+                      left: -7,
+                      bottom: 22,
+                      child: Transform.rotate(
+                        angle: .78,
+                        child: Container(
+                          width: 15,
+                          height: 15,
+                          color: isDark
+                              ? const Color(0xFF27223D)
+                              : const Color(0xFFFCF3EF),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                      decoration: BoxDecoration(
+                        color: cs.surface.withValues(alpha: .72),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.white.withValues(
+                            alpha: isDark ? .06 : .6,
+                          ),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            label,
+                            style: TextStyle(
+                              color: cs.primary,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 9,
+                              letterSpacing: .8,
+                            ),
+                          ),
+                          const SizedBox(height: 7),
+                          Text(
+                            '“$quote”',
+                            style: TextStyle(
+                              color: cs.onSurface,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 13.5,
+                              height: 1.35,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            '— $author',
+                            style: TextStyle(
+                              color: cs.primary,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 // ---------- Ortak yapı taşları ----------

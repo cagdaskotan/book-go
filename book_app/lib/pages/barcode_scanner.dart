@@ -101,6 +101,20 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
                 controller: _controller,
                 scanWindow: scanWindow,
                 onDetect: _detect,
+                // Varsayılan hata görünümü İngilizce tek satır ve çıkış yolu
+                // sunmuyor: kamera izni reddedilen kullanıcı siyah ekranda
+                // kalıyordu.
+                errorBuilder: (context, error) => _ScannerError(
+                  error: error,
+                  onRetry: () async {
+                    try {
+                      await _controller.start();
+                    } catch (_) {
+                      // İzin hâlâ yoksa aynı ekran kalır; kullanıcı
+                      // ayarlardan verip tekrar dener.
+                    }
+                  },
+                ),
               );
             },
           ),
@@ -299,6 +313,118 @@ class _CircleButton extends StatelessWidget {
         onPressed: onTap,
         color: Colors.white,
         icon: Icon(icon),
+      ),
+    );
+  }
+}
+
+/// Kamera açılamadığında görünen ekran.
+///
+/// En sık sebep izin reddi. Kullanıcıyı boş ekranda bırakmak yerine neyin
+/// eksik olduğunu ve barkod olmadan da kitap ekleyebileceğini söylüyoruz.
+class _ScannerError extends StatelessWidget {
+  const _ScannerError({required this.error, required this.onRetry});
+
+  final MobileScannerException error;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final denied = error.errorCode == MobileScannerErrorCode.permissionDenied;
+    final unsupported = error.errorCode == MobileScannerErrorCode.unsupported;
+
+    final String title;
+    final String message;
+    if (denied) {
+      title = 'Kameraya izin gerekiyor';
+      message =
+          'Barkod okumak için kamerayı kullanmamız lazım. Telefon '
+          'ayarlarından Uygulamalar → Bilge → İzinler → Kamera yolunu '
+          'izleyip izni verebilirsin.';
+    } else if (unsupported) {
+      title = 'Bu cihazda barkod okunamıyor';
+      message =
+          'Kamera barkod taramayı desteklemiyor. Kitabı adıyla arayarak '
+          'ekleyebilirsin.';
+    } else {
+      title = 'Kamera açılamadı';
+      message =
+          'Kamerayı başka bir uygulama kullanıyor olabilir. Kapatıp tekrar '
+          'denemeyi ya da kitabı adıyla aramayı dene.';
+    }
+
+    return ColoredBox(
+      color: const Color(0xFF11101A),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(28),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: .09),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Icon(
+                  denied
+                      ? Icons.no_photography_rounded
+                      : Icons.videocam_off_rounded,
+                  color: Colors.white,
+                  size: 34,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -.4,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: .76),
+                  fontWeight: FontWeight.w600,
+                  height: 1.45,
+                ),
+              ),
+              const SizedBox(height: 26),
+              if (!unsupported)
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: FilledButton.icon(
+                    onPressed: onRetry,
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: const Text('Tekrar dene'),
+                  ),
+                ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: OutlinedButton.icon(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.search_rounded),
+                  label: const Text('Adıyla aramaya dön'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: BorderSide(color: Colors.white.withValues(alpha: .3)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

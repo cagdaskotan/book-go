@@ -153,7 +153,7 @@ class _JournalGalleryPageState extends State<JournalGalleryPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.bookId != null ? 'Defter' : 'Alıntı Defterim',
+          widget.bookId != null ? 'Sayfa defteri' : 'Sayfa Defterim',
           style: const TextStyle(fontWeight: FontWeight.w900),
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/book.dart';
 import '../models/quote.dart';
 import '../pages/journal_gallery.dart';
+import '../pages/routes.dart';
 import '../pages/quote_share_page.dart';
 import '../services/api_exception.dart';
 import '../services/quote_service.dart';
@@ -55,7 +56,8 @@ class _QuoteSectionState extends State<QuoteSection> {
     }
   }
 
-  /// "Ekle" → kitabın alıntı defterine yönlendir (sayfa fotoğrafla, OCR, fosforla).
+  /// "Ekle" → kitabın sayfa defterine yönlendir (sayfa fotoğrafla, OCR,
+  /// fosforla). Alıntı defteri ayrı bir ekran: kitaplığın tamamını toplar.
   Future<void> _openJournal() async {
     await Navigator.of(context).push(
       MaterialPageRoute(
@@ -188,7 +190,7 @@ class _QuoteSectionState extends State<QuoteSection> {
               onAdd: _busy ? null : _openJournal,
               onManual: _busy ? null : _addManual,
             )
-          else
+          else ...[
             ..._quotes.map(
               (q) => Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -199,6 +201,17 @@ class _QuoteSectionState extends State<QuoteSection> {
                 ),
               ),
             ),
+            // Kitaplığın tamamındaki alıntılara geçiş: insanın aklında
+            // kalan cümle genelde kitapsız geliyor.
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () => Navigator.pushNamed(context, AppRoutes.quotes),
+                icon: const Icon(Icons.format_quote_rounded, size: 18),
+                label: const Text('Tüm alıntı defterim'),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -354,10 +367,7 @@ class _EmptyQuotes extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Henüz alıntı yok',
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              color: cs.onSurface,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w900, color: cs.onSurface),
           ),
           const SizedBox(height: 4),
           Text(
@@ -370,7 +380,7 @@ class _EmptyQuotes extends StatelessWidget {
           FilledButton.icon(
             onPressed: onAdd,
             icon: const Icon(Icons.add_a_photo_rounded),
-            label: const Text('Alıntı defterini aç'),
+            label: const Text('Sayfayı fotoğrafla'),
           ),
           TextButton.icon(
             onPressed: onManual,

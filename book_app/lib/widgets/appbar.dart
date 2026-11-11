@@ -211,11 +211,19 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
               const PopupMenuItem(
+                value: _MenuAction.quotes,
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(Icons.format_quote_rounded),
+                  title: Text('Alıntı Defterim'),
+                ),
+              ),
+              const PopupMenuItem(
                 value: _MenuAction.journal,
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: Icon(Icons.menu_book_rounded),
-                  title: Text('Alıntı Defterim'),
+                  leading: Icon(Icons.photo_library_outlined),
+                  title: Text('Sayfa Defterim'),
                 ),
               ),
               const PopupMenuDivider(),
@@ -250,6 +258,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                   Navigator.pushNamed(context, AppRoutes.plus);
                 case _MenuAction.recommendations:
                   Navigator.pushNamed(context, AppRoutes.recommendations);
+                case _MenuAction.quotes:
+                  Navigator.pushNamed(context, AppRoutes.quotes);
                 case _MenuAction.journal:
                   Navigator.pushNamed(context, AppRoutes.journal);
                 case _MenuAction.profile:
@@ -462,6 +472,7 @@ class _AccountSummary extends StatelessWidget {
 enum _MenuAction {
   plus,
   recommendations,
+  quotes,
   journal,
   profile,
   insights,

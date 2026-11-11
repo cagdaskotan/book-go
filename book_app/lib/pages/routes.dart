@@ -9,6 +9,7 @@ import 'insights.dart';
 import 'collections.dart';
 import 'recommendations_page.dart';
 import 'plus_screen.dart';
+import 'quotes.dart';
 import 'journal_gallery.dart';
 import 'onboarding.dart';
 
@@ -25,6 +26,7 @@ class AppRoutes {
   static const String recommendations = '/recommendations';
   static const String plus = '/plus';
   static const String journal = '/journal';
+  static const String quotes = '/quotes';
 }
 
 int? _extractBookId(Object? a) {
@@ -60,6 +62,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const RecommendationsPage());
       case AppRoutes.journal:
         return MaterialPageRoute(builder: (_) => const JournalGalleryPage());
+      case AppRoutes.quotes:
+        return MaterialPageRoute(builder: (_) => const QuotesPage());
       case AppRoutes.plus:
         return MaterialPageRoute(
           fullscreenDialog: true,

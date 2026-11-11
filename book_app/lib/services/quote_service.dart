@@ -91,3 +91,20 @@ class QuoteService {
     );
   }
 }
+
+/// Günün alıntısını seçer.
+///
+/// Ana sayfadaki kart kullanıcının kendi defterinden besleniyor; hazır ünlü
+/// söz yerine insanın kendi altını çizdiği cümleyi görmesi çok daha
+/// kıymetli. Seçim **gün bazında sabit**: aynı gün içinde ekran her
+/// yenilendiğinde alıntı değişirse kart huzursuz oluyor, okunmadan kayıyor.
+///
+/// Başucuna alınmış alıntılar varsa yalnızca onların arasından seçiyor —
+/// kullanıcı "bunlar benim için özel" demiş, günün cümlesi oradan gelsin.
+Quote? pickDailyQuote(List<Quote> quotes, DateTime day) {
+  if (quotes.isEmpty) return null;
+  final favorites = quotes.where((q) => q.favorite).toList();
+  final pool = favorites.isNotEmpty ? favorites : quotes;
+  final dayOfYear = day.difference(DateTime(day.year)).inDays;
+  return pool[dayOfYear % pool.length];
+}

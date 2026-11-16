@@ -5,6 +5,7 @@ import '../models/quote.dart';
 import '../services/api_exception.dart';
 import '../services/quote_service.dart';
 import '../theme/app_scale.dart';
+import '../theme/app_type.dart';
 import '../utils/turkish.dart';
 import '../widgets/app_sheet.dart';
 import '../widgets/app_toast.dart';
@@ -367,11 +368,7 @@ class _QuoteCard extends StatelessWidget {
                   child: _Highlighted(
                     text: quote.text,
                     query: query,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      height: 1.5,
-                      fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.italic,
-                    ),
+                    style: AppSerif.quote.withColor(cs.onSurface),
                   ),
                 ),
               ],

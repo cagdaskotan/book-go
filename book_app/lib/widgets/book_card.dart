@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_type.dart';
 import '../models/book.dart';
 import '../theme/app_theme.dart';
 import 'star_rating.dart';
@@ -55,8 +56,7 @@ class BookCard extends StatelessWidget {
                       book.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
+                      style: AppSerif.itemTitle.copyWith(
                         letterSpacing: -0.1,
                         color: AppTheme.inkStrong,
                       ),

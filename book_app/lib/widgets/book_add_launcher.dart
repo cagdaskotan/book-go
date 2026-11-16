@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_accents.dart';
+import '../theme/app_scale.dart';
+
 import '../models/catalog_book.dart';
 import '../pages/barcode_scanner.dart';
 import '../pages/routes.dart';
@@ -190,7 +193,7 @@ class _AddChoiceSheet extends StatelessWidget {
               icon: Icons.search_rounded,
               title: 'Ada göre ara',
               subtitle: 'Kapak, yazar ve sayfa otomatik dolsun',
-              colors: const [Color(0xFF6750E8), Color(0xFF9B6AF4)],
+              accent: Accents.violet,
               onTap: () => Navigator.pop(context, _AddAction.search),
             ),
             const SizedBox(height: 10),
@@ -198,7 +201,7 @@ class _AddChoiceSheet extends StatelessWidget {
               icon: Icons.document_scanner_rounded,
               title: 'Barkodu tara',
               subtitle: 'Arka kapaktaki ISBN barkodunu okut',
-              colors: const [Color(0xFF2BAE8A), Color(0xFF34D399)],
+              accent: Accents.teal,
               onTap: () => Navigator.pop(context, _AddAction.scan),
             ),
             const SizedBox(height: 10),
@@ -206,7 +209,7 @@ class _AddChoiceSheet extends StatelessWidget {
               icon: Icons.photo_camera_rounded,
               title: 'Kapağı okut',
               subtitle: 'Barkodu yoksa kapağın fotoğrafını çek',
-              colors: const [Color(0xFF3B82F6), Color(0xFF60A5FA)],
+              accent: Accents.sky,
               onTap: () => Navigator.pop(context, _AddAction.cover),
             ),
             const SizedBox(height: 10),
@@ -214,7 +217,7 @@ class _AddChoiceSheet extends StatelessWidget {
               icon: Icons.shelves,
               title: 'Rafını tara',
               subtitle: 'Kitaplığının fotoğrafını çek, hepsi birden gelsin',
-              colors: const [Color(0xFFB45309), Color(0xFFF59E0B)],
+              accent: Accents.amber,
               onTap: () => Navigator.pop(context, _AddAction.shelf),
             ),
             const SizedBox(height: 10),
@@ -222,7 +225,7 @@ class _AddChoiceSheet extends StatelessWidget {
               icon: Icons.edit_note_rounded,
               title: 'Elle ekle',
               subtitle: 'Tüm bilgileri kendin gir',
-              colors: const [Color(0xFFFFA55B), Color(0xFFF06473)],
+              accent: Accents.coral,
               onTap: () => Navigator.pop(context, _AddAction.manual),
             ),
           ],
@@ -237,14 +240,18 @@ class _AddOptionRow extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.colors,
+    required this.accent,
     required this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
-  final List<Color> colors;
+
+  /// Seçeneğin rengi — hepsi [Accents] ailesinden, böylece beş seçenek
+  /// gökkuşağı değil tek bir takım gibi duruyor.
+  final Color accent;
+
   final VoidCallback onTap;
 
   @override
@@ -264,15 +271,9 @@ class _AddOptionRow extends StatelessWidget {
                 width: 52,
                 height: 52,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: colors),
+                  color: accent,
                   borderRadius: BorderRadius.circular(17),
-                  boxShadow: [
-                    BoxShadow(
-                      color: colors.first.withValues(alpha: .26),
-                      blurRadius: 16,
-                      offset: const Offset(0, 7),
-                    ),
-                  ],
+                  boxShadow: Shadows.tinted(accent),
                 ),
                 child: Icon(icon, color: Colors.white, size: 26),
               ),

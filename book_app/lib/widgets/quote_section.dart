@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../models/book.dart';
+import '../theme/app_accents.dart';
+import '../theme/app_type.dart';
 import '../models/quote.dart';
 import '../pages/journal_gallery.dart';
 import '../pages/routes.dart';
@@ -11,15 +12,6 @@ import '../services/api_exception.dart';
 import '../services/quote_service.dart';
 import 'app_toast.dart';
 import 'mascot.dart';
-
-/// Alıntı kartlarının dönüşümlü vurgu renkleri.
-const List<Color> _quoteAccents = [
-  Color(0xFFE0A93B),
-  Color(0xFF7C5CFF),
-  Color(0xFF2BAE8A),
-  Color(0xFFF06473),
-  Color(0xFF4D8DF7),
-];
 
 /// Kitap detayında "Alıntılar" bölümü. Kendi verisini yükler.
 class QuoteSection extends StatefulWidget {
@@ -231,7 +223,7 @@ class _QuoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final accent = _quoteAccents[quote.id.abs() % _quoteAccents.length];
+    final accent = Accents.at(quote.id);
     return Material(
       color: cs.surfaceContainerLow,
       borderRadius: BorderRadius.circular(20),
@@ -255,10 +247,12 @@ class _QuoteCard extends StatelessWidget {
                           top: -16,
                           child: Text(
                             '“',
-                            style: GoogleFonts.playfairDisplay(
+                            // Tırnak de Lora: ailede iki ayrı serif
+                            // (Playfair + Lora) tutarsızlık yaratıyordu.
+                            style: AppSerif.display.copyWith(
                               fontSize: 56,
                               height: 1,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w700,
                               color: accent.withValues(alpha: .20),
                             ),
                           ),
@@ -267,13 +261,7 @@ class _QuoteCard extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 14, top: 4),
                           child: Text(
                             quote.text,
-                            style: GoogleFonts.lora(
-                              color: cs.onSurface,
-                              fontStyle: FontStyle.italic,
-                              fontWeight: FontWeight.w500,
-                              height: 1.46,
-                              fontSize: 15,
-                            ),
+                            style: AppSerif.quote.withColor(cs.onSurface),
                           ),
                         ),
                       ],

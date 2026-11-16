@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Tipografi ölçeği.
 ///
@@ -121,4 +122,57 @@ extension AppTypeColor on TextStyle {
   /// Yarı saydam ikincil ton — "soluk" metin için tek yol.
   TextStyle muted(BuildContext context) =>
       copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
+}
+
+/// Kitap içeriğinin sesi: serif.
+///
+/// Uygulamanın karakter sorunu buradaydı. Mor gradyan, yuvarlak kartlar ve
+/// renkli ikon kutucukları her öğretici uygulamanın şablonu — ekranda bir
+/// **kitap** uygulamasına ait olduğunu söyleyen hiçbir şey yoktu.
+///
+/// Serif yazı o işi yapıyor: kitap adı, alıntı ve okunan metin serifle
+/// yazılınca sayfa panoya değil basılı sayfaya benziyor. Arayüzün geri
+/// kalanı (düğme, etiket, sayaç) sans-serif kalıyor — ikisinin karşıtlığı
+/// hiyerarşiyi tek başına kuruyor.
+///
+/// Aile tek: **Lora**. Uygulamada daha önce hem Playfair Display hem Lora
+/// kullanılıyordu; Playfair'in ince-kalın karşıtlığı yüksek, küçük puntoda
+/// dağılıyor ve Türkçe aksanlı harflerde kırılgan duruyor. Lora küçükte de
+/// okunuyor.
+abstract final class AppSerif {
+  /// Kutlama ve karne gibi tek cümlenin sahne aldığı yerler.
+  static TextStyle get display => GoogleFonts.lora(
+    fontSize: 30,
+    height: 1.2,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.5,
+  );
+
+  /// Kitap detayındaki başlık, kahraman kitap adı.
+  static TextStyle get title => GoogleFonts.lora(
+    fontSize: 22,
+    height: 1.25,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.2,
+  );
+
+  /// Liste ve kart içindeki kitap adı.
+  static TextStyle get itemTitle =>
+      GoogleFonts.lora(fontSize: 16, height: 1.3, fontWeight: FontWeight.w600);
+
+  /// Alıntı metni — eğik, çünkü alıntı başkasının sesi.
+  static TextStyle get quote => GoogleFonts.lora(
+    fontSize: 16,
+    height: 1.55,
+    fontWeight: FontWeight.w500,
+    fontStyle: FontStyle.italic,
+  );
+
+  /// Küçük alıntı (ana sayfadaki günün alıntısı gibi).
+  static TextStyle get quoteSmall => GoogleFonts.lora(
+    fontSize: 14,
+    height: 1.45,
+    fontWeight: FontWeight.w500,
+    fontStyle: FontStyle.italic,
+  );
 }

@@ -13,6 +13,7 @@ import '../services/gamification_service.dart';
 import '../services/profile_service.dart';
 import '../services/reading_goal_service.dart';
 import '../services/reading_pace.dart';
+import '../theme/app_type.dart';
 import '../theme/app_scale.dart';
 import '../theme/app_theme.dart';
 import 'routes.dart';
@@ -1623,11 +1624,7 @@ class _BookRowCard extends StatelessWidget {
                       book.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.1,
-                        color: cs.onSurface,
-                      ),
+                      style: AppSerif.itemTitle.withColor(cs.onSurface),
                     ),
                     const SizedBox(height: 4),
                     Text(

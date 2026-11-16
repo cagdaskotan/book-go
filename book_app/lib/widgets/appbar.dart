@@ -27,11 +27,17 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onStreakTap,
     this.titleOverride,
     this.subtitleOverride,
+    this.backgroundOverride,
   });
 
   final HeaderTab activeTab;
   final String? titleOverride;
   final String? subtitleOverride;
+
+  /// Çubuğun zemini. Ana sayfada altındaki karşılama paneliyle aynı renk
+  /// veriliyor: eskiden çubuk sayfa zemininde kalıyordu ve parlak panelin
+  /// üstünde siyah, ölü bir şerit gibi duruyordu.
+  final Color? backgroundOverride;
   final void Function(HeaderTab tab)? onNavSelected;
   final VoidCallback? onToggleTheme;
   final VoidCallback? onProfile;
@@ -77,7 +83,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       toolbarHeight: 66,
       // Sayfayla aynı düzlem: kart beyazı artık zeminden ayrıldığı için
       // üst çubuk da beyaz kalsaydı sayfanın ortasında bir dikiş olurdu.
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: backgroundOverride ?? theme.scaffoldBackgroundColor,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       title: Row(

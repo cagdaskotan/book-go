@@ -617,6 +617,9 @@ class _HomePageState extends State<HomePage> {
               Navigator.pushNamed(context, AppRoutes.collections),
           userName: profileService.visibleName,
           brandColor: const Color(0xFF4F46E5),
+          // Karşılama panelinin üst rengi: çubukla panel arasındaki dikiş
+          // kalkıyor, tepe tek bir yüzey olarak okunuyor.
+          backgroundOverride: _WelcomePanel.topColor(context),
           currentStreak: _gamification?.currentStreak,
           dailyGoalMet: _gamification?.dailyGoalMet ?? false,
           onStreakTap: _openStreakCenter,
@@ -1256,17 +1259,28 @@ class _WelcomePanel extends StatelessWidget {
   final String? heroPaceNote;
   final VoidCallback? onOpenHero;
 
+  /// Panelin gradyanı.
+  ///
+  /// Panel tek bir parlak mor olarak sabitti. Koyu temada bu, neredeyse
+  /// siyah bir sayfanın ortasına yapıştırılmış ışıklı bir blok gibi
+  /// duruyordu: geçiş sert, göz yoruyor. Koyuda tonlar derinleşiyor,
+  /// açıkta eski canlılığını koruyor.
+  /// İlk durak bilerek görünür bir mor: üst çubuk bu renge boyanıyor ve
+  /// eskiden #1E1836 ile neredeyse siyah çıkıyordu — panel parlak, üstü
+  /// kapkara olunca ekranın tepesinde ölü bir şerit oluşuyordu.
+  static List<Color> _gradientFor(bool isDark) => isDark
+      ? const [Color(0xFF2E2456), Color(0xFF43358A), Color(0xFF5A44A4)]
+      : const [Color(0xFF342A6B), Color(0xFF5947C8), Color(0xFF9B63E6)];
+
+  /// Üst çubuğun panelle aynı renge boyanması için.
+  static Color topColor(BuildContext context) =>
+      _gradientFor(Theme.of(context).brightness == Brightness.dark).first;
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Panel tek bir parlak mor olarak sabitti. Koyu temada bu, neredeyse
-    // siyah bir sayfanın ortasına yapıştırılmış ışıklı bir blok gibi
-    // duruyordu: geçiş sert, göz yoruyor. Koyuda tonlar derinleşiyor,
-    // açıkta eski canlılığını koruyor.
-    final gradient = isDark
-        ? const [Color(0xFF1E1836), Color(0xFF3A2E76), Color(0xFF55409B)]
-        : const [Color(0xFF241C55), Color(0xFF5947C8), Color(0xFF9B63E6)];
+    final gradient = _gradientFor(isDark);
 
     return Container(
       clipBehavior: Clip.antiAlias,
@@ -1371,14 +1385,14 @@ class _WelcomePanel extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                // Sayfanın karşılama cümlesi arayüz etiketi değil,
+                // kullanıcıya söylenen bir söz — serif tam buraya ait.
+                Text(
                   'Bugün hangi hikâyede kayboluyoruz?',
-                  style: TextStyle(
+                  style: AppSerif.display.copyWith(
                     color: Colors.white,
-                    fontSize: 27,
-                    height: 1.08,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -.9,
+                    fontSize: 26,
+                    height: 1.15,
                   ),
                 ),
                 if (heroBook case final book?) ...[
@@ -1969,12 +1983,7 @@ class _MascotQuoteCardState extends State<_MascotQuoteCard> {
                           const SizedBox(height: 7),
                           Text(
                             '“$quote”',
-                            style: TextStyle(
-                              color: cs.onSurface,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 13.5,
-                              height: 1.35,
-                            ),
+                            style: AppSerif.quoteSmall.withColor(cs.onSurface),
                           ),
                           const SizedBox(height: 6),
                           Text(

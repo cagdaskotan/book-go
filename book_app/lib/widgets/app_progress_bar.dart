@@ -74,30 +74,29 @@ class AppProgressBar extends StatelessWidget {
                   ),
                 ),
               ),
+              // Yüzde, çubuğun ortasında çerçeveli bir rozet olarak
+              // duruyordu: çubuğu ikiye bölüyor ve yapıştırılmış
+              // görünüyordu. Artık doğrudan çubuğun üstüne, dolu kısmın
+              // sonuna yazılıyor — ilerlemenin nerede bittiğini zaten
+              // gösteren yer orası.
               if (showLabel)
-                Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 1,
-                    ),
-                    decoration: BoxDecoration(
-                      color: cs.surface.withValues(alpha: .88),
-                      borderRadius: BorderRadius.circular(effectiveHeight),
-                      border: Border.all(
-                        color: cs.outlineVariant.withValues(alpha: .45),
-                      ),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Align(
+                    alignment: Alignment.centerRight,
                     child: Text(
-                      '${(progress * 100).round()}%',
+                      '%${(progress * 100).round()}',
                       maxLines: 1,
-                      textAlign: TextAlign.center,
                       style: (labelStyle ?? theme.textTheme.labelMedium)
                           ?.copyWith(
-                            color: cs.onSurface,
+                            // Dolu kısım koyu, boş kısım açık: yazı her iki
+                            // durumda okunsun diye ince bir gölge taşıyor.
+                            color: Colors.white,
                             fontWeight: FontWeight.w700,
                             height: 1,
-                            shadows: null,
+                            shadows: const [
+                              Shadow(color: Color(0x66000000), blurRadius: 3),
+                            ],
                           ),
                     ),
                   ),

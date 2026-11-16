@@ -7,6 +7,7 @@ import '../services/sample_library_service.dart';
 import '../services/api_exception.dart';
 import '../services/book_service.dart';
 import '../services/profile_service.dart';
+import '../theme/app_type.dart';
 import '../theme/app_scale.dart';
 import '../theme/app_theme.dart';
 import 'collections.dart';
@@ -225,14 +226,6 @@ class _BooksPageState extends State<BooksPage> {
               parent: AlwaysScrollableScrollPhysics(),
             ),
             slivers: [
-              // AppBar ile bütünleşik ince şerit
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 8,
-                  child: DecoratedBox(decoration: _heroDecoration(context)),
-                ),
-              ),
-
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 2),
                 sliver: SliverToBoxAdapter(
@@ -797,29 +790,6 @@ String _statusLabel(String status) => ReadingStatus.parse(status).label;
 
 IconData _statusIcon(String status) => ReadingStatus.parse(status).icon;
 
-// ====== Hero şeridi: Light/Dark’a göre gradyan ======
-BoxDecoration _heroDecoration(BuildContext context) {
-  final isDark = Theme.of(context).brightness == Brightness.dark;
-  return BoxDecoration(
-    gradient: LinearGradient(
-      begin: const Alignment(0, -1.2),
-      end: const Alignment(0, 1),
-      colors: isDark
-          ? const [
-              Color(0xFF0B1020),
-              Color(0xFF1F1B4B),
-              AppTheme.brandSecondaryDark,
-            ]
-          : const [
-              Color(0xFF0E402B),
-              AppTheme.brandPrimary,
-              AppTheme.brandSecondary,
-            ],
-      stops: const [0.0, 0.55, 1.0],
-    ),
-  );
-}
-
 // ===================== BOOK TILE =====================
 class _BookTile extends StatelessWidget {
   const _BookTile({required this.book, required this.onToggleFavorite});
@@ -861,11 +831,7 @@ class _BookTile extends StatelessWidget {
                           book.title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: -0.1,
-                            color: cs.onSurface,
-                          ),
+                          style: AppSerif.itemTitle.withColor(cs.onSurface),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -1128,9 +1094,12 @@ class _ShelfPortal extends StatelessWidget {
               Container(
                 width: 50,
                 height: 50,
+                // Kutunun çamurlu kahverengi gradyanı ekrandaki tek sıcak
+                // leke olarak duruyordu ve kirli görünüyordu. Rafın gerçek
+                // ahşap tonuna bağlandı.
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF9A6842), Color(0xFF51311E)],
+                    colors: [Color(0xFF7A5436), Color(0xFF4A3426)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),

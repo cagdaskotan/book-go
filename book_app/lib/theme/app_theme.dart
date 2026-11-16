@@ -69,7 +69,7 @@ class AppTheme {
   /// `Theme.of(context).textTheme.titleLarge` istediğinde Material'in
   /// varsayılan boyutlarını alıyor ve herkes kendi `fontSize`'ını elle
   /// yazmaya başlıyor — nitekim öyle olmuştu.
-  static TextTheme _textTheme(TextTheme base) {
+  static TextTheme scaleTextTheme(TextTheme base) {
     TextStyle m(TextStyle from, TextStyle scale) => from.copyWith(
       fontSize: scale.fontSize,
       height: scale.height,
@@ -99,6 +99,54 @@ class AppTheme {
     );
   }
 
+  /// Her temanın sayfa zemini — kart renginden ayrı olduğu testle tutuluyor.
+  static const Color lightCanvas = canvas;
+  static Color get darkCanvas => darkScheme.surfaceContainerHighest;
+
+  /// Açık temanın renkleri.
+  ///
+  /// Yazı tipinden ayrı duruyor: renk şeması saf veri, [light] ise
+  /// google_fonts'a uzanıyor. Ayrı olunca renkler (kontrast, yüzey ayrımı)
+  /// yazı tipi indirmeden sınanabiliyor.
+  static const ColorScheme lightScheme = ColorScheme(
+    brightness: Brightness.light,
+    primary: brandPrimary,
+    onPrimary: Colors.white,
+    primaryContainer: Color(0xFFE6E1FF),
+    onPrimaryContainer: Color(0xFF231B5E),
+    secondary: brandAccent,
+    onSecondary: Colors.white,
+    secondaryContainer: Color(0xFFFFE2D9),
+    onSecondaryContainer: Color(0xFF5C2415),
+    tertiary: gold,
+    onTertiary: Colors.white,
+    tertiaryContainer: Color(0xFFF7E8C9),
+    onTertiaryContainer: Color(0xFF4A3410),
+    error: danger,
+    onError: Colors.white,
+    errorContainer: Color(0xFFFFDAD9),
+    onErrorContainer: Color(0xFF5C1216),
+    // Kart yüzeyi: kâğıt zeminin üstünde yükselen beyaz.
+    surface: Colors.white,
+    onSurface: inkStrong,
+    onSurfaceVariant: Color(0xFF6A6280),
+    // Kâğıttan beyaza uzanan ılık basamaklar.
+    surfaceContainerLowest: Colors.white,
+    surfaceContainerLow: Color(0xFFFCFAF7),
+    surfaceContainer: Color(0xFFF2EEE7),
+    surfaceContainerHigh: Color(0xFFECE7DE),
+    surfaceContainerHighest: canvas,
+    // Kıl payı çizgiler de ılık; soğuk gri kâğıdın üstünde yabancı duruyor.
+    outline: Color(0xFFBDB5A8),
+    outlineVariant: Color(0xFFE5DFD5),
+    shadow: Color(0xFF2B2416),
+    scrim: Colors.black54,
+    inverseSurface: Color(0xFF322C44),
+    onInverseSurface: Color(0xFFF6F3EE),
+    inversePrimary: Color(0xFFC6BDFF),
+    surfaceTint: brandPrimary,
+  );
+
   // ---------------------- LIGHT THEME ----------------------
   static ThemeData light() {
     // Eskiden `ColorScheme.fromSeed(surface: canvas)` kullanılıyordu ve
@@ -107,46 +155,9 @@ class AppTheme {
     // çizgiyle ayrıldığı için bütün ekran tek düze bir levha gibi duruyordu.
     // Artık zemin kâğıt, kart beyaz: kart sayfanın üstünde durduğunu
     // renkten belli ediyor.
-    const colorScheme = ColorScheme(
-      brightness: Brightness.light,
-      primary: brandPrimary,
-      onPrimary: Colors.white,
-      primaryContainer: Color(0xFFE6E1FF),
-      onPrimaryContainer: Color(0xFF231B5E),
-      secondary: brandAccent,
-      onSecondary: Colors.white,
-      secondaryContainer: Color(0xFFFFE2D9),
-      onSecondaryContainer: Color(0xFF5C2415),
-      tertiary: gold,
-      onTertiary: Colors.white,
-      tertiaryContainer: Color(0xFFF7E8C9),
-      onTertiaryContainer: Color(0xFF4A3410),
-      error: danger,
-      onError: Colors.white,
-      errorContainer: Color(0xFFFFDAD9),
-      onErrorContainer: Color(0xFF5C1216),
-      // Kart yüzeyi: kâğıt zeminin üstünde yükselen beyaz.
-      surface: Colors.white,
-      onSurface: inkStrong,
-      onSurfaceVariant: Color(0xFF6A6280),
-      // Kâğıttan beyaza uzanan ılık basamaklar.
-      surfaceContainerLowest: Colors.white,
-      surfaceContainerLow: Color(0xFFFCFAF7),
-      surfaceContainer: Color(0xFFF2EEE7),
-      surfaceContainerHigh: Color(0xFFECE7DE),
-      surfaceContainerHighest: canvas,
-      // Kıl payı çizgiler de ılık; soğuk gri kâğıdın üstünde yabancı duruyor.
-      outline: Color(0xFFBDB5A8),
-      outlineVariant: Color(0xFFE5DFD5),
-      shadow: Color(0xFF2B2416),
-      scrim: Colors.black54,
-      inverseSurface: Color(0xFF322C44),
-      onInverseSurface: Color(0xFFF6F3EE),
-      inversePrimary: Color(0xFFC6BDFF),
-      surfaceTint: brandPrimary,
-    );
+    const colorScheme = lightScheme;
 
-    final textTheme = _textTheme(GoogleFonts.manropeTextTheme());
+    final textTheme = scaleTextTheme(GoogleFonts.manropeTextTheme());
 
     return ThemeData(
       useMaterial3: true,
@@ -311,51 +322,54 @@ class AppTheme {
     );
   }
 
+  // Açık tema kâğıda çekilince koyu tema soğuk lacivertte kaldı ve aynı
+  // uygulamanın iki ayrı kimliği oldu. Buradaki tonlar da ılıtıldı:
+  // mavi-gri yerine mor alt tonlu, hafif sıcak bir gece.
+  static const Color _darkSurface = Color(0xFF1C1925);
+  static const Color _darkSurfaceHigh = Color(0xFF131019);
+  static const Color _darkOutline = Color(0xFF423B52);
+
+  /// Koyu temanın renkleri — gerekçesi [lightScheme] ile aynı.
+  static const ColorScheme darkScheme = ColorScheme(
+    brightness: Brightness.dark,
+    primary: brandPrimaryDark,
+    onPrimary: Colors.white,
+    primaryContainer: Color(0xFF302B66),
+    onPrimaryContainer: Color(0xFFD9D6FF),
+    secondary: brandSecondaryDark,
+    onSecondary: Colors.white,
+    secondaryContainer: Color(0xFF3A2C5C),
+    onSecondaryContainer: Color(0xFFEADBFF),
+    error: Color(0xFFF87171),
+    onError: Colors.black,
+    errorContainer: Color(0xFF5A2A2C),
+    onErrorContainer: Color(0xFFFFD9DA),
+    surface: _darkSurface,
+    onSurface: Color(0xFFF3F0F7),
+    surfaceContainerHighest: _darkSurfaceHigh,
+    surfaceContainerHigh: Color(0xFF252130),
+    surfaceContainer: Color(0xFF201C2A),
+    surfaceContainerLow: Color(0xFF2A2536),
+    surfaceContainerLowest: Color(0xFF0D0B12),
+    outline: _darkOutline,
+    outlineVariant: Color(0xFF332D40),
+    shadow: Colors.black,
+    scrim: Colors.black87,
+    tertiary: Color(0xFFE0B055),
+    onTertiary: Color(0xFF2E2208),
+    tertiaryContainer: Color(0xFF4A3814),
+    onTertiaryContainer: Color(0xFFF7E3BC),
+    inverseSurface: Color(0xFFF6F3EE),
+    onInverseSurface: Color(0xFF231D3A),
+    inversePrimary: Color(0xFFADB3FF),
+    surfaceTint: brandPrimaryDark,
+  );
+
   // ---------------------- DARK THEME ----------------------
   static ThemeData dark() {
-    // Açık tema kâğıda çekilince koyu tema soğuk lacivertte kaldı ve aynı
-    // uygulamanın iki ayrı kimliği oldu. Buradaki tonlar da ılıtıldı:
-    // mavi-gri yerine mor alt tonlu, hafif sıcak bir gece.
-    const surface = Color(0xFF1C1925);
-    const surfaceHigh = Color(0xFF131019);
-    const outline = Color(0xFF423B52);
+    const cs = darkScheme;
 
-    final cs = const ColorScheme(
-      brightness: Brightness.dark,
-      primary: brandPrimaryDark,
-      onPrimary: Colors.white,
-      primaryContainer: Color(0xFF302B66),
-      onPrimaryContainer: Color(0xFFD9D6FF),
-      secondary: brandSecondaryDark,
-      onSecondary: Colors.white,
-      secondaryContainer: Color(0xFF3A2C5C),
-      onSecondaryContainer: Color(0xFFEADBFF),
-      error: Color(0xFFF87171),
-      onError: Colors.black,
-      errorContainer: Color(0xFF5A2A2C),
-      onErrorContainer: Color(0xFFFFD9DA),
-      surface: surface,
-      onSurface: Color(0xFFF3F0F7),
-      surfaceContainerHighest: surfaceHigh,
-      surfaceContainerHigh: Color(0xFF252130),
-      surfaceContainer: Color(0xFF201C2A),
-      surfaceContainerLow: Color(0xFF2A2536),
-      surfaceContainerLowest: Color(0xFF0D0B12),
-      outline: outline,
-      outlineVariant: Color(0xFF332D40),
-      shadow: Colors.black,
-      scrim: Colors.black87,
-      tertiary: Color(0xFFE0B055),
-      onTertiary: Color(0xFF2E2208),
-      tertiaryContainer: Color(0xFF4A3814),
-      onTertiaryContainer: Color(0xFFF7E3BC),
-      inverseSurface: Color(0xFFF6F3EE),
-      onInverseSurface: Color(0xFF231D3A),
-      inversePrimary: Color(0xFFADB3FF),
-      surfaceTint: brandPrimaryDark,
-    );
-
-    final textTheme = _textTheme(
+    final textTheme = scaleTextTheme(
       GoogleFonts.manropeTextTheme(
         ThemeData(brightness: Brightness.dark).textTheme,
       ),

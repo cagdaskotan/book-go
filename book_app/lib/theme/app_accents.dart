@@ -19,7 +19,11 @@ abstract final class Accents {
   static const Color teal = Color(0xFF17A68B);
 
   /// Altın sarısı — başarım, rozet, seviye.
-  static const Color amber = Color(0xFFD99A33);
+  ///
+  /// Önceki ton (#D99A33) güzeldi ama üstündeki beyaz yazının kontrastı
+  /// 2.4'te kalıyordu; rozetin yazısı okunmuyordu. Bir basamak koyulaşınca
+  /// hem 3.2'ye çıktı hem de ailenin parlaklık bandında kaldı.
+  static const Color amber = Color(0xFFBE8426);
 
   /// Mercan — sıcak vurgu, "sana özel".
   static const Color coral = Color(0xFFE2714F);

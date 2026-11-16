@@ -1,10 +1,12 @@
-# Mobil Kütüphanem
+# Bilge — Mobil Kütüphanem
 
-Kişisel kitaplık, okuma günlüğü ve hedef takip uygulaması. **Tamamen cihazda
-çalışır** — sunucu, hesap ya da internet bağlantısı gerektirmez.
+Kişisel kitaplık, okuma günlüğü, alıntı defteri ve hedef takip uygulaması.
+**Tamamen cihazda çalışır** — sunucu, hesap ya da internet bağlantısı
+gerektirmez. Mağazada "Bilge: Mobil Kütüphanem" adıyla çıkıyor.
 
 ```
 book_app/            Flutter uygulaması (asıl ürün)
+design/              Maskot kaynak görselleri (uygulamaya paketlenmez)
 tools/exportbackup/  Eski MySQL verisini yedek dosyasına çeviren tek seferlik araç
 ```
 
@@ -60,12 +62,59 @@ DB_USER=root DB_PASS=... DB_NAME=bookdb go run ./tools/exportbackup
 Oluşan JSON dosyasını telefona kopyala, uygulamada `Profil > Yedekten geri
 yükle` ile aç.
 
-## Mağazaya çıkmadan önce
+## Mağazaya çıkış
 
-- [ ] `AndroidManifest.xml` içindeki AdMob `APPLICATION_ID` hâlâ Google'ın test
-      kimliği — kendi AdMob kimliğinle değiştir.
-- [ ] [ad_config.dart](book_app/lib/services/ad_config.dart) içindeki reklam
-      birimi kimliklerini kontrol et.
-- [ ] Reklam SDK'sı veri topladığı için Play Console'da gizlilik politikası
-      bağlantısı ve "Veri güvenliği" formu zorunlu.
-- [ ] Sürüm numarasını `pubspec.yaml` içinde yükselt, imzalı yayın yapılandır.
+Uygulama mağaza için hazır: imza yapılandırması bağlı, R8 küçültmesi açık,
+reklam ve analitik yok, hiçbir veri cihazdan çıkmıyor.
+
+### 1. İmza anahtarı (yalnızca bir kez)
+
+Anahtarı **yalnızca sen üretmelisin** ve kaybetmemelisin: kaybolursa
+uygulamanın güncellemesi bir daha yayınlanamaz, yeni paket adıyla sıfırdan
+çıkmak gerekir.
+
+```bash
+keytool -genkey -v -keystore ~/bilge-release.jks         -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias bilge
+```
+
+Sonra şablonu kopyalayıp doldur:
+
+```bash
+cp book_app/android/key.properties.example book_app/android/key.properties
+```
+
+`key.properties` ve `.jks` dosyaları `.gitignore`'da — depoya girmezler.
+Anahtar yoksa yayın derlemesi hata vermez, hata ayıklama anahtarıyla
+imzalanır; o APK mağazaya yüklenemez ama geliştirme sürer.
+
+### 2. Paket
+
+Play Store'a **AAB** gider, APK değil:
+
+```bash
+cd book_app && flutter build appbundle --release
+```
+
+Tek APK 125 MB çünkü dört işlemci mimarisini birden taşıyor. AAB'de Play
+cihaza göre bölüyor, indirilen boyut çok daha küçük oluyor. Elle APK
+dağıtacaksan `--split-per-abi` kullan.
+
+### 3. Play Console
+
+- **Uygulama adı:** Bilge: Mobil Kütüphanem (cihazda ikon adı "Bilge")
+- **Paket:** `com.book.bilge`
+- **Veri güvenliği formu:** "Veri toplanmıyor" — uygulama ağ üzerinden
+  hiçbir kullanıcı verisi göndermiyor. Tek dış çağrı kitap künyesi ve
+  kapağı için Open Library'ye yapılan aramalar; bunlar kullanıcıya ait
+  bilgi taşımıyor.
+- **Gizlilik politikası:** Play her uygulamadan bir adres istiyor, veri
+  toplanmasa bile. Kısa bir sayfa yeterli.
+- **İzinler:** kamera (barkod, kapak ve raf tarama), bildirim (okuma
+  hatırlatıcısı), depolama (yedek dosyası). Üçü de kullanıcı isteyince
+  soruluyor.
+
+### 4. Sürüm
+
+`book_app/pubspec.yaml` içindeki `version:` satırı hem sürüm adını hem
+derleme numarasını veriyor (`1.1.0+4`). Play aynı derleme numarasını iki
+kez kabul etmiyor, her yüklemede artır.

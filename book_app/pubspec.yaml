@@ -78,6 +78,15 @@ flutter:
   uses-material-design: true
   assets:
     - assets/mascot/
+    # Yazı tipleri uygulamanın içinde.
+    #
+    # google_fonts bu dosyaları varlıklarda bulunca internetten indirmeyi
+    # atlıyor. Uygulama çevrimdışı çalıştığı için bu şart: ağsız ilk
+    # açılışta bütün tipografi yedek yazı tipine düşüyordu ve ölçek
+    # çöküyordu. Dosyalar Google'ın değişken (variable) sürümlerinden
+    # sabit ağırlıklara örneklenerek üretildi; Türkçe harfler (ğ ş İ ı ç
+    # ö ü â) hepsinde tam.
+    - assets/fonts/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

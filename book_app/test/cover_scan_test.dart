@@ -101,9 +101,7 @@ void main() {
     });
 
     test('tek satır varsa başlık sayılır, yazar boş kalır', () {
-      final result = CoverScanService.parseLines([
-        line('Körlük', 40, 100),
-      ]);
+      final result = CoverScanService.parseLines([line('Körlük', 40, 100)]);
       expect(result.title, 'Körlük');
       expect(result.author, isNull);
     });
@@ -117,10 +115,9 @@ void main() {
     });
 
     test('fotoğraf yolu sonuçta taşınır', () {
-      final result = CoverScanService.parseLines(
-        [line('Kitap', 30, 10)],
-        imagePath: '/tmp/kapak.jpg',
-      );
+      final result = CoverScanService.parseLines([
+        line('Kitap', 30, 10),
+      ], imagePath: '/tmp/kapak.jpg');
       // Künye bulunamasa bile bu fotoğraf kapak olarak kullanılabilmeli.
       expect(result.imagePath, '/tmp/kapak.jpg');
     });

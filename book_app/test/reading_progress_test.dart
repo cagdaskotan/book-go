@@ -45,21 +45,23 @@ void main() {
       );
     });
 
-    test('bitmiş işaretlenirse sayfa toplama eşitlenir ve tarih bugün olur',
-        () async {
-      final id = await service.createBook(
-        title: 'Kitap',
-        totalPages: 120,
-        isFinished: true,
-        rating: 85,
-      );
-      final book = await service.getBook(id);
-      expect(book.isFinished, isTrue);
-      expect(book.currentPage, 120);
-      expect(book.readingStatus, 'finished');
-      expect(book.finishedAt, todayYmd());
-      expect(book.rating, 85);
-    });
+    test(
+      'bitmiş işaretlenirse sayfa toplama eşitlenir ve tarih bugün olur',
+      () async {
+        final id = await service.createBook(
+          title: 'Kitap',
+          totalPages: 120,
+          isFinished: true,
+          rating: 85,
+        );
+        final book = await service.getBook(id);
+        expect(book.isFinished, isTrue);
+        expect(book.currentPage, 120);
+        expect(book.readingStatus, 'finished');
+        expect(book.finishedAt, todayYmd());
+        expect(book.rating, 85);
+      },
+    );
 
     test('bitirme tarihi başlamadan önce olamaz', () {
       expect(

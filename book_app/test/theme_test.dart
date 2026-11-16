@@ -58,9 +58,11 @@ void main() {
         // Kart sayfadan yalnızca 1 piksellik çizgiyle ayrılınca ekran düz
         // bir levhaya dönüyor.
         expect(cs.surface, isNot(page), reason: 'kart rengi zeminle aynı');
+        // 1.09'da kalınca ekranda her şey tek bir tonda eriyordu; telefonda
+        // bakıldığında kartın kenarı ancak kenarlıktan anlaşılıyordu.
         expect(
           _contrast(cs.surface, page),
-          greaterThan(1.04),
+          greaterThan(1.15),
           reason: 'kart ile zemin farkı gözle seçilmiyor',
         );
       });

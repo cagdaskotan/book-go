@@ -34,6 +34,10 @@ class HomeShelf extends StatelessWidget {
   static const Color _shelfWood = Color(0xFF4A3426);
   static const Color _shelfWoodLight = Color(0xFF6B4B35);
 
+  /// Arkalığın ahşabı — tahtadan koyu, çünkü ışık almıyor.
+  static const Color _backPanelTop = Color(0xFF3A2A1F);
+  static const Color _backPanelBottom = Color(0xFF5A4030);
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -90,10 +94,58 @@ class _ShelfBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SizedBox(
       height: 196,
       child: Stack(
         children: [
+          // Rafın arkalığı.
+          //
+          // Eskiden yalnızca alttaki tahta vardı; kitap sayısı azken
+          // üstündeki boşluk "raf" değil "hiçlik" gibi duruyordu — tek
+          // kitaplı bir kitaplıkta ekranın yarısı kara delik oluyordu.
+          // Gerçek bir rafın arkalığı var; o boşluk artık doldurulmayı
+          // bekleyen bir yer gibi okunuyor.
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 8,
+            bottom: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    HomeShelf._backPanelTop.withValues(
+                      alpha: isDark ? .55 : .30,
+                    ),
+                    HomeShelf._backPanelBottom.withValues(
+                      alpha: isDark ? .38 : .18,
+                    ),
+                  ],
+                ),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(10),
+                ),
+              ),
+              // Üstten gelen gölge rafın derinliğini veriyor: kitaplar
+              // arkalığın önünde duruyormuş gibi görünüyor.
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withValues(alpha: isDark ? .35 : .14),
+                      Colors.transparent,
+                    ],
+                    stops: const [0, .22],
+                  ),
+                ),
+              ),
+            ),
+          ),
           // Kitaplar tahtanın üstünde durur: alt kenarları hizalı.
           Positioned.fill(
             bottom: 14,

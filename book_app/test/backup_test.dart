@@ -137,8 +137,10 @@ void main() {
 
     final preview = await BackupService().restore(file);
     expect(preview.books, 1);
-    expect((await BookService().fetchBooks()).single.title,
-        'Kürk Mantolu Madonna');
+    expect(
+      (await BookService().fetchBooks()).single.title,
+      'Kürk Mantolu Madonna',
+    );
   });
 
   test('yedek özeti dosyayı değiştirmeden okunur', () async {
@@ -166,10 +168,7 @@ void main() {
 
   test('başka uygulamanın dosyası reddedilir', () async {
     final file = await writeBackup({'app': 'Başka Uygulama', 'books': []});
-    expect(
-      () => BackupService().restore(file),
-      throwsA(isA<ApiException>()),
-    );
+    expect(() => BackupService().restore(file), throwsA(isA<ApiException>()));
   });
 
   test('daha yeni biçimli yedek reddedilir', () async {
@@ -178,19 +177,13 @@ void main() {
       'format_version': BackupService.formatVersion + 1,
       'books': [],
     });
-    expect(
-      () => BackupService().restore(file),
-      throwsA(isA<ApiException>()),
-    );
+    expect(() => BackupService().restore(file), throwsA(isA<ApiException>()));
   });
 
   test('bozuk dosya anlaşılır hata verir', () async {
     final file = File('${tempDir.path}/bozuk.json');
     await file.writeAsString('bu bir yedek degil');
-    expect(
-      () => BackupService().restore(file),
-      throwsA(isA<ApiException>()),
-    );
+    expect(() => BackupService().restore(file), throwsA(isA<ApiException>()));
   });
 
   test('eksik alanlar varsayılanlarla tamamlanır', () async {

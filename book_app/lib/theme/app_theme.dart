@@ -45,7 +45,11 @@ class AppTheme {
   /// Eski zemin soğuk bir lilaktı (#F7F6FC) ve uygulamayı herhangi bir
   /// kurumsal panoya benzetiyordu. Kitap uygulamasının zemini kâğıt gibi
   /// ılık olmalı; beyaz kartlar da üstünde ancak böyle ayrışıyor.
-  static const Color canvas = Color(0xFFF6F3EE);
+  ///
+  /// Ton bir basamak koyulaştı: ilk denemede (#F6F3EE) beyaz kartla farkı
+  /// 1.11'de kalıyordu ve kartın kenarı seçilmiyordu. Şimdi 1.22 — metin
+  /// kontrastı ise hâlâ 13:1, yani okunurluktan hiçbir şey kaybedilmedi.
+  static const Color canvas = Color(0xFFEDE8DE);
 
   // Koyu temada marka renkleri koyu zeminde okunacak şekilde açılır.
   static const Color brandPrimaryDark = Color(0xFF7567F8);
@@ -133,8 +137,8 @@ class AppTheme {
     // Kâğıttan beyaza uzanan ılık basamaklar.
     surfaceContainerLowest: Colors.white,
     surfaceContainerLow: Color(0xFFFCFAF7),
-    surfaceContainer: Color(0xFFF2EEE7),
-    surfaceContainerHigh: Color(0xFFECE7DE),
+    surfaceContainer: Color(0xFFF1ECE3),
+    surfaceContainerHigh: Color(0xFFE6E0D4),
     surfaceContainerHighest: canvas,
     // Kıl payı çizgiler de ılık; soğuk gri kâğıdın üstünde yabancı duruyor.
     outline: Color(0xFFBDB5A8),
@@ -325,9 +329,14 @@ class AppTheme {
   // Açık tema kâğıda çekilince koyu tema soğuk lacivertte kaldı ve aynı
   // uygulamanın iki ayrı kimliği oldu. Buradaki tonlar da ılıtıldı:
   // mavi-gri yerine mor alt tonlu, hafif sıcak bir gece.
-  static const Color _darkSurface = Color(0xFF1C1925);
-  static const Color _darkSurfaceHigh = Color(0xFF131019);
-  static const Color _darkOutline = Color(0xFF423B52);
+  //
+  // Kart ile zemin arasındaki fark 1.09'da kalıyordu ve ekranda her şey tek
+  // bir siyahlıkta eriyordu — koyu temadaki "düzlük" hissinin sebebi buydu.
+  // Aradaki mesafe açıldı (1.24): kart artık sayfanın üstünde durduğunu
+  // belli ediyor.
+  static const Color _darkSurface = Color(0xFF282333);
+  static const Color _darkSurfaceHigh = Color(0xFF121019);
+  static const Color _darkOutline = Color(0xFF4A4259);
 
   /// Koyu temanın renkleri — gerekçesi [lightScheme] ile aynı.
   static const ColorScheme darkScheme = ColorScheme(
@@ -347,12 +356,12 @@ class AppTheme {
     surface: _darkSurface,
     onSurface: Color(0xFFF3F0F7),
     surfaceContainerHighest: _darkSurfaceHigh,
-    surfaceContainerHigh: Color(0xFF252130),
-    surfaceContainer: Color(0xFF201C2A),
-    surfaceContainerLow: Color(0xFF2A2536),
-    surfaceContainerLowest: Color(0xFF0D0B12),
+    surfaceContainerHigh: Color(0xFF322C3F),
+    surfaceContainer: Color(0xFF221E2C),
+    surfaceContainerLow: Color(0xFF1A1722),
+    surfaceContainerLowest: Color(0xFF0C0A11),
     outline: _darkOutline,
-    outlineVariant: Color(0xFF332D40),
+    outlineVariant: Color(0xFF3B3449),
     shadow: Colors.black,
     scrim: Colors.black87,
     tertiary: Color(0xFFE0B055),

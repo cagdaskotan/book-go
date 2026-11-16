@@ -931,7 +931,7 @@ class _HomeQuickActions extends StatelessWidget {
             child: _QuickAction(
               icon: Icons.auto_stories_rounded,
               label: 'Kitaplığım',
-              color: const Color(0xFF7C5CFF),
+              color: Accents.violet,
               onTap: onCollections,
             ),
           ),
@@ -983,17 +983,13 @@ class _QuickAction extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 13),
+          // Üç doygun renkli blok yan yana gelince ekran gökkuşağına
+          // dönüyordu. Kart artık sayfanın kart yüzeyinde; renk yalnızca
+          // ikonda duruyor, yani ayırt edici ama bağırmıyor.
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                color.withValues(alpha: .18),
-                color.withValues(alpha: .05),
-              ],
-            ),
+            color: cs.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: color.withValues(alpha: .30)),
+            border: Border.all(color: cs.outlineVariant),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -1002,21 +998,12 @@ class _QuickAction extends StatelessWidget {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [color, Color.lerp(color, Colors.black, .26)!],
-                  ),
+                  color: Accents.wash(context, color),
                   borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: color.withValues(alpha: .45),
-                      blurRadius: 9,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
+                  boxShadow: const [],
                 ),
-                child: Icon(icon, color: Colors.white, size: 21),
+                // İkon soluk zeminin üstünde: beyaz kalsaydı kaybolurdu.
+                child: Icon(icon, color: color, size: 21),
               ),
               const SizedBox(height: 9),
               Text(
@@ -1271,18 +1258,30 @@ class _WelcomePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Panel tek bir parlak mor olarak sabitti. Koyu temada bu, neredeyse
+    // siyah bir sayfanın ortasına yapıştırılmış ışıklı bir blok gibi
+    // duruyordu: geçiş sert, göz yoruyor. Koyuda tonlar derinleşiyor,
+    // açıkta eski canlılığını koruyor.
+    final gradient = isDark
+        ? const [Color(0xFF1E1836), Color(0xFF3A2E76), Color(0xFF55409B)]
+        : const [Color(0xFF241C55), Color(0xFF5947C8), Color(0xFF9B63E6)];
+
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF241C55), Color(0xFF5947C8), Color(0xFF9B63E6)],
+        gradient: LinearGradient(
+          colors: gradient,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(34)),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6750E8).withValues(alpha: .28),
+            color: const Color(
+              0xFF6750E8,
+            ).withValues(alpha: isDark ? .14 : .28),
             blurRadius: 30,
             offset: const Offset(0, 14),
           ),

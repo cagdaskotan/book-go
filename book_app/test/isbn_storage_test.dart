@@ -140,11 +140,7 @@ void main() {
 
     test('yazarsız kitaplar listeye girmez', () async {
       await books.createBook(title: 'Yazarsız', totalPages: 100);
-      await books.createBook(
-        title: 'Boşluklu',
-        totalPages: 100,
-        author: '   ',
-      );
+      await books.createBook(title: 'Boşluklu', totalPages: 100, author: '   ');
       expect(await books.knownAuthors(), isEmpty);
     });
   });

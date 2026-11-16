@@ -5,14 +5,13 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final today = DateTime(2026, 11, 10);
 
-  BookLog log(String date, {int pages = 0, int minutes = 0}) =>
-      BookLog(
-        id: 0,
-        bookId: 1,
-        logDate: date,
-        pagesRead: pages,
-        durationMinutes: minutes,
-      );
+  BookLog log(String date, {int pages = 0, int minutes = 0}) => BookLog(
+    id: 0,
+    bookId: 1,
+    logDate: date,
+    pagesRead: pages,
+    durationMinutes: minutes,
+  );
 
   Book book({
     int totalPages = 300,
@@ -107,11 +106,7 @@ void main() {
         log('2026-11-08', pages: 30, minutes: 15),
       ], today: today);
       expect(
-        estimateFinish(
-          book: book(totalPages: 0),
-          pace: pace,
-          today: today,
-        ),
+        estimateFinish(book: book(totalPages: 0), pace: pace, today: today),
         isNull,
       );
     });
@@ -179,11 +174,7 @@ void main() {
         log('2026-11-08', pages: 300),
       ], today: today);
       expect(
-        estimateFinish(
-          book: book(currentPage: 300),
-          pace: pace,
-          today: today,
-        ),
+        estimateFinish(book: book(currentPage: 300), pace: pace, today: today),
         isNull,
       );
     });

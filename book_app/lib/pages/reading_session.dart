@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import '../theme/app_accents.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -99,7 +100,7 @@ class _ReadingSessionPageState extends State<ReadingSessionPage>
     setState(() {});
     final save = await _showSessionConfirmation(
       icon: Icons.check_rounded,
-      colors: const [Color(0xFF61D8B3), Color(0xFF2BAE8A)],
+      colors: const [Color(0xFF61D8B3), Accents.teal],
       title: 'Oturumu tamamla',
       message: '$_time boyunca okudun. Bu oturumu günlüğüne kaydedelim mi?',
       confirmLabel: 'Kaydetmeye devam et',
@@ -123,7 +124,7 @@ class _ReadingSessionPageState extends State<ReadingSessionPage>
     setState(() {});
     final discard = await _showSessionConfirmation(
       icon: Icons.close_rounded,
-      colors: const [Color(0xFFFFA55B), Color(0xFFF06473)],
+      colors: const [Color(0xFFFFA55B), Accents.rose],
       title: 'Oturumdan çık',
       message:
           '$_time boyunca okudun. Çıkarsan bu süre günlüğüne eklenmeyecek.',
@@ -498,12 +499,12 @@ class _StopButton extends StatelessWidget {
           height: 78,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFF61D8B3), Color(0xFF2BAE8A)],
+              colors: [Color(0xFF61D8B3), Accents.teal],
             ),
             borderRadius: BorderRadius.circular(25),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF2BAE8A).withValues(alpha: .35),
+                color: Accents.teal.withValues(alpha: .35),
                 blurRadius: 28,
                 offset: const Offset(0, 10),
               ),
@@ -601,9 +602,7 @@ class _SessionConfirmationSheet extends StatelessWidget {
                 child: FilledButton(
                   onPressed: () => Navigator.pop(context, true),
                   style: FilledButton.styleFrom(
-                    backgroundColor: destructive
-                        ? const Color(0xFFF06473)
-                        : const Color(0xFF2BAE8A),
+                    backgroundColor: destructive ? Accents.rose : Accents.teal,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     textStyle: const TextStyle(fontWeight: FontWeight.w700),
                   ),

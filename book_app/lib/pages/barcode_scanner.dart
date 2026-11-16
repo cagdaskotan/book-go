@@ -1,3 +1,4 @@
+import '../theme/app_accents.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -238,12 +239,12 @@ class _ISBNConfirmation extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: const Color(0xFF2BAE8A).withValues(alpha: .14),
+                color: Accents.teal.withValues(alpha: .14),
                 borderRadius: BorderRadius.circular(18),
               ),
               child: const Icon(
                 Icons.qr_code_scanner_rounded,
-                color: Color(0xFF2BAE8A),
+                color: Accents.teal,
                 size: 30,
               ),
             ),

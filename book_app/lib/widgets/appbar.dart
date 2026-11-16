@@ -1,3 +1,4 @@
+import '../theme/app_accents.dart';
 import 'package:flutter/material.dart';
 
 import '../services/profile_service.dart';
@@ -317,16 +318,13 @@ class _HeaderStreak extends StatelessWidget {
             gradient: LinearGradient(
               colors: goalMet
                   ? const [Color(0xFF1FA980), Color(0xFF50C89E)]
-                  : const [Color(0xFFFFA45D), Color(0xFFF06473)],
+                  : const [Color(0xFFFFA45D), Accents.rose],
             ),
             borderRadius: BorderRadius.circular(18),
             boxShadow: [
               BoxShadow(
-                color:
-                    (goalMet
-                            ? const Color(0xFF1FA980)
-                            : const Color(0xFFF06473))
-                        .withValues(alpha: .24),
+                color: (goalMet ? const Color(0xFF1FA980) : Accents.rose)
+                    .withValues(alpha: .24),
                 blurRadius: 14,
                 offset: const Offset(0, 5),
               ),

@@ -1,4 +1,5 @@
 // lib/screens/home.dart
+import '../theme/app_accents.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -939,7 +940,7 @@ class _HomeQuickActions extends StatelessWidget {
             child: _QuickAction(
               icon: Icons.insights_rounded,
               label: 'İlerlemem',
-              color: const Color(0xFF2BAE8A),
+              color: Accents.teal,
               onTap: onInsights,
             ),
           ),
@@ -948,7 +949,7 @@ class _HomeQuickActions extends StatelessWidget {
             child: _QuickAction(
               icon: Icons.favorite_rounded,
               label: 'Favoriler',
-              color: const Color(0xFFF06473),
+              color: Accents.rose,
               onTap: onFavorites,
             ),
           ),
@@ -1070,12 +1071,12 @@ class _StreakCenterSheet extends StatelessWidget {
                 height: 78,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFFFB65D), Color(0xFFF06473)],
+                    colors: [Color(0xFFFFB65D), Accents.rose],
                   ),
                   borderRadius: BorderRadius.circular(27),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFF06473).withValues(alpha: .28),
+                      color: Accents.rose.withValues(alpha: .28),
                       blurRadius: 24,
                       offset: const Offset(0, 10),
                     ),
@@ -1132,10 +1133,7 @@ class _StreakCenterSheet extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: active
                                 ? const LinearGradient(
-                                    colors: [
-                                      Color(0xFFFFB65D),
-                                      Color(0xFFF06473),
-                                    ],
+                                    colors: [Color(0xFFFFB65D), Accents.rose],
                                   )
                                 : null,
                             color: active ? null : cs.surface,

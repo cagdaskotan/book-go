@@ -1,3 +1,4 @@
+import '../theme/app_accents.dart';
 import 'package:flutter/material.dart';
 
 /// Puanlama: 5 yıldız, yarım adımlarla.
@@ -35,7 +36,7 @@ class StarRatingView extends StatelessWidget {
     super.key,
     required this.rating,
     this.size = 18,
-    this.color = const Color(0xFFF59E0B),
+    this.color = Accents.amber,
     this.emptyColor,
     this.showLabel = false,
   });
@@ -111,7 +112,7 @@ class StarRatingInput extends StatelessWidget {
             current: stars,
             size: starSize,
             enabled: enabled,
-            color: enabled ? const Color(0xFFF59E0B) : cs.outlineVariant,
+            color: enabled ? Accents.amber : cs.outlineVariant,
             onPick: (value) {
               // Aynı değere tekrar dokunmak puanı kaldırır.
               final next = value == stars ? null : StarRating.pointsOf(value);

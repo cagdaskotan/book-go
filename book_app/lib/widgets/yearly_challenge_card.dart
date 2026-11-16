@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import '../theme/app_accents.dart';
 import 'package:flutter/material.dart';
 
 import '../services/reading_goal_service.dart';
@@ -28,21 +29,17 @@ class YearlyChallengeCard extends StatelessWidget {
     final ahead = finished - expected;
 
     final (paceText, paceColor, paceIcon) = finished >= goal
-        ? (
-            'Hedefini tamamladın! 🎉',
-            const Color(0xFF2BAE8A),
-            Icons.verified_rounded,
-          )
+        ? ('Hedefini tamamladın! 🎉', Accents.teal, Icons.verified_rounded)
         : ahead >= 0.5
         ? (
             '${ahead.floor()} kitap öndesin',
-            const Color(0xFF2BAE8A),
+            Accents.teal,
             Icons.trending_up_rounded,
           )
         : ahead <= -0.5
         ? (
             '${(-ahead).ceil()} kitap geridesin',
-            const Color(0xFFF59E0B),
+            Accents.amber,
             Icons.trending_down_rounded,
           )
         : ('Tam temponda gidiyorsun', cs.primary, Icons.bolt_rounded);

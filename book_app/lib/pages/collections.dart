@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import '../theme/app_accents.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 
@@ -549,7 +550,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
                 const SizedBox(height: 14),
                 FloatingActionButton(
                   heroTag: 'done',
-                  backgroundColor: const Color(0xFF2BAE8A),
+                  backgroundColor: Accents.teal,
                   foregroundColor: Colors.white,
                   elevation: 3,
                   tooltip: 'Düzenlemeyi bitir',

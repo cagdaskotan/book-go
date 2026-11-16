@@ -1,5 +1,6 @@
 // lib/screens/diary.dart
 import 'dart:async';
+import '../theme/app_accents.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -994,7 +995,7 @@ class _DiaryPageState extends State<DiaryPage> {
               color: const Color(0xFFFFF0CC),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: const Icon(Icons.star_rounded, color: Color(0xFFF59E0B)),
+            child: const Icon(Icons.star_rounded, color: Accents.amber),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -1035,7 +1036,7 @@ class _DiaryPageState extends State<DiaryPage> {
               icon: Icons.sticky_note_2_rounded,
               value: '$noteCount',
               label: 'okuma notu',
-              color: const Color(0xFFF59E0B),
+              color: Accents.amber,
             ),
           ),
           _MetricDivider(color: cs.outlineVariant),
@@ -1044,7 +1045,7 @@ class _DiaryPageState extends State<DiaryPage> {
               icon: Icons.bolt_rounded,
               value: '$avg',
               label: 'sayfa / gün',
-              color: const Color(0xFF2BAE8A),
+              color: Accents.teal,
             ),
           ),
         ],
@@ -1333,7 +1334,7 @@ class _DiaryPageState extends State<DiaryPage> {
                             _miniChip(
                               Icons.flag_rounded,
                               'Bitirdim',
-                              const Color(0xFF2BAE8A),
+                              Accents.teal,
                             ),
                         ],
                       ),
@@ -1373,14 +1374,14 @@ class _DiaryPageState extends State<DiaryPage> {
   }
 
   (IconData, Color) _logBadge(BookLog log) {
-    if (log.finished) return (Icons.flag_rounded, const Color(0xFF2BAE8A));
+    if (log.finished) return (Icons.flag_rounded, Accents.teal);
     if ((log.pagesRead ?? 0) > 0) {
       return (Icons.auto_stories_rounded, const Color(0xFF6750E8));
     }
     if (log.durationMinutes > 0) {
       return (Icons.timer_rounded, const Color(0xFF8B5CF6));
     }
-    return (Icons.sticky_note_2_rounded, const Color(0xFFF59E0B));
+    return (Icons.sticky_note_2_rounded, Accents.amber);
   }
 
   Widget _miniChip(IconData icon, String label, Color color) {
@@ -1945,7 +1946,7 @@ class _LogEditSheetState extends State<_LogEditSheet> {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: isSession
-                                  ? const [Color(0xFF61D8B3), Color(0xFF2BAE8A)]
+                                  ? const [Color(0xFF61D8B3), Accents.teal]
                                   : const [
                                       Color(0xFF6750E8),
                                       Color(0xFFA063ED),

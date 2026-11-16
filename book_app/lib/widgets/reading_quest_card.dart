@@ -1,3 +1,4 @@
+import '../theme/app_accents.dart';
 import 'package:flutter/material.dart';
 
 import '../models/gamification_summary.dart';
@@ -113,7 +114,7 @@ class ReadingQuestCard extends StatelessWidget {
                               ? Icons.verified_rounded
                               : Icons.track_changes_rounded,
                           color: summary.dailyGoalMet
-                              ? const Color(0xFF2BAE8A)
+                              ? Accents.teal
                               : const Color(0xFFF97373),
                           size: 20,
                         ),
@@ -129,7 +130,7 @@ class ReadingQuestCard extends StatelessWidget {
                           '${summary.todayPages} / ${summary.dailyPageGoal} sayfa',
                           style: TextStyle(
                             color: summary.dailyGoalMet
-                                ? const Color(0xFF2BAE8A)
+                                ? Accents.teal
                                 : cs.primary,
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
@@ -146,7 +147,7 @@ class ReadingQuestCard extends StatelessWidget {
                       showLabel: true,
                       gradient: summary.dailyGoalMet
                           ? const LinearGradient(
-                              colors: [Color(0xFF34D399), Color(0xFF2BAE8A)],
+                              colors: [Accents.teal, Accents.teal],
                             )
                           : const LinearGradient(
                               colors: [Color(0xFFFFA65B), Color(0xFFF97373)],
@@ -169,7 +170,7 @@ class ReadingQuestCard extends StatelessWidget {
                 child: _TinyMetric(
                   icon: Icons.bolt_rounded,
                   text: '${summary.longestStreak} gün rekor',
-                  color: const Color(0xFFF59E0B),
+                  color: Accents.amber,
                 ),
               ),
               Expanded(
@@ -183,7 +184,7 @@ class ReadingQuestCard extends StatelessWidget {
                 child: _TinyMetric(
                   icon: Icons.menu_book_rounded,
                   text: '${summary.totalPages} sayfa',
-                  color: const Color(0xFF2BAE8A),
+                  color: Accents.teal,
                 ),
               ),
             ],

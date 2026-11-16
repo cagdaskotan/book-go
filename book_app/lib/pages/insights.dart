@@ -1,3 +1,4 @@
+import '../theme/app_accents.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -226,7 +227,7 @@ class _InsightsPageState extends State<InsightsPage> {
       title: 'İlk zafer',
       description: 'İlk kitabını bitir',
       icon: Icons.emoji_events_rounded,
-      color: Color(0xFFF59E0B),
+      color: Accents.amber,
       test: 'finished_books',
       target: 1,
     ),
@@ -274,7 +275,7 @@ class _InsightsPageState extends State<InsightsPage> {
       title: 'Bin sayfa kulübü',
       description: 'Toplam 1.000 sayfa oku',
       icon: Icons.menu_book_rounded,
-      color: Color(0xFF2BAE8A),
+      color: Accents.teal,
       test: 'total_pages',
       target: 1000,
     ),
@@ -290,7 +291,7 @@ class _InsightsPageState extends State<InsightsPage> {
       title: 'Koleksiyoncu',
       description: 'Kütüphanene 10 kitap ekle',
       icon: Icons.collections_bookmark_rounded,
-      color: Color(0xFF4D8DF7),
+      color: Accents.sky,
       test: 'library',
       target: 10,
     ),
@@ -458,7 +459,7 @@ class _StatsGrid extends StatelessWidget {
         value: '${summary.activeDays}',
         label: 'aktif gün',
         icon: Icons.calendar_month_rounded,
-        color: const Color(0xFF2BAE8A),
+        color: Accents.teal,
       ),
       _StatBox(
         value: '${books.length}',
@@ -672,7 +673,7 @@ class _WeeklyChart extends StatelessWidget {
                                       colors: goalMet
                                           ? const [
                                               Color(0xFF75E6C3),
-                                              Color(0xFF2BAE8A),
+                                              Accents.teal,
                                             ]
                                           : const [
                                               Color(0xFFC7A5FF),

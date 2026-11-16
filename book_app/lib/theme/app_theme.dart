@@ -248,7 +248,9 @@ class AppTheme {
 
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
+        // Kart artık beyaz; alan da beyaz olsaydı form görünmez olurdu.
+        // Ilık bir basamak aşağı inince alan kartın içine gömülmüş duruyor.
+        fillColor: colorScheme.surfaceContainer,
         contentPadding: const EdgeInsets.symmetric(
           vertical: 16,
           horizontal: 20,
@@ -259,7 +261,7 @@ class AppTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: Radii.brInput,
-          borderSide: const BorderSide(color: canvas),
+          borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: Radii.brInput,
@@ -311,10 +313,12 @@ class AppTheme {
 
   // ---------------------- DARK THEME ----------------------
   static ThemeData dark() {
-    // koyu gri + mor
-    const surface = Color(0xFF171927);
-    const surfaceHigh = Color(0xFF0F1120);
-    const outline = Color(0xFF383C55);
+    // Açık tema kâğıda çekilince koyu tema soğuk lacivertte kaldı ve aynı
+    // uygulamanın iki ayrı kimliği oldu. Buradaki tonlar da ılıtıldı:
+    // mavi-gri yerine mor alt tonlu, hafif sıcak bir gece.
+    const surface = Color(0xFF1C1925);
+    const surfaceHigh = Color(0xFF131019);
+    const outline = Color(0xFF423B52);
 
     final cs = const ColorScheme(
       brightness: Brightness.dark,
@@ -331,22 +335,22 @@ class AppTheme {
       errorContainer: Color(0xFF5A2A2C),
       onErrorContainer: Color(0xFFFFD9DA),
       surface: surface,
-      onSurface: Color(0xFFF1F0F8),
+      onSurface: Color(0xFFF3F0F7),
       surfaceContainerHighest: surfaceHigh,
-      surfaceContainerHigh: Color(0xFF202334),
-      surfaceContainer: Color(0xFF1B1E2E),
-      surfaceContainerLow: Color(0xFF25283A),
-      surfaceContainerLowest: Color(0xFF0A0C17),
+      surfaceContainerHigh: Color(0xFF252130),
+      surfaceContainer: Color(0xFF201C2A),
+      surfaceContainerLow: Color(0xFF2A2536),
+      surfaceContainerLowest: Color(0xFF0D0B12),
       outline: outline,
-      outlineVariant: Color(0xFF2D3147),
+      outlineVariant: Color(0xFF332D40),
       shadow: Colors.black,
       scrim: Colors.black87,
-      tertiary: Color(0xFF34D399),
-      onTertiary: Colors.black,
-      tertiaryContainer: Color(0xFF124C3C),
-      onTertiaryContainer: Color(0xFFB6F5E1),
-      inverseSurface: Color(0xFFF8FAFC),
-      onInverseSurface: Color(0xFF0F172A),
+      tertiary: Color(0xFFE0B055),
+      onTertiary: Color(0xFF2E2208),
+      tertiaryContainer: Color(0xFF4A3814),
+      onTertiaryContainer: Color(0xFFF7E3BC),
+      inverseSurface: Color(0xFFF6F3EE),
+      onInverseSurface: Color(0xFF231D3A),
       inversePrimary: Color(0xFFADB3FF),
       surfaceTint: brandPrimaryDark,
     );

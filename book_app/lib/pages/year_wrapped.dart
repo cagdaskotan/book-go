@@ -375,7 +375,7 @@ class _IntroCard extends StatelessWidget {
           style: const TextStyle(
             color: Colors.white,
             fontSize: 72,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w800,
             height: 1,
             letterSpacing: -2,
           ),
@@ -386,7 +386,7 @@ class _IntroCard extends StatelessWidget {
           style: TextStyle(
             color: Colors.white,
             fontSize: 30,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w800,
           ),
         ),
         const SizedBox(height: 12),
@@ -435,7 +435,7 @@ class _BigStatCard extends StatelessWidget {
             style: const TextStyle(
               color: Colors.white,
               fontSize: 76,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w800,
               height: 1,
               letterSpacing: -2,
             ),
@@ -447,7 +447,7 @@ class _BigStatCard extends StatelessWidget {
           style: const TextStyle(
             color: Colors.white,
             fontSize: 26,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w800,
           ),
         ),
         const SizedBox(height: 14),
@@ -501,7 +501,7 @@ class _LabelCard extends StatelessWidget {
           style: const TextStyle(
             color: Colors.white,
             fontSize: 44,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w800,
             height: 1.05,
             letterSpacing: -1,
           ),
@@ -568,7 +568,7 @@ class _BookCard extends StatelessWidget {
           style: const TextStyle(
             color: Colors.white,
             fontSize: 24,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w800,
             height: 1.15,
           ),
         ),
@@ -638,7 +638,7 @@ class _FinaleCard extends StatelessWidget {
           style: const TextStyle(
             color: Colors.white,
             fontSize: 30,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w800,
           ),
         ),
         const SizedBox(height: 20),
@@ -668,7 +668,7 @@ class _FinaleCard extends StatelessWidget {
               foregroundColor: const Color(0xFF4B3CB1),
               padding: const EdgeInsets.symmetric(vertical: 16),
               textStyle: const TextStyle(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 fontSize: 15,
               ),
             ),
@@ -696,7 +696,7 @@ class _EmptyYear extends StatelessWidget {
           style: const TextStyle(
             color: Colors.white,
             fontSize: 34,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w800,
           ),
         ),
         const SizedBox(height: 12),

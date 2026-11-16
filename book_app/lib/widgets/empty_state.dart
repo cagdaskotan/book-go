@@ -59,7 +59,7 @@ class EmptyState extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
               fontSize: compact ? 15.5 : 17,
               color: cs.onSurface,
             ),

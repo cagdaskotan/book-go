@@ -95,7 +95,7 @@ class AppProgressBar extends StatelessWidget {
                       style: (labelStyle ?? theme.textTheme.labelMedium)
                           ?.copyWith(
                             color: cs.onSurface,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             height: 1,
                             shadows: null,
                           ),

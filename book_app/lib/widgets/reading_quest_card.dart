@@ -59,7 +59,7 @@ class ReadingQuestCard extends StatelessWidget {
                           ? 'Serini bugün başlat'
                           : '${summary.currentStreak} günlük harika seri',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         letterSpacing: -.3,
                       ),
                     ),
@@ -68,7 +68,7 @@ class ReadingQuestCard extends StatelessWidget {
                       _message,
                       style: TextStyle(
                         color: cs.onSurfaceVariant,
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -88,8 +88,8 @@ class ReadingQuestCard extends StatelessWidget {
                   'Lv. ${summary.level}',
                   style: TextStyle(
                     color: cs.onPrimaryContainer,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
                   ),
                 ),
               ),
@@ -122,7 +122,7 @@ class ReadingQuestCard extends StatelessWidget {
                           summary.dailyGoalMet
                               ? 'Görev tamamlandı! 🎉'
                               : 'Bugünün görevi',
-                          style: const TextStyle(fontWeight: FontWeight.w900),
+                          style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
                         const Spacer(),
                         Text(
@@ -131,8 +131,8 @@ class ReadingQuestCard extends StatelessWidget {
                             color: summary.dailyGoalMet
                                 ? const Color(0xFF2BAE8A)
                                 : cs.primary,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
                           ),
                         ),
                         const SizedBox(width: 3),
@@ -250,8 +250,8 @@ class _StreakOrb extends StatelessWidget {
                   '$streak',
                   style: const TextStyle(
                     color: Color(0xFFF97316),
-                    fontWeight: FontWeight.w900,
-                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11.5,
                   ),
                 ),
               ),
@@ -308,8 +308,8 @@ class _WeekStrip extends StatelessWidget {
               labels[index],
               style: TextStyle(
                 color: day?.isToday == true ? cs.primary : cs.onSurfaceVariant,
-                fontWeight: FontWeight.w900,
-                fontSize: 9,
+                fontWeight: FontWeight.w600,
+                fontSize: 11.5,
               ),
             ),
           ],
@@ -341,7 +341,7 @@ class _TinyMetric extends StatelessWidget {
             text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 10),
+            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11.5),
           ),
         ),
       ],

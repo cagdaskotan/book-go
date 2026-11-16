@@ -284,7 +284,7 @@ class _AddOptionRow extends StatelessWidget {
                     Text(
                       title,
                       style: TextStyle(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         fontSize: 15,
                         color: cs.onSurface,
                       ),
@@ -295,7 +295,7 @@ class _AddOptionRow extends StatelessWidget {
                       style: TextStyle(
                         color: cs.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
-                        fontSize: 12,
+                        fontSize: 13,
                       ),
                     ),
                   ],

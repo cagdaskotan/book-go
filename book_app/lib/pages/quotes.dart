@@ -234,7 +234,7 @@ class _QuotesPageState extends State<QuotesPage> {
         Text(
           'Alıntı defteri',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w700,
             letterSpacing: -.6,
           ),
         ),
@@ -244,7 +244,7 @@ class _QuotesPageState extends State<QuotesPage> {
           style: TextStyle(
             color: cs.onSurfaceVariant,
             fontWeight: FontWeight.w700,
-            fontSize: 12.5,
+            fontSize: 13,
           ),
         ),
         Gap.vMd,
@@ -414,7 +414,7 @@ class _QuoteCard extends StatelessWidget {
                           style: TextStyle(
                             color: cs.onSurfaceVariant,
                             fontWeight: FontWeight.w600,
-                            fontSize: 11.5,
+                            fontSize: 12,
                           ),
                         ),
                       ],
@@ -486,7 +486,7 @@ class _Highlighted extends StatelessWidget {
           text: text.substring(hit, hit + needle.length),
           style: TextStyle(
             backgroundColor: cs.primary.withValues(alpha: .18),
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w700,
           ),
         ),
       );

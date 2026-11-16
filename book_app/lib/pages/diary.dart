@@ -16,6 +16,8 @@ import 'journal_gallery.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../theme/app_scale.dart';
+import '../widgets/app_card.dart';
 import '../widgets/app_sheet.dart';
 import '../widgets/app_progress_bar.dart';
 import '../widgets/app_toast.dart';
@@ -466,7 +468,7 @@ class _DiaryPageState extends State<DiaryPage> {
                   Text(
                     'Okuma Günlüğü',
                     style: TextStyle(
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                       color: cs.onSurface,
                       fontSize: 18,
                       letterSpacing: -0.1,
@@ -507,7 +509,7 @@ class _DiaryPageState extends State<DiaryPage> {
                           Text(
                             'Henüz günlük kaydı yok',
                             style: TextStyle(
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               color: cs.onSurface,
                             ),
                           ),
@@ -756,7 +758,7 @@ class _DiaryPageState extends State<DiaryPage> {
                               color: Colors.white,
                               fontSize: 25,
                               height: 1.04,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w800,
                               letterSpacing: -.8,
                             ),
                           ),
@@ -794,7 +796,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                         alpha: .55,
                                       ),
                                       fontWeight: FontWeight.w700,
-                                      fontSize: 12.5,
+                                      fontSize: 13,
                                     ),
                                   ),
                                 ),
@@ -808,7 +810,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                 '${(progress * 100).round()}%',
                                 style: const TextStyle(
                                   color: Color(0xFFFFC879),
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w700,
                                   fontSize: 18,
                                 ),
                               ),
@@ -871,7 +873,7 @@ class _DiaryPageState extends State<DiaryPage> {
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: const Color(0xFF6750E8),
-                  textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                  textStyle: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),
             ),
@@ -922,7 +924,7 @@ class _DiaryPageState extends State<DiaryPage> {
                     const Text(
                       'Okuma yolculuğun',
                       style: TextStyle(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         fontSize: 16,
                       ),
                     ),
@@ -932,7 +934,7 @@ class _DiaryPageState extends State<DiaryPage> {
                           : '$remaining sayfa sonra yeni bir hikâye tamamlanacak.',
                       style: TextStyle(
                         color: cs.onSurfaceVariant,
-                        fontSize: 12,
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -944,7 +946,7 @@ class _DiaryPageState extends State<DiaryPage> {
                 style: TextStyle(
                   color: cs.primary,
                   fontSize: 23,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ],
@@ -959,7 +961,7 @@ class _DiaryPageState extends State<DiaryPage> {
                 style: TextStyle(
                   color: cs.onSurfaceVariant,
                   fontWeight: FontWeight.w800,
-                  fontSize: 12,
+                  fontSize: 13,
                 ),
               ),
               const Spacer(),
@@ -998,7 +1000,7 @@ class _DiaryPageState extends State<DiaryPage> {
           const Expanded(
             child: Text(
               'Senin puanın',
-              style: TextStyle(fontWeight: FontWeight.w900),
+              style: TextStyle(fontWeight: FontWeight.w700),
             ),
           ),
           StarRatingView(rating: b.rating, size: 20, showLabel: true),
@@ -1119,7 +1121,7 @@ class _DiaryPageState extends State<DiaryPage> {
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: .75),
                         fontWeight: FontWeight.w700,
-                        fontSize: 12,
+                        fontSize: 13,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -1127,7 +1129,7 @@ class _DiaryPageState extends State<DiaryPage> {
                       dateStr,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         fontSize: 22,
                         letterSpacing: -.3,
                       ),
@@ -1148,8 +1150,8 @@ class _DiaryPageState extends State<DiaryPage> {
                   daysLeft == 1 ? '1 gün' : '$daysLeft gün',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
                   ),
                 ),
               ),
@@ -1196,7 +1198,7 @@ class _DiaryPageState extends State<DiaryPage> {
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
-              fontSize: 11.5,
+              fontSize: 12,
             ),
           ),
         ],
@@ -1276,7 +1278,7 @@ class _DiaryPageState extends State<DiaryPage> {
                           _fmtDateTr(log.logDate),
                           style: TextStyle(
                             color: cs.onSurface,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w600,
                             fontSize: 14,
                           ),
                         ),
@@ -1298,7 +1300,7 @@ class _DiaryPageState extends State<DiaryPage> {
                               style: TextStyle(
                                 color: cs.onSurfaceVariant,
                                 fontWeight: FontWeight.w800,
-                                fontSize: 10.5,
+                                fontSize: 11.5,
                               ),
                             ),
                           ),
@@ -1398,7 +1400,7 @@ class _DiaryPageState extends State<DiaryPage> {
             style: TextStyle(
               color: color,
               fontWeight: FontWeight.w800,
-              fontSize: 11.5,
+              fontSize: 12,
             ),
           ),
         ],
@@ -1968,7 +1970,7 @@ class _LogEditSheetState extends State<_LogEditSheet> {
                                 : 'Kaydı düzenle',
                             style: const TextStyle(
                               fontSize: 19,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               letterSpacing: -.4,
                             ),
                           ),
@@ -2121,7 +2123,7 @@ class _LogEditSheetState extends State<_LogEditSheet> {
                     label: Text(widget.busy ? 'Kaydediliyor' : 'Kaydı tamamla'),
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                      textStyle: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),
@@ -2259,7 +2261,7 @@ class _ReadingTimerSheetState extends State<_ReadingTimerSheet> {
             overflow: TextOverflow.ellipsis,
             style: Theme.of(
               context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           Text(
             _running ? 'Şimdi sadece hikâyeye odaklan.' : 'Okuma oturumu',
@@ -2273,7 +2275,7 @@ class _ReadingTimerSheetState extends State<_ReadingTimerSheet> {
             _time,
             style: const TextStyle(
               fontSize: 48,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w800,
               letterSpacing: 1,
             ),
           ),
@@ -2457,31 +2459,19 @@ class _DateField extends StatelessWidget {
 
 // ================== SMALL WIDGETS & STYLES ==================
 
+/// Sayfanın kart yüzeyi — görünümü [AppCard] belirliyor.
+///
+/// Bu sınıf beş ayrı sayfada birebir kopyalanmıştı; her biri kendi
+/// gölgesini ve kenarlığını yazıyordu ve zamanla ayrıştılar. Çağrı
+/// yerlerini değiştirmemek için ad korundu, görünüm tek kaynağa bağlandı.
 class _SurfaceCard extends StatelessWidget {
   const _SurfaceCard({required this.child, this.padding});
   final Widget child;
   final EdgeInsetsGeometry? padding;
 
   @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      padding: padding ?? const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: cs.outlineVariant),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
+  Widget build(BuildContext context) =>
+      AppCard(padding: padding ?? const EdgeInsets.all(Gap.lg), child: child);
 }
 
 class _Chip extends StatelessWidget {
@@ -2505,7 +2495,7 @@ class _Chip extends StatelessWidget {
         style: TextStyle(
           color: textColor ?? cs.onSurface,
           fontWeight: FontWeight.w700,
-          fontSize: 12,
+          fontSize: 13,
         ),
       ),
     );
@@ -2599,7 +2589,7 @@ class _MetricItem extends StatelessWidget {
         const SizedBox(height: 7),
         Text(
           value,
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 2),
         Text(
@@ -2607,7 +2597,7 @@ class _MetricItem extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             color: cs.onSurfaceVariant,
-            fontSize: 10,
+            fontSize: 11.5,
             fontWeight: FontWeight.w800,
           ),
         ),

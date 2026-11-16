@@ -81,7 +81,7 @@ class _JournalGalleryPageState extends State<JournalGalleryPage> {
                       'Sayfa ekle',
                       style: TextStyle(
                         fontSize: 17,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
@@ -154,7 +154,7 @@ class _JournalGalleryPageState extends State<JournalGalleryPage> {
       appBar: AppBar(
         title: Text(
           widget.bookId != null ? 'Sayfa defteri' : 'Sayfa Defterim',
-          style: const TextStyle(fontWeight: FontWeight.w900),
+          style: const TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
       floatingActionButton: widget.bookId != null
@@ -270,7 +270,7 @@ class _JournalCard extends StatelessWidget {
                     overflow: TextOverflow.fade,
                     style: const TextStyle(
                       color: Color(0xFF4B3E2C),
-                      fontSize: 11.5,
+                      fontSize: 12,
                       height: 1.5,
                     ),
                   ),
@@ -292,7 +292,7 @@ class _JournalCard extends StatelessWidget {
                       style: const TextStyle(
                         color: Color(0xFF7A6A4E),
                         fontWeight: FontWeight.w800,
-                        fontSize: 11,
+                        fontSize: 12,
                       ),
                     ),
                     const Spacer(),
@@ -420,7 +420,7 @@ class _SourceTile extends StatelessWidget {
         ),
         child: Icon(icon, color: cs.primary),
       ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w900)),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
       subtitle: Text(subtitle),
     );
   }
@@ -446,7 +446,7 @@ class _EmptyJournal extends StatelessWidget {
             Text(
               'Defterin henüz boş',
               style: TextStyle(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 fontSize: 18,
                 color: cs.onSurface,
               ),

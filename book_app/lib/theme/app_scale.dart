@@ -91,3 +91,51 @@ abstract final class Touch {
   /// Yan yana duran ikon düğmeleri arası en az boşluk.
   static const double minSpacing = Gap.sm;
 }
+
+/// Gölge ölçeği.
+///
+/// Eskiden her kart kendi gölgesini elle yazıyordu ve hepsi saf siyahtı
+/// (`Colors.black` %6). Saf siyah gölge ılık kâğıt zeminde gri bir leke
+/// bırakıyor, kart "yapıştırılmış" duruyor. Buradaki gölgeler mürekkep
+/// tonunda ve iki katmanlı: yakın ve sert olan kenarı tanımlıyor, uzak ve
+/// yumuşak olan yükseltiyor.
+abstract final class Shadows {
+  static const Color _ink = Color(0xFF2B2416);
+
+  /// Sayfadaki sıradan kart.
+  static List<BoxShadow> get card => [
+    BoxShadow(
+      color: _ink.withValues(alpha: .05),
+      blurRadius: 2,
+      offset: const Offset(0, 1),
+    ),
+    BoxShadow(
+      color: _ink.withValues(alpha: .06),
+      blurRadius: 16,
+      offset: const Offset(0, 6),
+    ),
+  ];
+
+  /// Öne çıkan kart: kahraman kitap, kutlama, günün alıntısı.
+  static List<BoxShadow> get raised => [
+    BoxShadow(
+      color: _ink.withValues(alpha: .06),
+      blurRadius: 3,
+      offset: const Offset(0, 1),
+    ),
+    BoxShadow(
+      color: _ink.withValues(alpha: .10),
+      blurRadius: 28,
+      offset: const Offset(0, 14),
+    ),
+  ];
+
+  /// Renkli bir yüzeyin kendi rengiyle attığı gölge — düğmeler, rozetler.
+  static List<BoxShadow> tinted(Color color) => [
+    BoxShadow(
+      color: color.withValues(alpha: .28),
+      blurRadius: 18,
+      offset: const Offset(0, 8),
+    ),
+  ];
+}

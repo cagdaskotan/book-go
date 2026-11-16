@@ -83,7 +83,7 @@ class ReadingHeatmap extends StatelessWidget {
               Text(
                 '$activeDays aktif gün',
                 style: TextStyle(
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w600,
                   color: cs.onSurface,
                   fontSize: 14,
                 ),
@@ -94,7 +94,7 @@ class ReadingHeatmap extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   color: cs.onSurfaceVariant,
-                  fontSize: 12,
+                  fontSize: 13,
                 ),
               ),
             ],
@@ -118,7 +118,7 @@ class ReadingHeatmap extends StatelessWidget {
                           monthLabels[col] ?? '',
                           style: TextStyle(
                             color: cs.onSurfaceVariant,
-                            fontSize: 9,
+                            fontSize: 11.5,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -184,7 +184,7 @@ class ReadingHeatmap extends StatelessWidget {
                 'az',
                 style: TextStyle(
                   color: cs.onSurfaceVariant,
-                  fontSize: 10,
+                  fontSize: 11.5,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -206,7 +206,7 @@ class ReadingHeatmap extends StatelessWidget {
                 'çok',
                 style: TextStyle(
                   color: cs.onSurfaceVariant,
-                  fontSize: 10,
+                  fontSize: 11.5,
                   fontWeight: FontWeight.w700,
                 ),
               ),

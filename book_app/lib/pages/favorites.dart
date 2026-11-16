@@ -5,10 +5,12 @@ import '../models/book.dart';
 import '../services/book_service.dart';
 import '../services/api_exception.dart';
 import '../services/profile_service.dart';
+import '../theme/app_scale.dart';
 import '../theme/app_theme.dart';
 import 'routes.dart';
 
 // Header/Nav bileşenleri
+import '../widgets/app_card.dart';
 import '../widgets/appbar.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/app_progress_bar.dart';
@@ -225,7 +227,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                         Text(
                           'Favoriler',
                           style: TextStyle(
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             color: cs.onSurface,
                             fontSize: 18,
                           ),
@@ -338,7 +340,7 @@ class _BookTile extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             letterSpacing: -0.1,
                             color: cs.onSurface,
                           ),
@@ -377,8 +379,8 @@ class _BookTile extends StatelessWidget {
                     showCenterPercent: true,
                     bgColor: cs.outlineVariant.withValues(alpha: .35),
                     centerStyle: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w900,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
                   ),
@@ -435,32 +437,19 @@ class _BookTile extends StatelessWidget {
   }
 }
 
-// ====== Ortak minik widgetlar (tema uyumlu) ======
+/// Sayfanın kart yüzeyi — görünümü [AppCard] belirliyor.
+///
+/// Bu sınıf beş ayrı sayfada birebir kopyalanmıştı; her biri kendi
+/// gölgesini ve kenarlığını yazıyordu ve zamanla ayrıştılar. Çağrı
+/// yerlerini değiştirmemek için ad korundu, görünüm tek kaynağa bağlandı.
 class _SurfaceCard extends StatelessWidget {
   const _SurfaceCard({required this.child, this.padding});
   final Widget child;
   final EdgeInsetsGeometry? padding;
 
   @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      padding: padding ?? const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: cs.outlineVariant),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
+  Widget build(BuildContext context) =>
+      AppCard(padding: padding ?? const EdgeInsets.all(Gap.lg), child: child);
 }
 
 class _GradientProgressBar extends StatelessWidget {

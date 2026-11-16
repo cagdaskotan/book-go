@@ -46,7 +46,7 @@ class SummaryCard extends StatelessWidget {
           Text(
             'Bugun neler okuyacaksin?',
             style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
               color: AppTheme.inkStrong,
             ),
           ),

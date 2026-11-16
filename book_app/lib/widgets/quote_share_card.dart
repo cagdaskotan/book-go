@@ -196,7 +196,7 @@ class QuoteShareCard extends StatelessWidget {
                                 child: Text(
                                   'sayfa $page',
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 12,
                                     color: t.soft.withValues(alpha: .8),
                                   ),
                                 ),
@@ -219,7 +219,7 @@ class QuoteShareCard extends StatelessWidget {
                       Text(
                         'Bilge · Mobil Kütüphanem',
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 12,
                           letterSpacing: 1.5,
                           fontWeight: FontWeight.w800,
                           color: t.soft.withValues(alpha: .85),

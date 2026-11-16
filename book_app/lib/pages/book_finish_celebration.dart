@@ -329,7 +329,7 @@ class _BookFinishCelebrationState extends State<BookFinishCelebration>
                                     child: const Text(
                                       'Harika!',
                                       style: TextStyle(
-                                        fontWeight: FontWeight.w900,
+                                        fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                   ),
@@ -577,9 +577,9 @@ class _HeroTitle extends StatelessWidget {
             'KİTAP TAMAMLANDI',
             style: TextStyle(
               color: Color(0xFFFFD166),
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w600,
               letterSpacing: .7,
-              fontSize: 11,
+              fontSize: 12,
             ),
           ),
         ),
@@ -589,7 +589,7 @@ class _HeroTitle extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w800,
             fontSize: 27,
             height: 1.05,
             letterSpacing: -.7,
@@ -666,7 +666,7 @@ class _ReportCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     fontSize: 15.5,
                     height: 1.18,
                   ),
@@ -680,7 +680,7 @@ class _ReportCard extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: .58),
                       fontWeight: FontWeight.w700,
-                      fontSize: 12,
+                      fontSize: 13,
                     ),
                   ),
                 ],
@@ -740,7 +740,7 @@ class _Stat extends StatelessWidget {
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
-              fontSize: 11.5,
+              fontSize: 12,
             ),
           ),
         ],
@@ -806,7 +806,7 @@ class _YearlyBump extends StatelessWidget {
                       : '${DateTime.now().year} hedefinde yeni adım',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w600,
                     fontSize: 13.5,
                   ),
                 ),
@@ -824,8 +824,8 @@ class _YearlyBump extends StatelessWidget {
                   '$finished / $safeGoal',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
                   ),
                 ),
               ),

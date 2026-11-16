@@ -13,6 +13,7 @@ import '../widgets/appbar.dart';
 import '../services/stats_service.dart';
 import '../widgets/book_add_launcher.dart';
 import '../widgets/navigation.dart';
+import '../widgets/section_header.dart';
 import '../widgets/reading_heatmap.dart';
 import 'routes.dart';
 import 'year_wrapped.dart';
@@ -377,7 +378,7 @@ class _LevelHero extends StatelessWidget {
                   '${summary.level}',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w800,
                     fontSize: 25,
                   ),
                 ),
@@ -398,7 +399,7 @@ class _LevelHero extends StatelessWidget {
                       levelTitle(summary.level),
                       style: const TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         fontSize: 21,
                         letterSpacing: -.3,
                       ),
@@ -424,7 +425,7 @@ class _LevelHero extends StatelessWidget {
             style: const TextStyle(
               color: Colors.white70,
               fontWeight: FontWeight.w700,
-              fontSize: 11,
+              fontSize: 12,
             ),
           ),
         ],
@@ -522,7 +523,7 @@ class _StatBox extends StatelessWidget {
               Text(
                 value,
                 style: const TextStyle(
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   fontSize: 19,
                 ),
               ),
@@ -531,7 +532,7 @@ class _StatBox extends StatelessWidget {
                 style: TextStyle(
                   color: cs.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
-                  fontSize: 10,
+                  fontSize: 11.5,
                 ),
               ),
             ],
@@ -595,14 +596,14 @@ class _WeeklyChart extends StatelessWidget {
                   children: [
                     const Text(
                       'Haftalık okuma ritmin',
-                      style: TextStyle(fontWeight: FontWeight.w900),
+                      style: TextStyle(fontWeight: FontWeight.w700),
                     ),
                     Text(
                       'Hedef: günde ${summary.dailyPageGoal} sayfa',
                       style: TextStyle(
                         color: cs.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
-                        fontSize: 11,
+                        fontSize: 12,
                       ),
                     ),
                   ],
@@ -621,8 +622,8 @@ class _WeeklyChart extends StatelessWidget {
                   '${summary.week.fold<int>(0, (sum, day) => sum + day.pagesRead)} sayfa',
                   style: TextStyle(
                     color: cs.primary,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11.5,
                   ),
                 ),
               ),
@@ -650,7 +651,7 @@ class _WeeklyChart extends StatelessWidget {
                             '$pages',
                             style: TextStyle(
                               color: goalMet ? cs.primary : cs.onSurfaceVariant,
-                              fontSize: 9,
+                              fontSize: 11.5,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
@@ -714,8 +715,8 @@ class _WeeklyChart extends StatelessWidget {
                               color: day?.isToday == true
                                   ? Colors.white
                                   : cs.onSurfaceVariant,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11.5,
                             ),
                           ),
                         ),
@@ -813,14 +814,14 @@ class _AchievementTile extends StatelessWidget {
               children: [
                 Text(
                   achievement.title,
-                  style: const TextStyle(fontWeight: FontWeight.w900),
+                  style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
                 Text(
                   achievement.description,
                   style: TextStyle(
                     color: cs.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
-                    fontSize: 11,
+                    fontSize: 12,
                   ),
                 ),
                 if (!unlocked) ...[
@@ -846,7 +847,7 @@ class _AchievementTile extends StatelessWidget {
                         style: TextStyle(
                           color: cs.onSurfaceVariant,
                           fontWeight: FontWeight.w800,
-                          fontSize: 10,
+                          fontSize: 11.5,
                         ),
                       ),
                     ],
@@ -917,7 +918,7 @@ class _YearWrappedBanner extends StatelessWidget {
                       '$year Okuma Karnem',
                       style: const TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         fontSize: 17,
                       ),
                     ),
@@ -927,7 +928,7 @@ class _YearWrappedBanner extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: .85),
                         fontWeight: FontWeight.w600,
-                        fontSize: 12,
+                        fontSize: 13,
                       ),
                     ),
                   ],
@@ -942,34 +943,15 @@ class _YearWrappedBanner extends StatelessWidget {
   }
 }
 
+/// İstatistik bölüm başlığı — görünümü [SectionHeader] belirliyor.
 class _SectionTitle extends StatelessWidget {
   const _SectionTitle({required this.title, required this.subtitle});
   final String title;
   final String subtitle;
 
   @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
-        ),
-        Text(
-          subtitle,
-          style: TextStyle(
-            color: cs.onSurfaceVariant,
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
-          ),
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) =>
+      SectionHeader(title: title, subtitle: subtitle, padding: EdgeInsets.zero);
 }
 
 /// Kitaplık boşken istatistik sayfası.

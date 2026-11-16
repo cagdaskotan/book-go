@@ -171,8 +171,8 @@ class _NavItem extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: selected ? cs.primary : cs.onSurfaceVariant,
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],

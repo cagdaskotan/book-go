@@ -177,7 +177,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.titleLarge
-                                  ?.copyWith(fontWeight: FontWeight.w900),
+                                  ?.copyWith(fontWeight: FontWeight.w700),
                             ),
                             Text('${books.length} kitap'),
                           ],
@@ -217,7 +217,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                               subtitle: Text(
@@ -658,9 +658,9 @@ class _CabinetHeaderPanel extends StatelessWidget {
                             'KİŞİSEL KİTAPLIĞIM',
                             style: TextStyle(
                               color: gold,
-                              fontSize: 11,
+                              fontSize: 12,
                               letterSpacing: 1.15,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
@@ -671,7 +671,7 @@ class _CabinetHeaderPanel extends StatelessWidget {
                         style: Theme.of(context).textTheme.headlineSmall
                             ?.copyWith(
                               color: cream,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               height: 1.08,
                               letterSpacing: -.7,
                               shadows: [
@@ -726,7 +726,7 @@ class _CabinetHeaderPanel extends StatelessWidget {
                           horizontal: 12,
                           vertical: 9,
                         ),
-                        textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                        textStyle: const TextStyle(fontWeight: FontWeight.w700),
                         visualDensity: VisualDensity.compact,
                       ),
                     ),
@@ -764,7 +764,7 @@ class _LibraryStat extends StatelessWidget {
             value,
             style: const TextStyle(
               color: Color(0xFFFFE9C7),
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -857,7 +857,7 @@ class _PlaqueStat extends StatelessWidget {
           style: const TextStyle(
             color: Color(0xFFFFE9C7),
             fontSize: 17,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w700,
             letterSpacing: .5,
             height: 1,
           ),
@@ -867,7 +867,7 @@ class _PlaqueStat extends StatelessWidget {
           label,
           style: const TextStyle(
             color: Color(0xFFE7C27A),
-            fontSize: 9.5,
+            fontSize: 11.5,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.6,
             height: 1,
@@ -1655,8 +1655,8 @@ class _BookStack extends StatelessWidget {
                 '+$extra',
                 style: TextStyle(
                   color: const Color(0xFFFFE9C7).withValues(alpha: .8),
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -1847,7 +1847,7 @@ class _AddBookToShelfButton extends StatelessWidget {
                   style: TextStyle(
                     color: Color.lerp(color, Colors.white, .45),
                     fontSize: 8,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w600,
                     letterSpacing: 1,
                   ),
                 ),
@@ -1967,7 +1967,7 @@ class _ShelfLabel extends StatelessWidget {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w600,
                         letterSpacing: .2,
                         shadows: [Shadow(color: Colors.black38, blurRadius: 2)],
                       ),
@@ -1984,7 +1984,7 @@ class _ShelfLabel extends StatelessWidget {
           '$count kitap',
           style: TextStyle(
             color: const Color(0xFFFFE9C7).withValues(alpha: .5),
-            fontSize: 10,
+            fontSize: 11.5,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -2063,7 +2063,7 @@ class _ShelfActionsSheet extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 17,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -2185,7 +2185,7 @@ class _NewShelfSlot extends StatelessWidget {
                           'Yeni raf ekle',
                           style: TextStyle(
                             color: cream,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w600,
                             fontSize: 13.5,
                           ),
                         ),
@@ -2194,7 +2194,7 @@ class _NewShelfSlot extends StatelessWidget {
                           style: TextStyle(
                             color: cream.withValues(alpha: .6),
                             fontWeight: FontWeight.w600,
-                            fontSize: 10,
+                            fontSize: 11.5,
                           ),
                         ),
                       ],
@@ -2471,7 +2471,7 @@ class _EmptyShelfRow extends StatelessWidget {
               'Bu raf yeni hikâyelerini bekliyor',
               style: TextStyle(
                 color: const Color(0xFFFFE9C7).withValues(alpha: .7),
-                fontSize: 12,
+                fontSize: 13,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -2569,7 +2569,7 @@ class _ShelfBookPickerState extends State<_ShelfBookPicker> {
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 19,
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                               Text(
@@ -2649,7 +2649,7 @@ class _ShelfBookPickerState extends State<_ShelfBookPicker> {
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
-                                              fontWeight: FontWeight.w900,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                           const SizedBox(height: 3),
@@ -2661,7 +2661,7 @@ class _ShelfBookPickerState extends State<_ShelfBookPicker> {
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               color: cs.onSurfaceVariant,
-                                              fontSize: 12,
+                                              fontSize: 13,
                                             ),
                                           ),
                                         ],
@@ -2714,7 +2714,7 @@ class _ShelfBookPickerState extends State<_ShelfBookPicker> {
                   style: FilledButton.styleFrom(
                     minimumSize: const Size.fromHeight(54),
                     backgroundColor: color,
-                    textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                    textStyle: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
@@ -2821,7 +2821,7 @@ class _CreateCollectionSheetState extends State<_CreateCollectionSheet> {
                         widget.title,
                         style: const TextStyle(
                           fontSize: 22,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w700,
                           letterSpacing: -.5,
                         ),
                       ),
@@ -2894,7 +2894,7 @@ class _CreateCollectionSheetState extends State<_CreateCollectionSheet> {
                   label: Text(_busy ? widget.busyLabel : widget.submitLabel),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                    textStyle: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
@@ -2944,7 +2944,7 @@ class _EmptyShelf extends StatelessWidget {
             const SizedBox(height: 10),
             const Text(
               'Bu raf henüz boş',
-              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
             ),
             const SizedBox(height: 5),
             Text(
@@ -3026,7 +3026,7 @@ class _BulkEditSheet extends StatelessWidget {
                 '$count kitap seçili',
                 style: const TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: 2),
@@ -3104,14 +3104,14 @@ class _BulkEditSheet extends StatelessWidget {
                       Text(
                         title,
                         style: TextStyle(
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w700,
                           color: danger ? cs.error : cs.onSurface,
                         ),
                       ),
                       Text(
                         sub,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 13,
                           color: cs.onSurfaceVariant,
                         ),
                       ),
@@ -3208,7 +3208,7 @@ class _EditTile extends StatelessWidget {
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Color(0xFFFFE9C7),
-                fontSize: 9,
+                fontSize: 11.5,
                 fontWeight: FontWeight.w700,
               ),
             ),

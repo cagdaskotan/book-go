@@ -87,7 +87,7 @@ class YearlyChallengeCard extends StatelessWidget {
                           Text(
                             '$year Okuma Hedefi',
                             style: TextStyle(
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               fontSize: 15,
                               color: cs.onSurface,
                               letterSpacing: -.2,
@@ -109,7 +109,7 @@ class YearlyChallengeCard extends StatelessWidget {
                         style: TextStyle(
                           color: cs.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
-                          fontSize: 12,
+                          fontSize: 13,
                           height: 1.25,
                         ),
                       ),
@@ -133,7 +133,7 @@ class YearlyChallengeCard extends StatelessWidget {
                               style: TextStyle(
                                 color: paceColor,
                                 fontWeight: FontWeight.w800,
-                                fontSize: 11.5,
+                                fontSize: 12,
                               ),
                             ),
                           ],
@@ -183,7 +183,7 @@ class _Ring extends StatelessWidget {
                 Text(
                   '$finished',
                   style: TextStyle(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w800,
                     fontSize: 24,
                     height: 1,
                     color: cs.onSurface,
@@ -193,7 +193,7 @@ class _Ring extends StatelessWidget {
                   '/ $goal',
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
-                    fontSize: 11,
+                    fontSize: 12,
                     color: cs.onSurfaceVariant,
                   ),
                 ),

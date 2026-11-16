@@ -201,8 +201,8 @@ class MascotBubble extends StatelessWidget {
                           title!,
                           style: TextStyle(
                             color: cs.primary,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11.5,
                             letterSpacing: .5,
                           ),
                         ),

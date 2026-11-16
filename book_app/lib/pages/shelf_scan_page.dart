@@ -208,7 +208,7 @@ class _ShelfScanPageState extends State<ShelfScanPage> {
             Text(
               'Rafın okunuyor',
               style: TextStyle(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 fontSize: 17,
                 color: cs.onSurface,
               ),
@@ -354,7 +354,7 @@ class _MatchTile extends StatelessWidget {
                       style: TextStyle(
                         color: found ? cs.onSurfaceVariant : cs.error,
                         fontWeight: FontWeight.w600,
-                        fontSize: 12.5,
+                        fontSize: 13,
                       ),
                     ),
                     if (found) ...[
@@ -365,7 +365,7 @@ class _MatchTile extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: cs.onSurfaceVariant.withValues(alpha: .7),
-                          fontSize: 11,
+                          fontSize: 12,
                         ),
                       ),
                     ],
@@ -411,7 +411,7 @@ class _Message extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 fontSize: 17,
                 color: cs.onSurface,
               ),

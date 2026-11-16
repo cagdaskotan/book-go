@@ -93,7 +93,7 @@ class _PlusScreenState extends State<PlusScreen> {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w800,
                                   letterSpacing: -.5,
                                 ),
                               ),
@@ -231,7 +231,7 @@ class _PlusScreenState extends State<PlusScreen> {
                         foregroundColor: const Color(0xFF2A1E63),
                         padding: const EdgeInsets.symmetric(vertical: 17),
                         textStyle: const TextStyle(
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w700,
                           fontSize: 16,
                         ),
                       ),
@@ -243,7 +243,7 @@ class _PlusScreenState extends State<PlusScreen> {
                     'İstediğin zaman iptal edebilirsin.',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: .45),
-                      fontSize: 11,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -266,7 +266,7 @@ class _PlusScreenState extends State<PlusScreen> {
               'Plus üyesin 👑',
               style: TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 fontSize: 17,
               ),
             ),
@@ -330,7 +330,7 @@ class _PlanCard extends StatelessWidget {
                   title,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     fontSize: 15,
                   ),
                 ),
@@ -349,7 +349,7 @@ class _PlanCard extends StatelessWidget {
                       badge!,
                       style: const TextStyle(
                         color: Color(0xFF143C30),
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w600,
                         fontSize: 8.5,
                       ),
                     ),
@@ -366,7 +366,7 @@ class _PlanCard extends StatelessWidget {
                   price,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     fontSize: 20,
                   ),
                 ),
@@ -375,7 +375,7 @@ class _PlanCard extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: .55),
                     fontWeight: FontWeight.w700,
-                    fontSize: 12,
+                    fontSize: 13,
                   ),
                 ),
               ],

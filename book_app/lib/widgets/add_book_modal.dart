@@ -610,7 +610,7 @@ class _ScannedHint extends StatelessWidget {
                 Text(
                   'Barkodu okuduk, künyeyi bulamadık',
                   style: TextStyle(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w600,
                     fontSize: 13.5,
                     color: cs.onSurface,
                   ),
@@ -622,7 +622,7 @@ class _ScannedHint extends StatelessWidget {
                   style: TextStyle(
                     color: cs.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
-                    fontSize: 12,
+                    fontSize: 13,
                     height: 1.35,
                   ),
                 ),
@@ -631,7 +631,7 @@ class _ScannedHint extends StatelessWidget {
                   'ISBN $isbn kaydedildi',
                   style: TextStyle(
                     fontFamily: 'monospace',
-                    fontSize: 11.5,
+                    fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: cs.primary,
                   ),

@@ -13,10 +13,12 @@ import '../services/gamification_service.dart';
 import '../services/profile_service.dart';
 import '../services/reading_goal_service.dart';
 import '../services/reading_pace.dart';
+import '../theme/app_scale.dart';
 import '../theme/app_theme.dart';
 import 'routes.dart';
 
 // Ortak header/nav
+import '../widgets/app_card.dart';
 import '../widgets/appbar.dart';
 import '../widgets/app_progress_bar.dart';
 import '../widgets/app_toast.dart';
@@ -25,6 +27,7 @@ import '../widgets/book_cover.dart';
 import '../widgets/mascot.dart';
 import '../widgets/recommendations_section.dart';
 import '../widgets/navigation.dart';
+import '../widgets/section_header.dart';
 import '../widgets/yearly_challenge_card.dart';
 import '../widgets/home_shelf.dart';
 import '../services/notification_service.dart';
@@ -120,7 +123,7 @@ class _DailyGoalSheetState extends State<_DailyGoalSheet> {
                         Text(
                           'Günlük okuma hedefin',
                           style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(fontWeight: FontWeight.w900),
+                              ?.copyWith(fontWeight: FontWeight.w700),
                         ),
                         Text(
                           'Ritmine uyacak bir hedef seç.',
@@ -148,7 +151,7 @@ class _DailyGoalSheetState extends State<_DailyGoalSheet> {
                         color: Colors.white,
                         fontSize: 42,
                         height: 1,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                     const SizedBox(width: 9),
@@ -160,7 +163,7 @@ class _DailyGoalSheetState extends State<_DailyGoalSheet> {
                             'sayfa / gün',
                             style: TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           const SizedBox(height: 3),
@@ -210,7 +213,7 @@ class _DailyGoalSheetState extends State<_DailyGoalSheet> {
                 label: const Text('Hedefimi kaydet'),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                  textStyle: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),
             ],
@@ -305,7 +308,7 @@ class _YearlyGoalSheetState extends State<_YearlyGoalSheet> {
                         Text(
                           '${DateTime.now().year} okuma hedefin',
                           style: TextStyle(
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             fontSize: 17,
                             color: cs.onSurface,
                           ),
@@ -351,7 +354,7 @@ class _YearlyGoalSheetState extends State<_YearlyGoalSheet> {
                 label: const Text('Hedefimi kaydet'),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                  textStyle: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),
             ],
@@ -799,7 +802,7 @@ class _HomePageState extends State<HomePage> {
                             Text(
                               'Rafın boş duruyor',
                               style: TextStyle(
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.w700,
                                 fontSize: 17,
                                 color: cs.onSurface,
                               ),
@@ -866,7 +869,7 @@ class _HomePageState extends State<HomePage> {
                               'temizleyebilirsin.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 11.5,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 color: cs.onSurfaceVariant,
                               ),
@@ -1019,8 +1022,8 @@ class _QuickAction extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
                   color: cs.onSurface,
                 ),
               ),
@@ -1090,7 +1093,7 @@ class _StreakCenterSheet extends StatelessWidget {
                     : '${summary.currentStreak} günlük okuma serisi',
                 style: const TextStyle(
                   fontSize: 24,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w800,
                   letterSpacing: -.7,
                 ),
               ),
@@ -1155,8 +1158,8 @@ class _StreakCenterSheet extends StatelessWidget {
                             color: day?.isToday == true
                                 ? cs.primary
                                 : cs.onSurfaceVariant,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11.5,
                           ),
                         ),
                       ],
@@ -1236,14 +1239,14 @@ class _StreakMetric extends StatelessWidget {
         children: [
           Text(
             value,
-            style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w900),
+            style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
           ),
           Text(
             label,
             style: TextStyle(
               color: cs.onSurfaceVariant,
               fontWeight: FontWeight.w700,
-              fontSize: 9,
+              fontSize: 11.5,
             ),
           ),
         ],
@@ -1360,8 +1363,8 @@ class _WelcomePanel extends StatelessWidget {
                               'Seviye ${value.level}',
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
                               ),
                             ),
                           ],
@@ -1376,7 +1379,7 @@ class _WelcomePanel extends StatelessWidget {
                     color: Colors.white,
                     fontSize: 27,
                     height: 1.08,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w800,
                     letterSpacing: -.9,
                   ),
                 ),
@@ -1481,8 +1484,8 @@ class _HeroBookCard extends StatelessWidget {
                       label,
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: .65),
-                        fontWeight: FontWeight.w900,
-                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 11.5,
                         letterSpacing: 1,
                       ),
                     ),
@@ -1493,7 +1496,7 @@ class _HeroBookCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w600,
                         fontSize: 14,
                       ),
                     ),
@@ -1518,8 +1521,8 @@ class _HeroBookCard extends StatelessWidget {
                           '%$pct',
                           style: const TextStyle(
                             color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
                           ),
                         ),
                       ],
@@ -1542,7 +1545,7 @@ class _HeroBookCard extends StatelessWidget {
                               style: TextStyle(
                                 color: Colors.white.withValues(alpha: .78),
                                 fontWeight: FontWeight.w700,
-                                fontSize: 10.5,
+                                fontSize: 11.5,
                               ),
                             ),
                           ),
@@ -1569,41 +1572,18 @@ class _HeroBookCard extends StatelessWidget {
 }
 
 // ---------- Bölüm başlığı ----------
+/// Ana sayfadaki bölüm başlığı — görünümü [SectionHeader] belirliyor.
 SliverToBoxAdapter _sectionHeader(
   BuildContext context,
   String title, {
   required IconData icon,
-}) {
-  final cs = Theme.of(context).colorScheme;
-  return SliverToBoxAdapter(
-    child: Padding(
-      padding: const EdgeInsets.fromLTRB(18, 18, 20, 6),
-      child: Row(
-        children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: cs.primary.withValues(alpha: .14),
-              borderRadius: BorderRadius.circular(11),
-            ),
-            child: Icon(icon, color: cs.primary, size: 19),
-          ),
-          const SizedBox(width: 11),
-          Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              color: cs.onSurface,
-              fontSize: 17.5,
-              letterSpacing: -.3,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
+}) => SliverToBoxAdapter(
+  child: SectionHeader(
+    title: title,
+    icon: icon,
+    padding: const EdgeInsets.fromLTRB(18, 18, 20, 6),
+  ),
+);
 
 // ---------- Mini kartlar / listeler ----------
 class _BookRowCard extends StatelessWidget {
@@ -1644,7 +1624,7 @@ class _BookRowCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         letterSpacing: -0.1,
                         color: cs.onSurface,
                       ),
@@ -1668,8 +1648,8 @@ class _BookRowCard extends StatelessWidget {
                       bgColor: cs.outlineVariant.withValues(alpha: .35),
                       showCenterPercent: true,
                       centerStyle: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w900,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
                     ),
@@ -1722,7 +1702,7 @@ class _ContinueCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                       color: cs.onSurface,
                     ),
                   ),
@@ -1742,7 +1722,7 @@ class _ContinueCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 13,
                             color: cs.onSurfaceVariant,
                             fontWeight: FontWeight.w700,
                           ),
@@ -1809,7 +1789,7 @@ class _MiniContinueCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         height: 1.15,
                         color: cs.onSurface,
                       ),
@@ -1829,7 +1809,7 @@ class _MiniContinueCard extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 12,
                               color: cs.onSurfaceVariant,
                               fontWeight: FontWeight.w700,
                             ),
@@ -1987,8 +1967,8 @@ class _MascotQuoteCardState extends State<_MascotQuoteCard> {
                             label,
                             style: TextStyle(
                               color: cs.primary,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 9,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11.5,
                               letterSpacing: .8,
                             ),
                           ),
@@ -2007,8 +1987,8 @@ class _MascotQuoteCardState extends State<_MascotQuoteCard> {
                             '— $author',
                             style: TextStyle(
                               color: cs.primary,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11.5,
                             ),
                           ),
                         ],
@@ -2025,32 +2005,19 @@ class _MascotQuoteCardState extends State<_MascotQuoteCard> {
   }
 }
 
-// ---------- Ortak yapı taşları ----------
+/// Sayfanın kart yüzeyi — görünümü [AppCard] belirliyor.
+///
+/// Bu sınıf beş ayrı sayfada birebir kopyalanmıştı; her biri kendi
+/// gölgesini ve kenarlığını yazıyordu ve zamanla ayrıştılar. Çağrı
+/// yerlerini değiştirmemek için ad korundu, görünüm tek kaynağa bağlandı.
 class _SurfaceCard extends StatelessWidget {
   const _SurfaceCard({required this.child, this.padding});
   final Widget child;
   final EdgeInsetsGeometry? padding;
 
   @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      padding: padding ?? const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: cs.outlineVariant),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
+  Widget build(BuildContext context) =>
+      AppCard(padding: padding ?? const EdgeInsets.all(Gap.lg), child: child);
 }
 
 class _GradientProgressBar extends StatelessWidget {

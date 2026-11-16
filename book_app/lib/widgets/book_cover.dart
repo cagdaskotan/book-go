@@ -143,7 +143,7 @@ class GeneratedCover extends StatelessWidget {
                       initial,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         fontSize: 20,
                       ),
                     )
@@ -154,7 +154,7 @@ class GeneratedCover extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: .94),
                         fontWeight: FontWeight.w800,
-                        fontSize: 11,
+                        fontSize: 12,
                         height: 1.25,
                         letterSpacing: -.1,
                       ),

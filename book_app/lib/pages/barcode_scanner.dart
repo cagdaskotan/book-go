@@ -252,14 +252,14 @@ class _ISBNConfirmation extends StatelessWidget {
               'Kitap barkodu bulundu',
               style: Theme.of(
                 context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 5),
             Text(
               _formattedISBN,
               style: TextStyle(
                 color: cs.primary,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 letterSpacing: 1.1,
               ),
             ),
@@ -383,7 +383,7 @@ class _ScannerError extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: -.4,
                 ),
               ),

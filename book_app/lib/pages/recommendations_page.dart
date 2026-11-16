@@ -183,7 +183,7 @@ class _RecommendationsPageState extends State<RecommendationsPage> {
         onSelected: (_) => setState(() => _filter = value),
         labelStyle: TextStyle(
           fontWeight: FontWeight.w800,
-          fontSize: 12,
+          fontSize: 13,
           color: selected ? cs.onPrimaryContainer : cs.onSurfaceVariant,
         ),
         selectedColor: cs.primaryContainer,
@@ -225,7 +225,7 @@ class _RecommendationsPageState extends State<RecommendationsPage> {
               'Sana özel öneriler Plus’ta',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 fontSize: 20,
                 color: cs.onSurface,
               ),
@@ -255,7 +255,7 @@ class _RecommendationsPageState extends State<RecommendationsPage> {
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   textStyle: const TextStyle(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     fontSize: 15,
                   ),
                 ),
@@ -307,7 +307,7 @@ class _GridRecCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                       color: cs.onSurface,
                       fontSize: 13,
                     ),
@@ -319,7 +319,7 @@ class _GridRecCard extends StatelessWidget {
                     style: TextStyle(
                       color: cs.onSurfaceVariant,
                       fontWeight: FontWeight.w600,
-                      fontSize: 11,
+                      fontSize: 12,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -339,7 +339,7 @@ class _GridRecCard extends StatelessWidget {
                           style: TextStyle(
                             color: cs.primary,
                             fontWeight: FontWeight.w800,
-                            fontSize: 10.5,
+                            fontSize: 11.5,
                           ),
                         ),
                       ),

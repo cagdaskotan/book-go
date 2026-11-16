@@ -65,7 +65,7 @@ class _QuoteSharePageState extends State<QuoteSharePage> {
         surfaceTintColor: Colors.transparent,
         title: const Text(
           'Alıntıyı paylaş',
-          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
         ),
       ),
       body: SafeArea(
@@ -131,7 +131,7 @@ class _QuoteSharePageState extends State<QuoteSharePage> {
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     textStyle: const TextStyle(
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                       fontSize: 15,
                     ),
                   ),

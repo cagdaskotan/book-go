@@ -129,7 +129,7 @@ class AppSheetHeader extends StatelessWidget {
                 Text(
                   title,
                   style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     letterSpacing: -.6,
                   ),
                 ),
@@ -237,7 +237,7 @@ class _ConfirmSheet extends StatelessWidget {
             Text(
               title,
               style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 letterSpacing: -.4,
               ),
             ),

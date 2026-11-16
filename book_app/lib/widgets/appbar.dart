@@ -74,7 +74,9 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       titleSpacing: 14,
       toolbarHeight: 66,
-      backgroundColor: cs.surface,
+      // Sayfayla aynı düzlem: kart beyazı artık zeminden ayrıldığı için
+      // üst çubuk da beyaz kalsaydı sayfanın ortasında bir dikiş olurdu.
+      backgroundColor: theme.scaffoldBackgroundColor,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       title: Row(
@@ -119,7 +121,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                       letterSpacing: -.3,
                     ),
                   ),
@@ -170,8 +172,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 _initials(resolvedName),
                 style: TextStyle(
                   color: cs.onPrimaryContainer,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
                 ),
               ),
             ),
@@ -196,7 +198,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                     title: Text(
                       'Plus',
                       style: TextStyle(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         color: cs.onSurface,
                       ),
                     ),
@@ -357,8 +359,8 @@ class _HeaderStreak extends StatelessWidget {
                     streak == 0 ? 'Serini başlat' : '$streak günlük seri',
                     style: const TextStyle(
                       color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
                     ),
                   ),
                   Text(
@@ -438,7 +440,7 @@ class _AccountSummary extends StatelessWidget {
                 initials,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   fontSize: 15,
                 ),
               ),
@@ -454,7 +456,7 @@ class _AccountSummary extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                       fontSize: 14.5,
                       color: cs.onSurface,
                     ),

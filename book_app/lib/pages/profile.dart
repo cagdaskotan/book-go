@@ -9,6 +9,7 @@ import '../services/notification_service.dart';
 import '../services/profile_service.dart';
 import '../services/sample_library_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_card.dart';
 import '../widgets/app_sheet.dart';
 import '../widgets/appbar.dart';
 import '../widgets/book_add_launcher.dart';
@@ -280,7 +281,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Text(
                       profileService.visibleName,
                       style: TextStyle(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         fontSize: 18,
                         color: cs.onSurface,
                       ),
@@ -291,7 +292,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: TextStyle(
                         color: cs.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
-                        fontSize: 12,
+                        fontSize: 13,
                       ),
                     ),
                   ],
@@ -345,7 +346,7 @@ class _ProfilePageState extends State<ProfilePage> {
             'Uygulamanın temasını seç; tercihin hatırlanır.',
             style: TextStyle(
               color: cs.onSurfaceVariant,
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -435,7 +436,7 @@ class _ProfilePageState extends State<ProfilePage> {
             'uygulamayı silmeden önce yedek almayı unutma.',
             style: TextStyle(
               color: cs.onSurfaceVariant,
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -570,7 +571,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     style: TextStyle(
                       color: cs.primary,
                       fontWeight: FontWeight.w800,
-                      fontSize: 11,
+                      fontSize: 12,
                     ),
                   ),
                 ),
@@ -584,7 +585,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       'geçmişi, raflar, alıntılar ve defter sayfaları ekler.',
             style: TextStyle(
               color: cs.onSurfaceVariant,
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -630,28 +631,15 @@ class _Spinner extends StatelessWidget {
   );
 }
 
+/// Sayfanın kart yüzeyi — görünümü [AppCard] belirliyor.
+///
+/// Bu sınıf beş ayrı sayfada birebir kopyalanmıştı; her biri kendi
+/// gölgesini ve kenarlığını yazıyordu ve zamanla ayrıştılar. Çağrı
+/// yerlerini değiştirmemek için ad korundu, görünüm tek kaynağa bağlandı.
 class _SurfaceCard extends StatelessWidget {
   const _SurfaceCard({required this.child});
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: cs.outlineVariant),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
+  Widget build(BuildContext context) => AppCard(child: child);
 }

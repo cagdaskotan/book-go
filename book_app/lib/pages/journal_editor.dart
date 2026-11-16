@@ -212,7 +212,7 @@ class _BookPageReaderState extends State<BookPageReader> {
           widget.bookTitle,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
         ),
         actions: [
           if (page.highlights.isNotEmpty)
@@ -335,7 +335,7 @@ class _BookPageReaderState extends State<BookPageReader> {
                       'Bu sayfanın alıntıları',
                       style: TextStyle(
                         fontSize: 17,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         color: cs.onSurface,
                       ),
                     ),
@@ -649,7 +649,7 @@ class _PenBar extends StatelessWidget {
                             'Metinden bir bölüm seç, fosforla',
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: .6),
-                              fontSize: 12.5,
+                              fontSize: 13,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -700,7 +700,7 @@ class _PenBar extends StatelessWidget {
                     foregroundColor: const Color(0xFF2A2118),
                     disabledBackgroundColor: Colors.white12,
                     disabledForegroundColor: Colors.white38,
-                    textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                    textStyle: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
@@ -760,7 +760,7 @@ class _HighlightTile extends StatelessWidget {
               '✎ ${note.trim()}',
               style: TextStyle(
                 color: cs.onSurfaceVariant,
-                fontSize: 12.5,
+                fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -861,7 +861,7 @@ class _NoteSheet extends StatelessWidget {
                   title,
                   style: const TextStyle(
                     fontSize: 17,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 10),

@@ -154,7 +154,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           Text(
             'İstemezsen boş bırak — bu bilgi telefonundan çıkmıyor.',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: FontWeight.w600,
               color: cs.onSurfaceVariant,
             ),
@@ -210,7 +210,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   '$_dailyGoal',
                   textAlign: TextAlign.end,
                   style: TextStyle(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     fontSize: 20,
                     color: cs.primary,
                   ),
@@ -263,7 +263,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             'örnekleri profilden tek dokunuşla temizlersin.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: FontWeight.w600,
               color: cs.onSurfaceVariant,
             ),
@@ -369,7 +369,7 @@ class _StepFrame extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 26,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w800,
                       letterSpacing: -.5,
                       color: cs.onSurface,
                     ),

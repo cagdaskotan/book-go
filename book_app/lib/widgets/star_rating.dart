@@ -69,7 +69,7 @@ class StarRatingView extends StatelessWidget {
           Text(
             StarRating.label(rating),
             style: TextStyle(
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
               fontSize: size * .78,
               color: Theme.of(context).colorScheme.onSurface,
             ),
@@ -123,7 +123,7 @@ class StarRatingInput extends StatelessWidget {
           Text(
             StarRating.label(rating),
             style: TextStyle(
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
               fontSize: 18,
               color: cs.onSurface,
             ),
@@ -133,7 +133,7 @@ class StarRatingInput extends StatelessWidget {
             'Puan yok',
             style: TextStyle(
               fontWeight: FontWeight.w700,
-              fontSize: 12.5,
+              fontSize: 13,
               color: cs.onSurfaceVariant,
             ),
           ),

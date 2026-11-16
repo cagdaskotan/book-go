@@ -46,7 +46,7 @@ class BookFormHeader extends StatelessWidget {
                       title,
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             letterSpacing: -.6,
                           ),
                     ),
@@ -134,7 +134,7 @@ class _BookFormSectionState extends State<BookFormSection> {
                   child: Text(
                     widget.title,
                     style: TextStyle(
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                       fontSize: 14,
                       color: cs.onSurface,
                     ),
@@ -221,7 +221,7 @@ class BookCoverPreview extends StatelessWidget {
                     color: title.trim().isEmpty
                         ? Colors.white.withValues(alpha: .5)
                         : Colors.white,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     fontSize: 16,
                     height: 1.2,
                   ),
@@ -253,7 +253,7 @@ class BookCoverPreview extends StatelessWidget {
                       hasUrl ? 'Kapak önizleme' : 'Kapak eklenmedi',
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: .6),
-                        fontSize: 10.5,
+                        fontSize: 11.5,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -433,7 +433,7 @@ class BookStatusSelector extends StatelessWidget {
             showCheckmark: false,
             labelStyle: const TextStyle(
               fontWeight: FontWeight.w800,
-              fontSize: 12.5,
+              fontSize: 13,
             ),
             onSelected: onChanged == null
                 ? null
@@ -521,7 +521,7 @@ class BookFormFooter extends StatelessWidget {
             label: Text(busy ? 'Kaydediliyor…' : label),
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              textStyle: const TextStyle(fontWeight: FontWeight.w900),
+              textStyle: const TextStyle(fontWeight: FontWeight.w700),
             ),
           ),
         ),

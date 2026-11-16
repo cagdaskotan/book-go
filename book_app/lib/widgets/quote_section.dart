@@ -145,7 +145,7 @@ class _QuoteSectionState extends State<QuoteSection> {
                 Text(
                   'Alıntılar',
                   style: TextStyle(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     color: cs.onSurface,
                     fontSize: 18,
                   ),
@@ -305,7 +305,7 @@ class _QuoteCard extends StatelessWidget {
                                   style: TextStyle(
                                     color: accent,
                                     fontWeight: FontWeight.w800,
-                                    fontSize: 11,
+                                    fontSize: 12,
                                   ),
                                 ),
                               ],
@@ -367,7 +367,7 @@ class _EmptyQuotes extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Henüz alıntı yok',
-            style: TextStyle(fontWeight: FontWeight.w900, color: cs.onSurface),
+            style: TextStyle(fontWeight: FontWeight.w700, color: cs.onSurface),
           ),
           const SizedBox(height: 4),
           Text(
@@ -461,7 +461,7 @@ class _AddQuoteSheetState extends State<_AddQuoteSheet> {
                     Text(
                       'Alıntı ekle',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -508,7 +508,7 @@ class _AddQuoteSheetState extends State<_AddQuoteSheet> {
                   label: const Text('Deftere ekle'),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                    textStyle: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
               ],

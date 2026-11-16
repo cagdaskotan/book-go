@@ -51,7 +51,7 @@ class HomeShelf extends StatelessWidget {
               Text(
                 'Rafın',
                 style: TextStyle(
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   fontSize: 16,
                   color: cs.onSurface,
                 ),
@@ -63,7 +63,7 @@ class HomeShelf extends StatelessWidget {
                   style: TextStyle(
                     color: cs.onSurfaceVariant,
                     fontWeight: FontWeight.w700,
-                    fontSize: 12,
+                    fontSize: 13,
                   ),
                 ),
               const Spacer(),
@@ -195,7 +195,7 @@ class _EmptyShelf extends StatelessWidget {
                         Text(
                           'Raf boş duruyor',
                           style: TextStyle(
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             color: cs.onSurface,
                           ),
                         ),
@@ -205,7 +205,7 @@ class _EmptyShelf extends StatelessWidget {
                           style: TextStyle(
                             color: cs.onSurfaceVariant,
                             fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                            fontSize: 13,
                           ),
                         ),
                       ],

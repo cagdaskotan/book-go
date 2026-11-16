@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_scale.dart';
+import 'app_type.dart';
 
 /// Uygulama teması (light + dark) ve basit bir tema kontrolcüsü.
 /// Light: mevcut yeşil kimlik.
@@ -23,11 +24,28 @@ class AppTheme {
   /// Dikkat çekme rengi; marka moruyla çarpışmayan sıcak ton.
   static const Color brandAccent = Color(0xFFE9785D);
 
-  /// Açık temada başlık ve etiket metni (saf siyah yerine koyu mor-mürekkep).
-  static const Color inkStrong = Color(0xFF352A78);
+  /// Varak altını: rozet, başarım, raf plakası.
+  ///
+  /// Kitaplıkta zaten kullanılıyordu ama her yerde elle yazılmıştı; ciltli
+  /// kitabın altın yaldızı uygulamanın sıcak tarafını taşıyor.
+  static const Color gold = Color(0xFFC08A2E);
 
-  /// Açık temanın zemini.
-  static const Color canvas = Color(0xFFF7F6FC);
+  /// Raf ahşabı — kitaplık ekranının taşıyıcı tonu.
+  static const Color shelfWood = Color(0xFF6B4A33);
+
+  /// Açık temada başlık ve gövde metni.
+  ///
+  /// Eskiden orta tonlu bir mordu (#352A78); başlıklar zemine yakın kalıp
+  /// soluk ve ucuz görünüyordu. Mor alt tonu koruyan koyu bir mürekkebe
+  /// indirildi: kimlik duruyor, kontrast geliyor.
+  static const Color inkStrong = Color(0xFF231D3A);
+
+  /// Açık temanın zemini: kâğıt.
+  ///
+  /// Eski zemin soğuk bir lilaktı (#F7F6FC) ve uygulamayı herhangi bir
+  /// kurumsal panoya benzetiyordu. Kitap uygulamasının zemini kâğıt gibi
+  /// ılık olmalı; beyaz kartlar da üstünde ancak böyle ayrışıyor.
+  static const Color canvas = Color(0xFFF6F3EE);
 
   // Koyu temada marka renkleri koyu zeminde okunacak şekilde açılır.
   static const Color brandPrimaryDark = Color(0xFF7567F8);
@@ -45,17 +63,90 @@ class AppTheme {
   /// Silme, geri alınamaz işlem, hata.
   static const Color danger = Color(0xFFD64550);
 
-  // ---------------------- LIGHT THEME ----------------------
-  static ThemeData light() {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: brandPrimary,
-      brightness: Brightness.light,
-      primary: brandPrimary,
-      secondary: brandAccent,
-      surface: canvas,
+  /// Material'in metin rollerini [AppType] ölçeğine bağlar.
+  ///
+  /// Bunu yapmazsak tema dosyası süs olarak kalıyor: widget'lar
+  /// `Theme.of(context).textTheme.titleLarge` istediğinde Material'in
+  /// varsayılan boyutlarını alıyor ve herkes kendi `fontSize`'ını elle
+  /// yazmaya başlıyor — nitekim öyle olmuştu.
+  static TextTheme _textTheme(TextTheme base) {
+    TextStyle m(TextStyle from, TextStyle scale) => from.copyWith(
+      fontSize: scale.fontSize,
+      height: scale.height,
+      fontWeight: scale.fontWeight,
+      letterSpacing: scale.letterSpacing,
     );
 
-    final textTheme = GoogleFonts.manropeTextTheme();
+    return base.copyWith(
+      displaySmall: m(base.displaySmall ?? const TextStyle(), AppType.display),
+      headlineMedium: m(
+        base.headlineMedium ?? const TextStyle(),
+        AppType.pageTitle,
+      ),
+      headlineSmall: m(
+        base.headlineSmall ?? const TextStyle(),
+        AppType.pageTitle,
+      ),
+      titleLarge: m(base.titleLarge ?? const TextStyle(), AppType.sectionTitle),
+      titleMedium: m(base.titleMedium ?? const TextStyle(), AppType.itemTitle),
+      titleSmall: m(base.titleSmall ?? const TextStyle(), AppType.label),
+      bodyLarge: m(base.bodyLarge ?? const TextStyle(), AppType.body),
+      bodyMedium: m(base.bodyMedium ?? const TextStyle(), AppType.bodySmall),
+      bodySmall: m(base.bodySmall ?? const TextStyle(), AppType.labelSmall),
+      labelLarge: m(base.labelLarge ?? const TextStyle(), AppType.label),
+      labelMedium: m(base.labelMedium ?? const TextStyle(), AppType.labelSmall),
+      labelSmall: m(base.labelSmall ?? const TextStyle(), AppType.overline),
+    );
+  }
+
+  // ---------------------- LIGHT THEME ----------------------
+  static ThemeData light() {
+    // Eskiden `ColorScheme.fromSeed(surface: canvas)` kullanılıyordu ve
+    // bunun bir yan etkisi vardı: kartların rengi (`surface`) sayfanın
+    // zeminiyle birebir aynı oluyordu. Kartlar zeminden yalnızca 1 piksellik
+    // çizgiyle ayrıldığı için bütün ekran tek düze bir levha gibi duruyordu.
+    // Artık zemin kâğıt, kart beyaz: kart sayfanın üstünde durduğunu
+    // renkten belli ediyor.
+    const colorScheme = ColorScheme(
+      brightness: Brightness.light,
+      primary: brandPrimary,
+      onPrimary: Colors.white,
+      primaryContainer: Color(0xFFE6E1FF),
+      onPrimaryContainer: Color(0xFF231B5E),
+      secondary: brandAccent,
+      onSecondary: Colors.white,
+      secondaryContainer: Color(0xFFFFE2D9),
+      onSecondaryContainer: Color(0xFF5C2415),
+      tertiary: gold,
+      onTertiary: Colors.white,
+      tertiaryContainer: Color(0xFFF7E8C9),
+      onTertiaryContainer: Color(0xFF4A3410),
+      error: danger,
+      onError: Colors.white,
+      errorContainer: Color(0xFFFFDAD9),
+      onErrorContainer: Color(0xFF5C1216),
+      // Kart yüzeyi: kâğıt zeminin üstünde yükselen beyaz.
+      surface: Colors.white,
+      onSurface: inkStrong,
+      onSurfaceVariant: Color(0xFF6A6280),
+      // Kâğıttan beyaza uzanan ılık basamaklar.
+      surfaceContainerLowest: Colors.white,
+      surfaceContainerLow: Color(0xFFFCFAF7),
+      surfaceContainer: Color(0xFFF2EEE7),
+      surfaceContainerHigh: Color(0xFFECE7DE),
+      surfaceContainerHighest: canvas,
+      // Kıl payı çizgiler de ılık; soğuk gri kâğıdın üstünde yabancı duruyor.
+      outline: Color(0xFFBDB5A8),
+      outlineVariant: Color(0xFFE5DFD5),
+      shadow: Color(0xFF2B2416),
+      scrim: Colors.black54,
+      inverseSurface: Color(0xFF322C44),
+      onInverseSurface: Color(0xFFF6F3EE),
+      inversePrimary: Color(0xFFC6BDFF),
+      surfaceTint: brandPrimary,
+    );
+
+    final textTheme = _textTheme(GoogleFonts.manropeTextTheme());
 
     return ThemeData(
       useMaterial3: true,
@@ -260,8 +351,10 @@ class AppTheme {
       surfaceTint: brandPrimaryDark,
     );
 
-    final textTheme = GoogleFonts.manropeTextTheme(
-      ThemeData(brightness: Brightness.dark).textTheme,
+    final textTheme = _textTheme(
+      GoogleFonts.manropeTextTheme(
+        ThemeData(brightness: Brightness.dark).textTheme,
+      ),
     );
 
     return ThemeData(

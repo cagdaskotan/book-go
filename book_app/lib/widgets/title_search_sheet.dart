@@ -166,7 +166,7 @@ class _TitleSearchSheetState extends State<_TitleSearchSheet> {
                   Text(
                     'Kitap ara',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                       letterSpacing: -.6,
                     ),
                   ),
@@ -404,7 +404,7 @@ class _ResultTile extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         color: cs.onSurface,
                         height: 1.2,
                       ),
@@ -419,7 +419,7 @@ class _ResultTile extends StatelessWidget {
                       style: TextStyle(
                         color: cs.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
-                        fontSize: 12,
+                        fontSize: 13,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -482,7 +482,7 @@ class _MiniTag extends StatelessWidget {
               style: TextStyle(
                 color: color,
                 fontWeight: FontWeight.w800,
-                fontSize: 10.5,
+                fontSize: 11.5,
               ),
             ),
           ),
@@ -516,7 +516,7 @@ class _CenterHint extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 fontSize: 16,
                 color: cs.onSurface,
               ),

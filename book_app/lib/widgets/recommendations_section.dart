@@ -143,7 +143,7 @@ class _RecommendationsSectionState extends State<RecommendationsSection> {
                     Text(
                       'Sana özel öneriler',
                       style: TextStyle(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                         color: cs.onSurface,
                         fontSize: 15,
                       ),
@@ -154,7 +154,7 @@ class _RecommendationsSectionState extends State<RecommendationsSection> {
                       style: TextStyle(
                         color: cs.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
-                        fontSize: 12,
+                        fontSize: 13,
                         height: 1.3,
                       ),
                     ),
@@ -198,7 +198,7 @@ class _RecommendationsSectionState extends State<RecommendationsSection> {
           Text(
             'Sana özel öneriler',
             style: TextStyle(
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
               color: cs.onSurface,
               fontSize: 18,
             ),
@@ -214,7 +214,7 @@ class _RecommendationsSectionState extends State<RecommendationsSection> {
               ),
               child: const Text(
                 'Tümünü gör',
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
               ),
             ),
             IconButton(
@@ -298,7 +298,7 @@ class _LockedTeaser extends StatelessWidget {
                             'Sana özel öneriler',
                             style: TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               fontSize: 15,
                             ),
                           ),
@@ -316,8 +316,8 @@ class _LockedTeaser extends StatelessWidget {
                               'PLUS',
                               style: TextStyle(
                                 color: Color(0xFF2A1E63),
-                                fontWeight: FontWeight.w900,
-                                fontSize: 9,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 11.5,
                               ),
                             ),
                           ),
@@ -329,7 +329,7 @@ class _LockedTeaser extends StatelessWidget {
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: .75),
                           fontWeight: FontWeight.w600,
-                          fontSize: 12,
+                          fontSize: 13,
                           height: 1.3,
                         ),
                       ),
@@ -390,7 +390,7 @@ class _RecCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w600,
                         color: cs.onSurface,
                         fontSize: 13,
                         height: 1.15,
@@ -404,7 +404,7 @@ class _RecCard extends StatelessWidget {
                       style: TextStyle(
                         color: cs.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
-                        fontSize: 11,
+                        fontSize: 12,
                       ),
                     ),
                     const SizedBox(height: 7),
@@ -424,7 +424,7 @@ class _RecCard extends StatelessWidget {
                             style: TextStyle(
                               color: cs.primary,
                               fontWeight: FontWeight.w800,
-                              fontSize: 10.5,
+                              fontSize: 11.5,
                             ),
                           ),
                         ),
@@ -442,8 +442,8 @@ class _RecCard extends StatelessWidget {
                               visualDensity: VisualDensity.compact,
                               padding: const EdgeInsets.symmetric(vertical: 6),
                               textStyle: const TextStyle(
-                                fontWeight: FontWeight.w900,
-                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
                               ),
                             ),
                           ),

@@ -36,7 +36,7 @@ Future<void> showCollectionPicker(BuildContext context, int bookId) async {
               'Koleksiyona ekle',
               style: Theme.of(
                 context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 12),
             if (collections.isEmpty)

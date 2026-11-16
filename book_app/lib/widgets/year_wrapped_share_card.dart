@@ -96,7 +96,7 @@ class YearWrappedShareCard extends StatelessWidget {
                             '$year',
                             style: TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               fontSize: width * .13,
                               height: 1,
                               letterSpacing: -1.5,
@@ -106,7 +106,7 @@ class YearWrappedShareCard extends StatelessWidget {
                             'OKUMA KARNESİ',
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: .72),
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               fontSize: width * .034,
                               letterSpacing: 2.4,
                             ),
@@ -203,7 +203,7 @@ class YearWrappedShareCard extends StatelessWidget {
               value,
               style: TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 fontSize: width * .2,
                 height: .95,
                 letterSpacing: -2,
@@ -257,7 +257,7 @@ class YearWrappedShareCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 fontSize: width * .042,
               ),
             ),

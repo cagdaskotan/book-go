@@ -54,7 +54,7 @@ class _GoalCelebrationDialog extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 fontSize: 20,
               ),
             ),
@@ -100,7 +100,7 @@ class _GoalCelebrationDialog extends StatelessWidget {
                   foregroundColor: const Color(0xFF4B3CB1),
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   textStyle: const TextStyle(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     fontSize: 15,
                   ),
                 ),
@@ -142,7 +142,7 @@ class _Stat extends StatelessWidget {
             value,
             style: const TextStyle(
               color: Colors.white,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
               fontSize: 20,
             ),
           ),
@@ -151,7 +151,7 @@ class _Stat extends StatelessWidget {
             style: TextStyle(
               color: Colors.white.withValues(alpha: .75),
               fontWeight: FontWeight.w700,
-              fontSize: 11,
+              fontSize: 12,
             ),
           ),
         ],

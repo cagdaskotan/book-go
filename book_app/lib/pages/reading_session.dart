@@ -293,7 +293,7 @@ class _ReadingSessionPageState extends State<ReadingSessionPage>
                                       style: const TextStyle(
                                         color: Colors.white70,
                                         fontWeight: FontWeight.w700,
-                                        fontSize: 12,
+                                        fontSize: 13,
                                       ),
                                     ),
                                   ),
@@ -581,7 +581,7 @@ class _SessionConfirmationSheet extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w800,
                   letterSpacing: -.6,
                 ),
               ),
@@ -605,7 +605,7 @@ class _SessionConfirmationSheet extends StatelessWidget {
                         ? const Color(0xFFF06473)
                         : const Color(0xFF2BAE8A),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                    textStyle: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                   child: Text(confirmLabel),
                 ),

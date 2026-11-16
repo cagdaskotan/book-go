@@ -118,7 +118,7 @@ class _YearWrappedSharePageState extends State<YearWrappedSharePage> {
                     style: TextStyle(
                       color: cs.onSurfaceVariant,
                       fontWeight: FontWeight.w600,
-                      fontSize: 12.5,
+                      fontSize: 13,
                     ),
                   ),
                   Gap.vMd,

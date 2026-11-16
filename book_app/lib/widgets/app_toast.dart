@@ -119,7 +119,7 @@ class _ToastContent extends StatelessWidget {
                   title!,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w600,
                     fontSize: 14,
                   ),
                 ),

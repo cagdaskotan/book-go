@@ -50,6 +50,7 @@ class SampleLibraryService {
         totalPages: seed.pages,
         category: seed.category,
         isbn: seed.isbn,
+        coverUrl: seed.coverUrl,
         readingStatus: seed.status.value,
         isFinished: seed.status == ReadingStatus.finished ? true : null,
         rating: seed.status == ReadingStatus.finished ? seed.rating : null,
@@ -197,6 +198,7 @@ class SampleLibraryService {
   static final List<_BookSeed> _seeds = [
     _BookSeed(
       title: 'Kürk Mantolu Madonna',
+      cover: 10848013,
       author: 'Sabahattin Ali',
       publisher: 'Yapı Kredi Yayınları',
       category: 'Roman',
@@ -218,6 +220,7 @@ class SampleLibraryService {
     ),
     _BookSeed(
       title: 'Tutunamayanlar',
+      cover: 8730101,
       author: 'Oğuz Atay',
       publisher: 'İletişim Yayınları',
       category: 'Roman',
@@ -234,6 +237,7 @@ class SampleLibraryService {
     ),
     _BookSeed(
       title: 'Körlük',
+      cover: 10482411,
       author: 'José Saramago',
       publisher: 'Kırmızı Kedi',
       category: 'Roman',
@@ -254,6 +258,7 @@ class SampleLibraryService {
     ),
     _BookSeed(
       title: 'Saatleri Ayarlama Enstitüsü',
+      cover: 8996939,
       author: 'Ahmet Hamdi Tanpınar',
       publisher: 'Dergâh Yayınları',
       category: 'Roman',
@@ -271,6 +276,7 @@ class SampleLibraryService {
     ),
     _BookSeed(
       title: 'Sineklerin Tanrısı',
+      cover: 8684447,
       author: 'William Golding',
       publisher: 'İş Bankası Kültür Yayınları',
       category: 'Roman',
@@ -287,6 +293,7 @@ class SampleLibraryService {
     ),
     _BookSeed(
       title: 'İnsanın Anlam Arayışı',
+      cover: 8516506,
       author: 'Viktor E. Frankl',
       publisher: 'Okuyan Us',
       category: 'Psikoloji',
@@ -301,6 +308,7 @@ class SampleLibraryService {
     ),
     _BookSeed(
       title: 'Satranç',
+      cover: 5548285,
       author: 'Stefan Zweig',
       publisher: 'İş Bankası Kültür Yayınları',
       category: 'Öykü',
@@ -310,6 +318,7 @@ class SampleLibraryService {
     ),
     _BookSeed(
       title: 'Dönüşüm',
+      cover: 12820198,
       author: 'Franz Kafka',
       publisher: 'Can Yayınları',
       category: 'Roman',
@@ -319,6 +328,7 @@ class SampleLibraryService {
     ),
     _BookSeed(
       title: 'Ulysses',
+      cover: 13136548,
       author: 'James Joyce',
       publisher: 'Yapı Kredi Yayınları',
       category: 'Roman',
@@ -331,6 +341,7 @@ class SampleLibraryService {
     ),
     _BookSeed(
       title: 'Yüzbaşının Kızı',
+      cover: 893480,
       author: 'Aleksandr Puşkin',
       publisher: 'İş Bankası Kültür Yayınları',
       category: 'Roman',
@@ -432,6 +443,7 @@ class _BookSeed {
     required this.category,
     required this.pages,
     required this.status,
+    this.cover,
     this.isbn,
     this.rating,
     this.favorite = false,
@@ -447,7 +459,21 @@ class _BookSeed {
   final String category;
   final int pages;
   final ReadingStatus status;
+
+  /// Open Library kapak kimliği.
+  ///
+  /// Adres kurulum anında aranmıyor, önceden çözülüp buraya yazıldı:
+  /// on kitap için on HTTP isteği kurulumu yavaşlatır ve ağ yoksa
+  /// tamamen başarısız olur. Kimlikler sabit; görsel ilk gösterimde
+  /// inip önbelleğe alınıyor, inemezse üretilmiş cilde düşüyor.
+  final int? cover;
+
   final String? isbn;
+
+  /// Kapak adresi — uygulamanın kitap ararken kullandığı kaynağın aynısı.
+  String? get coverUrl =>
+      cover == null ? null : 'https://covers.openlibrary.org/b/id/$cover-L.jpg';
+
   final int? rating;
   final bool favorite;
   final String? note;

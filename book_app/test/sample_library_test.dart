@@ -214,4 +214,34 @@ void main() {
     expect(remaining.single.title, 'Benim Kitabım');
     expect(remaining.single.id, mine);
   });
+
+  test('her örnek kitabın kapağı var', () async {
+    // Örnek kitaplık uygulamayı "hazır" göstermek için var; kapaksız raf
+    // yarım kalmış hissi veriyor. Adresler kurulum anında aranmıyor,
+    // tohum verisinde sabit duruyor — ağ yoksa kurulum yine çalışsın diye.
+    await SampleLibraryService.install();
+
+    final all = await books.fetchBooks();
+    for (final book in all) {
+      final url = (book.coverUrl ?? '').trim();
+      expect(url, isNotEmpty, reason: '${book.title} kapaksız');
+      expect(
+        url,
+        startsWith('https://covers.openlibrary.org/'),
+        reason: '${book.title} beklenmeyen kapak kaynağı',
+      );
+    }
+  });
+
+  test('kapaklar birbirinden farklı', () async {
+    // Kopyala-yapıştır sırasında aynı kimliği iki kitaba yazmak kolay;
+    // rafta iki aynı kapak görünce örnek veri sahte duruyor.
+    await SampleLibraryService.install();
+
+    final urls = (await books.fetchBooks())
+        .map((b) => b.coverUrl)
+        .whereType<String>()
+        .toList();
+    expect(urls.toSet().length, urls.length, reason: 'yinelenen kapak var');
+  });
 }
